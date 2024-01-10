@@ -3,7 +3,7 @@ package com.example.bookstore.network
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Book(
+data class BookInfo(
     val volumeInfo: VolumeInfo,
     val saleInfo: SaleInfo
 )

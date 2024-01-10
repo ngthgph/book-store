@@ -1,5 +1,6 @@
 package com.example.bookstore.ui.screens.home
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +22,9 @@ fun HomeScreen(
             DrawerScreen (
                 modifier = modifier
             ) {
+                Row {
+                    HomeContent()
+                }
             }
         }
         NavigationType.NAVIGATION_RAIL -> {
@@ -28,7 +32,7 @@ fun HomeScreen(
                 title = stringResource(id = R.string.app_name),
                 modifier = modifier
             ) {
-                SearchBar(onSearch = {}, onClear = {}, isSearching = false)
+                HomeContent()
             }
         }
         else -> {
@@ -36,11 +40,19 @@ fun HomeScreen(
                 title = stringResource(id = R.string.app_name),
                 modifier = modifier
             ) {
-                SearchBar(onSearch = {}, onClear = {}, isSearching = false)
+                HomeContent()
             }
         }
     }
 }
+
+@Composable
+fun HomeContent(
+    modifier: Modifier = Modifier
+) {
+    SearchBar(onSearch = {}, onClear = {}, isSearching = false)
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CompactHomeScreenPreview() {
