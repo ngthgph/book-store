@@ -2,6 +2,8 @@ package com.example.bookstore.ui.screens.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,21 +16,23 @@ fun DrawerScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    AppNavigationDrawer(
-        currentScreen = Screen.Home,
-        onPressed = {},
-        navigationItemList = LocalScreenProvider.screenList,
-        modifier = modifier
-    ) {
-        Column(
-            modifier = modifier.fillMaxWidth()
+    Scaffold() {
+        AppNavigationDrawer(
+            currentScreen = Screen.Home,
+            onPressed = {},
+            navigationItemList = LocalScreenProvider.screenList,
+            modifier = modifier.padding(it)
         ) {
-            content()
+            Column(
+                modifier = modifier.fillMaxWidth()
+            ) {
+                content()
+            }
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 700)
+@Preview(showBackground = true, widthDp = 1000)
 @Composable
 fun DrawerScreenPreview() {
     BookStoreTheme {

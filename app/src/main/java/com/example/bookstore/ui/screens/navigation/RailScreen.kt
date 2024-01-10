@@ -2,6 +2,8 @@ package com.example.bookstore.ui.screens.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,18 +21,22 @@ fun RailScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Row {
-        AppNavigationRail(
-            currentScreen = Screen.Home,
-            onPressed = {},
-            navigationItemList = LocalScreenProvider.screenList
-        )
-        Column(
-            modifier = modifier.weight(1f)
+    Scaffold() {
+        Row(
+            modifier = Modifier.padding(it)
         ) {
-            AppHeader(text = title, description = title, onBack = {})
-            SearchBar(onSearch = {}, onClear = {}, isSearching = false)
-            content()
+            AppNavigationRail(
+                currentScreen = Screen.Home,
+                onPressed = {},
+                navigationItemList = LocalScreenProvider.screenList
+            )
+            Column(
+                modifier = modifier.weight(1f)
+            ) {
+                AppHeader(text = title, description = title, onBack = {})
+
+                content()
+            }
         }
     }
 }

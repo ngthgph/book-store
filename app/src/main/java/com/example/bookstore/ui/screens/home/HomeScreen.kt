@@ -28,6 +28,7 @@ fun HomeScreen(
                 title = stringResource(id = R.string.app_name),
                 modifier = modifier
             ) {
+                SearchBar(onSearch = {}, onClear = {}, isSearching = false)
             }
         }
         else -> {
