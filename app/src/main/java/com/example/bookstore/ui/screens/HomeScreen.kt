@@ -217,6 +217,8 @@ fun SearchBar(
                 imageVector = Icons.Default.Search,
                 contentDescription = stringResource(R.string.search),
                 tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(end = dimensionResource(id = R.dimen.padding_small))
             )
             BasicTextField(
                 value = query,
