@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -92,9 +90,8 @@ fun AppNavigationDrawer(
                 modifier = modifier.width(dimensionResource(id = R.dimen.drawer_width))
             ) {
                 Column {
-                    AppHeader(
+                    DrawerHeader(
                         text = stringResource(id = R.string.app_name),
-                        image = Icons.Default.AccountCircle,
                         description = stringResource(R.string.account),
                         modifier = Modifier
                             .fillMaxWidth()

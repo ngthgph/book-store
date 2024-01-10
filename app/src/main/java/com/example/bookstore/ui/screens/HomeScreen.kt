@@ -1,5 +1,6 @@
 package com.example.bookstore.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -52,12 +53,14 @@ fun HomeScreen(
         }
         NavigationType.NAVIGATION_RAIL -> {
             AppNavigationRailScreen(
+                title = stringResource(id = R.string.app_name),
                 modifier = modifier
             ) {
             }
         }
         else -> {
             AppNavigationBarScreen(
+                title = stringResource(id = R.string.app_name),
                 modifier = modifier
             ) {
             }
@@ -85,6 +88,7 @@ fun AppNavigationDrawerScreen(
 
 @Composable
 fun AppNavigationRailScreen(
+    title: String,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -97,6 +101,8 @@ fun AppNavigationRailScreen(
         Column(
             modifier = modifier.weight(1f)
         ) {
+            AppHeader(text = title, description = title, onBack = {})
+            SearchBar(onSearch = {}, onClear = {}, isSearching = false)
             content()
         }
     }
@@ -104,6 +110,7 @@ fun AppNavigationRailScreen(
 
 @Composable
 fun AppNavigationBarScreen(
+    title: String,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -111,8 +118,11 @@ fun AppNavigationBarScreen(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = modifier.weight(1f)
+            modifier = modifier
+                .weight(1f)
         ) {
+            AppHeader(text = title, description = title, onBack = {})
+            SearchBar(onSearch = {}, onClear = {}, isSearching = false)
             content()
         }
         AppBottomNavigationBar(
@@ -124,24 +134,43 @@ fun AppNavigationBarScreen(
 }
 
 @Composable
-fun TopAppBar(
+fun AppHeader(
     text: String,
     description: String,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit
 ) {
-    AppHeader(
-        text = text,
-        image = Icons.Default.AccountCircle,
-        description = description,
-        modifier = modifier
-    )
+    BackHandler {
+        onBack()
+    }
+    Surface(
+//        shadowElevation = dimensionResource(id = R.dimen.elevation),
+        tonalElevation = dimensionResource(id = R.dimen.elevation),
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Text(
+                    text = text.uppercase(),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+            }
+            Image(imageVector = Icons.Default.AccountCircle, contentDescription = description)
+        }
+    }
 }
 
 @Composable
-fun AppHeader(
+fun DrawerHeader(
     text: String,
-    image: ImageVector,
     description: String,
     modifier: Modifier = Modifier,
 ) {
@@ -158,7 +187,7 @@ fun AppHeader(
                 text = text.uppercase(),
                 style = MaterialTheme.typography.headlineSmall
             )
-            Image(imageVector = image, contentDescription = description)
+            Image(imageVector = Icons.Default.AccountCircle, contentDescription = description)
         }
     }
 }
@@ -175,14 +204,19 @@ fun SearchBar(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
-        modifier = modifier,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
+        shadowElevation = dimensionResource(id = R.dimen.elevation),
         color = MaterialTheme.colorScheme.surface
     ) {
-        Row {
+        Row(
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_small))
+        ) {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = stringResource(R.string.search),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
             BasicTextField(
                 value = query,
@@ -200,10 +234,6 @@ fun SearchBar(
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(
-                        start = dimensionResource(id = R.dimen.padding_small),
-                        end = dimensionResource(id = R.dimen.padding_small)
-                    )
             )
             if(query.isNotEmpty() || isSearching) {
                 Icon(
@@ -229,3 +259,27 @@ fun SearchBarPreview() {
         SearchBar(onSearch = {}, onClear = {}, isSearching = false)
     }
 }
+
+@Preview
+@Composable
+fun AppHeaderPreview() {
+    BookStoreTheme {
+        AppHeader(
+            text = stringResource(id = R.string.app_name),
+            description = stringResource(id = R.string.app_name),
+            onBack = { /*TODO*/ })
+    }
+}
+
+@Preview
+@Composable
+fun DrawerHeaderPreview() {
+    BookStoreTheme {
+        DrawerHeader(
+            text = stringResource(id = R.string.app_name),
+            description = stringResource(id = R.string.app_name),
+            )
+    }
+}
+
+
