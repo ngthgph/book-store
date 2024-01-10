@@ -5,6 +5,8 @@
     <string name="favorite">Favorite</string>
     <string name="cart">Cart</string>
     <string name="categories">Categories</string>
+    <string name="category">Category</string>
+    <string name="book">Book</string>
     <string name="search">Search</string>
     <string name="clear">Clear</string>
 </resources>

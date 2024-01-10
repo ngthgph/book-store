@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.data.local.LocalScreenProvider
 import com.example.bookstore.data.model.Screen
-import com.example.bookstore.ui.screens.navigation.AppNavigationDrawer
+import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
-fun AppNavigationDrawerScreen(
+fun DrawerScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -24,5 +25,13 @@ fun AppNavigationDrawerScreen(
         ) {
             content()
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700)
+@Composable
+fun DrawerScreenPreview() {
+    BookStoreTheme {
+        DrawerScreen() {}
     }
 }
