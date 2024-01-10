@@ -46,7 +46,9 @@ fun AppBottomNavigationBar(
                         imageVector = item.icon,
                         contentDescription = stringResource(item.text)
                     )
-                }
+                },
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small),)
+
             )
         }
     }
@@ -69,7 +71,8 @@ fun AppNavigationRail(
                         imageVector = item.icon,
                         contentDescription = stringResource(item.text)
                     )
-                }
+                },
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
             )
         }
     }
@@ -97,10 +100,7 @@ fun AppNavigationDrawer(
                             .fillMaxWidth()
                     )
                     Column (
-                        modifier = Modifier.padding(
-                            vertical = dimensionResource(id = R.dimen.padding_medium),
-                            horizontal = dimensionResource(id = R.dimen.padding_small),
-                        )
+                        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small),)
                     ){
                         for (item in navigationItemList) {
                             NavigationDrawerItem(
