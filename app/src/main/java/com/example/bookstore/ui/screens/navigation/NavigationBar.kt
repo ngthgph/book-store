@@ -1,4 +1,4 @@
-package com.example.bookstore.ui.screens
+package com.example.bookstore.ui.screens.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +24,7 @@ import com.example.bookstore.R
 import com.example.bookstore.data.local.LocalScreenProvider
 import com.example.bookstore.data.model.NavigationItem
 import com.example.bookstore.data.model.Screen
+import com.example.bookstore.ui.screens.home.DrawerHeader
 
 @Composable
 fun AppBottomNavigationBar(
