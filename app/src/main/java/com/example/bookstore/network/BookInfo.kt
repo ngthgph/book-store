@@ -25,5 +25,6 @@ data class SaleInfo(
 )
 @Serializable
 data class RetailPrice(
-    val amount: String
+    val amount: String,
+    val currencyCode: String,
 )

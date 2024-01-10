@@ -8,6 +8,7 @@ data class Book(
     val pageCount: Int,
     val imageLinks: String,
     val retailPrice: Int,
+    val currencyCode: String,
     val rating: Int = 0,
     val note: String = "",
     val favorite: Boolean = false
