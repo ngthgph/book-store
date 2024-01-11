@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
+import com.example.bookstore.data.model.Screen
 import com.example.bookstore.ui.screens.home.SearchBar
 import com.example.bookstore.ui.screens.navigation.BottomBarScreen
 import com.example.bookstore.ui.screens.navigation.DrawerScreen
@@ -16,12 +17,14 @@ import com.example.bookstore.ui.utils.NavigationType
 @Composable
 fun BookDetailScreen(
     navigationType: NavigationType,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (navigationType) {
         NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
             DrawerScreen (
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 Row {
                     BookDetailContent()
@@ -31,7 +34,8 @@ fun BookDetailScreen(
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 BookDetailContent()
             }
@@ -39,7 +43,8 @@ fun BookDetailScreen(
         else -> {
             BottomBarScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 BookDetailContent()
             }
@@ -58,14 +63,14 @@ fun BookDetailContent(
 @Composable
 fun CompactBookScreenPreview() {
     BookStoreTheme {
-        BookDetailScreen(navigationType = NavigationType.BOTTOM_NAVIGATION)
+        BookDetailScreen(navigationType = NavigationType.BOTTOM_NAVIGATION, onIconClick = {})
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumBookScreenPreview() {
     BookStoreTheme {
-        BookDetailScreen(navigationType = NavigationType.NAVIGATION_RAIL)
+        BookDetailScreen(navigationType = NavigationType.NAVIGATION_RAIL, onIconClick = {})
     }
 }
 
@@ -73,6 +78,6 @@ fun MediumBookScreenPreview() {
 @Composable
 fun ExpandedBookScreenPreview() {
     BookStoreTheme {
-        BookDetailScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER)
+        BookDetailScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER, onIconClick = {})
     }
 }

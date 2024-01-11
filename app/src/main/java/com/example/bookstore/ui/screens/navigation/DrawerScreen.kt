@@ -14,13 +14,13 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 @Composable
 fun DrawerScreen(
     modifier: Modifier = Modifier,
+    onIconClick: (Screen) -> Unit,
     content: @Composable () -> Unit
 ) {
     Scaffold() {
         AppNavigationDrawer(
             currentScreen = Screen.Home,
-            onPressed = {},
-            navigationItemList = LocalScreenProvider.screenList,
+            onIconClick = onIconClick,
             modifier = modifier.padding(it)
         ) {
             Column(
@@ -36,6 +36,6 @@ fun DrawerScreen(
 @Composable
 fun DrawerScreenPreview() {
     BookStoreTheme {
-        DrawerScreen() {}
+        DrawerScreen(onIconClick = {}) {}
     }
 }

@@ -2,6 +2,7 @@ package com.example.bookstore.ui.screens.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ fun AppHeader(
     text: String,
     description: String,
     onBack: () -> Unit,
+    onAccountClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
@@ -54,7 +56,7 @@ fun AppHeader(
             Image(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = description,
-//                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                modifier = Modifier.clickable (onClick = onAccountClick)
                 )
         }
     }
@@ -64,6 +66,7 @@ fun AppHeader(
 fun DrawerHeader(
     text: String,
     description: String,
+    onAccountClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -82,6 +85,7 @@ fun DrawerHeader(
             Image(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = description,
+                modifier = Modifier.clickable (onClick = onAccountClick)
 //                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
         }
@@ -95,7 +99,9 @@ fun AppHeaderPreview() {
         AppHeader(
             text = stringResource(id = R.string.app_name),
             description = stringResource(id = R.string.app_name),
-            onBack = { /*TODO*/ })
+            onBack = { /*TODO*/ },
+            onAccountClick = {}
+        )
     }
 }
 
@@ -106,6 +112,7 @@ fun DrawerHeaderPreview() {
         DrawerHeader(
             text = stringResource(id = R.string.app_name),
             description = stringResource(id = R.string.app_name),
+            onAccountClick = {}
         )
     }
 }

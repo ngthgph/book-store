@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
+import com.example.bookstore.data.model.Screen
 import com.example.bookstore.ui.screens.home.HomeContent
 import com.example.bookstore.ui.screens.home.SearchBar
 import com.example.bookstore.ui.screens.navigation.BottomBarScreen
@@ -17,12 +18,14 @@ import com.example.bookstore.ui.utils.NavigationType
 @Composable
 fun AccountScreen(
     navigationType: NavigationType,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (navigationType) {
     NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
         DrawerScreen (
-            modifier = modifier
+            modifier = modifier,
+            onIconClick = onIconClick
         ) {
             Row {
                 AccountContent()
@@ -32,7 +35,8 @@ fun AccountScreen(
     NavigationType.NAVIGATION_RAIL -> {
         RailScreen(
             title = stringResource(id = R.string.app_name),
-            modifier = modifier
+            modifier = modifier,
+            onIconClick = onIconClick
         ) {
             AccountContent()
         }
@@ -40,7 +44,8 @@ fun AccountScreen(
     else -> {
         BottomBarScreen(
             title = stringResource(id = R.string.app_name),
-            modifier = modifier
+            modifier = modifier,
+            onIconClick = onIconClick
         ) {
             AccountContent()
         }
@@ -59,14 +64,14 @@ fun AccountContent(
 @Composable
 fun CompactAccountScreenPreview() {
     BookStoreTheme {
-        AccountScreen(navigationType = NavigationType.BOTTOM_NAVIGATION)
+        AccountScreen(navigationType = NavigationType.BOTTOM_NAVIGATION, onIconClick = {})
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumAccountScreenPreview() {
     BookStoreTheme {
-        AccountScreen(navigationType = NavigationType.NAVIGATION_RAIL)
+        AccountScreen(navigationType = NavigationType.NAVIGATION_RAIL, onIconClick = {})
     }
 }
 
@@ -74,6 +79,6 @@ fun MediumAccountScreenPreview() {
 @Composable
 fun ExpandedAccountScreenPreview() {
     BookStoreTheme {
-        AccountScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER)
+        AccountScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER, onIconClick = {})
     }
 }

@@ -17,18 +17,23 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 fun BottomBarScreen(
     title: String,
     modifier: Modifier = Modifier,
+    onIconClick: (Screen) -> Unit,
     content: @Composable () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppHeader(text = title, description = title, onBack = {})
+            AppHeader(
+                text = title,
+                description = title,
+                onBack = {},
+                onAccountClick = { onIconClick(Screen.Home) }
+            )
         },
         bottomBar = {
             AppBottomNavigationBar(
                 currentScreen = Screen.Home,
-                onPressed = {},
-                navigationItemList = LocalScreenProvider.screenList
+                onIconClick = onIconClick,
             )
         }
     ) {
@@ -43,6 +48,9 @@ fun BottomBarScreen(
 @Composable
 fun BottomBarScreenPreview() {
     BookStoreTheme {
-        BottomBarScreen(title = stringResource(id = R.string.app_name)) {}
+        BottomBarScreen(
+            onIconClick = {},
+            title = stringResource(id = R.string.app_name)
+        ) {}
     }
 }

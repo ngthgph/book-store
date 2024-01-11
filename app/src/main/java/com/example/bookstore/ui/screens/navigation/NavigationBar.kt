@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
@@ -18,7 +17,6 @@ import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,23 +24,22 @@ import com.example.bookstore.R
 import com.example.bookstore.data.local.LocalScreenProvider
 import com.example.bookstore.data.model.NavigationItem
 import com.example.bookstore.data.model.Screen
-import com.example.bookstore.ui.screens.navigation.DrawerHeader
 import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
 fun AppBottomNavigationBar(
     currentScreen: Screen,
-    onPressed: (Screen) -> Unit,
-    navigationItemList: List<NavigationItem>,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val navigationItemList = LocalScreenProvider.screenList
     NavigationBar(
         modifier = modifier
     ) {
         for (item in navigationItemList) {
             NavigationBarItem(
                 selected = currentScreen == item.screen,
-                onClick = { onPressed(item.screen) },
+                onClick = { onIconClick(item.screen) },
                 icon = {
                     Icon(
                         imageVector = item.icon,
@@ -59,15 +56,15 @@ fun AppBottomNavigationBar(
 @Composable
 fun AppNavigationRail(
     currentScreen: Screen,
-    onPressed: (Screen) -> Unit,
-    navigationItemList: List<NavigationItem>,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val navigationItemList = LocalScreenProvider.screenList
     NavigationRail(modifier = modifier) {
         for(item in navigationItemList) {
             NavigationRailItem(
                 selected = currentScreen == item.screen,
-                onClick = { onPressed(item.screen) },
+                onClick = { onIconClick(item.screen) },
                 icon = {
                     Icon(
                         imageVector = item.icon,
@@ -83,11 +80,11 @@ fun AppNavigationRail(
 @Composable
 fun AppNavigationDrawer(
     currentScreen: Screen,
-    onPressed: (Screen) -> Unit,
-    navigationItemList: List<NavigationItem>,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val navigationItemList = LocalScreenProvider.screenList
     PermanentNavigationDrawer(
         drawerContent = {
             PermanentDrawerSheet(
@@ -101,6 +98,7 @@ fun AppNavigationDrawer(
                     DrawerHeader(
                         text = stringResource(id = R.string.app_name),
                         description = stringResource(R.string.account),
+                        onAccountClick = { onIconClick(Screen.Account) },
                         modifier = Modifier
                             .fillMaxWidth()
                     )
@@ -116,7 +114,7 @@ fun AppNavigationDrawer(
                                     )
                                 },
                                 selected = currentScreen == item.screen,
-                                onClick = { onPressed(item.screen) },
+                                onClick = { onIconClick(item.screen) },
                                 icon = {
                                     Icon(
                                         imageVector = item.icon,
@@ -142,8 +140,7 @@ fun NavigationBarPreview() {
     BookStoreTheme {
         AppBottomNavigationBar(
             currentScreen = Screen.Home,
-            onPressed = {},
-            navigationItemList = LocalScreenProvider.screenList
+            onIconClick = {}
         )
     }
 }
@@ -155,8 +152,7 @@ fun NavigationRailPreview() {
     BookStoreTheme {
         AppNavigationRail(
             currentScreen = Screen.Home,
-            onPressed = {},
-            navigationItemList = LocalScreenProvider.screenList
+            onIconClick = {}
         )
     }
 }
@@ -167,8 +163,7 @@ fun NavigationDrawerPreview() {
     BookStoreTheme {
         AppNavigationDrawer(
             currentScreen = Screen.Home,
-            onPressed = {},
-            navigationItemList = LocalScreenProvider.screenList
+            onIconClick = {}
         ) {
         }
     }

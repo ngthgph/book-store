@@ -19,6 +19,7 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 fun RailScreen(
     title: String,
     modifier: Modifier = Modifier,
+    onIconClick: (Screen) -> Unit,
     content: @Composable () -> Unit
 ) {
     Scaffold() {
@@ -27,13 +28,17 @@ fun RailScreen(
         ) {
             AppNavigationRail(
                 currentScreen = Screen.Home,
-                onPressed = {},
-                navigationItemList = LocalScreenProvider.screenList
+                onIconClick = onIconClick
             )
             Column(
                 modifier = modifier.weight(1f)
             ) {
-                AppHeader(text = title, description = title, onBack = {})
+                AppHeader(
+                    text = title,
+                    description = title,
+                    onBack = {},
+                    onAccountClick = { onIconClick(Screen.Account) }
+                )
 
                 content()
             }
@@ -45,6 +50,6 @@ fun RailScreen(
 @Composable
 fun RailScreenPreview() {
     BookStoreTheme {
-        RailScreen(title = stringResource(id = R.string.app_name)) {}
+        RailScreen(title = stringResource(id = R.string.app_name), onIconClick = {}) {}
     }
 }

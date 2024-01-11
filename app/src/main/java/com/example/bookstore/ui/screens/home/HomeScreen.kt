@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
+import com.example.bookstore.data.model.Screen
 import com.example.bookstore.ui.screens.navigation.BottomBarScreen
 import com.example.bookstore.ui.screens.navigation.DrawerScreen
 import com.example.bookstore.ui.screens.navigation.RailScreen
@@ -15,12 +16,14 @@ import com.example.bookstore.ui.utils.NavigationType
 @Composable
 fun HomeScreen(
     navigationType: NavigationType,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (navigationType) {
         NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
             DrawerScreen (
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 Row {
                     HomeContent()
@@ -30,7 +33,8 @@ fun HomeScreen(
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 HomeContent()
             }
@@ -38,7 +42,8 @@ fun HomeScreen(
         else -> {
             BottomBarScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 HomeContent()
             }
@@ -57,14 +62,14 @@ fun HomeContent(
 @Composable
 fun CompactHomeScreenPreview() {
     BookStoreTheme {
-        HomeScreen(navigationType = NavigationType.BOTTOM_NAVIGATION)
+        HomeScreen(navigationType = NavigationType.BOTTOM_NAVIGATION, onIconClick = {})
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumHomeScreenPreview() {
     BookStoreTheme {
-        HomeScreen(navigationType = NavigationType.NAVIGATION_RAIL)
+        HomeScreen(navigationType = NavigationType.NAVIGATION_RAIL, onIconClick = {})
     }
 }
 
@@ -72,6 +77,6 @@ fun MediumHomeScreenPreview() {
 @Composable
 fun ExpandedHomeScreenPreview() {
     BookStoreTheme {
-        HomeScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER)
+        HomeScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER, onIconClick = {})
     }
 }

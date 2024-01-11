@@ -51,37 +51,43 @@ fun BookStoreApp(
         composable(Screen.Home.name) {
             HomeScreen(
                 navigationType = navigationType,
+                onIconClick = { navController.navigate(it.name) },
                 modifier = modifier
             )
         }
         composable(Screen.Favorite.name) {
             FavoriteScreen(
                 navigationType = navigationType,
+                onIconClick = { navController.navigate(it.name) },
                 modifier = modifier
             )
         }
         composable(Screen.Cart.name) {
             CartScreen(
                 navigationType = navigationType,
+                onIconClick = { navController.navigate(it.name) },
                 modifier = modifier
             )
         }
         composable(Screen.Categories.name) {
             CategoriesScreen(
                 navigationType = navigationType,
-                modifier = modifier
+                onIconClick = { navController.navigate(it.name) },
+                modifier = modifier,
             )
         }
         composable(Screen.Category.name) {
             CategoryScreen(
                 navigationType = navigationType,
-                modifier = modifier
+                onIconClick = { navController.navigate(it.name) },
+                modifier = modifier,
             )
         }
         composable(Screen.Book.name) {
             BookDetailScreen(
                 navigationType = navigationType,
-                modifier = modifier
+                onIconClick = { navController.navigate(it.name) },
+                modifier = modifier,
             )
         }
     }

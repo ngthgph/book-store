@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
+import com.example.bookstore.data.model.Screen
 import com.example.bookstore.ui.screens.account.AccountScreen
 import com.example.bookstore.ui.screens.home.SearchBar
 import com.example.bookstore.ui.screens.navigation.BottomBarScreen
@@ -17,12 +18,14 @@ import com.example.bookstore.ui.utils.NavigationType
 @Composable
 fun CategoryScreen(
     navigationType: NavigationType,
+    onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (navigationType) {
         NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
             DrawerScreen (
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 Row {
                     CategoryContent()
@@ -32,7 +35,8 @@ fun CategoryScreen(
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 CategoryContent()
             }
@@ -40,7 +44,8 @@ fun CategoryScreen(
         else -> {
             BottomBarScreen(
                 title = stringResource(id = R.string.app_name),
-                modifier = modifier
+                modifier = modifier,
+                onIconClick = onIconClick
             ) {
                 CategoryContent()
             }
@@ -59,14 +64,14 @@ fun CategoryContent(
 @Composable
 fun CompactCategoryScreenPreview() {
     BookStoreTheme {
-        CategoryScreen(navigationType = NavigationType.BOTTOM_NAVIGATION)
+        CategoryScreen(navigationType = NavigationType.BOTTOM_NAVIGATION, onIconClick = {})
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumCategoryScreenPreview() {
     BookStoreTheme {
-        CategoryScreen(navigationType = NavigationType.NAVIGATION_RAIL)
+        CategoryScreen(navigationType = NavigationType.NAVIGATION_RAIL, onIconClick = {})
     }
 }
 
@@ -74,6 +79,6 @@ fun MediumCategoryScreenPreview() {
 @Composable
 fun ExpandedCategoryScreenPreview() {
     BookStoreTheme {
-        CategoryScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER)
+        CategoryScreen(navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER, onIconClick = {})
     }
 }

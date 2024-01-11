@@ -9,5 +9,6 @@ enum class Screen(@StringRes val title: Int){
     Cart(title = R.string.cart),
     Categories(title = R.string.categories),
     Category(title = R.string.category),
-    Book(title = R.string.book)
+    Book(title = R.string.book),
+    Account(title = R.string.account)
 }
