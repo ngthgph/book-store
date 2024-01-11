@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
-import com.example.bookstore.data.model.Screen
+import com.example.bookstore.ui.utils.Screen
 import com.example.bookstore.ui.screens.navigation.BottomBarScreen
 import com.example.bookstore.ui.screens.navigation.DrawerScreen
 import com.example.bookstore.ui.screens.navigation.RailScreen

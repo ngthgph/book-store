@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -42,11 +37,13 @@ import coil.request.ImageRequest
 import com.example.bookstore.R
 import com.example.bookstore.data.model.Book
 import com.example.bookstore.ui.theme.BookStoreTheme
+import com.example.bookstore.ui.utils.Function
 
 @Composable
 fun BooksGrid(
     modifier: Modifier = Modifier,
-    bookList: List<Book>
+    bookList: List<Book>,
+    onButtonClick: (Function) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(id = R.dimen.grid_column)),
@@ -56,6 +53,7 @@ fun BooksGrid(
         items(bookList) {
             BooksCard(
                 book = it,
+                onButtonClick = onButtonClick,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_extra_small))
                     .fillMaxWidth()
@@ -69,6 +67,7 @@ fun BooksGrid(
 fun BooksCard(
     modifier: Modifier = Modifier,
     book: Book,
+    onButtonClick: (Function) -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(dimensionResource(id = R.dimen.elevation)),
@@ -110,52 +109,46 @@ fun BooksCard(
                 )
             }
             Divider(thickness = dimensionResource(id = R.dimen.divider_thickness))
-            CardButtonRow()
+            CardButtonRow(onButtonClick = onButtonClick)
         }
     }
 }
 @Composable
 fun CardButtonRow(
     modifier: Modifier = Modifier,
+    onButtonClick: (Function) -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CardButton(
-            icon = Icons.Default.Favorite,
-            function = stringResource(id = R.string.favorite)
-        )
-        CardButton(
-            icon = Icons.Default.ShoppingCart,
-            function = stringResource(id = R.string.cart)
-        )
-        CardButton(
-            icon = Icons.Default.Share,
-            function = stringResource(id = R.string.share),
-        )
+        for (function in enumValues<Function>()) {
+            CardButton(
+                function = function,
+                modifier = Modifier.weight(1f),
+                onButtonClick = onButtonClick
+            )
+        }
     }
 }
 @Composable
 fun CardButton(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
-    function: String,
+    function: Function,
+    onButtonClick: (Function) -> Unit
 ) {
     Button(
         modifier = modifier,
-        onClick = {  },
+        onClick = { onButtonClick(function) },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.primary
         ),
-//        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_extra_small))
     ) {
         Icon(
-            imageVector = icon,
-            contentDescription = function,
-            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_small))
+            imageVector = function.icon,
+            contentDescription = function.name,
         )
     }
 }
@@ -193,7 +186,7 @@ fun BookGridPreview() {
             currencyCode = "VND"
         )
         val mockData = List(10){book}
-        BooksGrid(bookList = mockData)
+        BooksGrid(bookList = mockData, onButtonClick = {})
     }
 }
 
@@ -212,6 +205,7 @@ fun CardPreview() {
         )
         BooksCard(
             book = book,
+            onButtonClick = {}
         )
     }
 }

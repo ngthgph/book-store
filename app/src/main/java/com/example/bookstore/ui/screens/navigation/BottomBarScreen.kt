@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
-import com.example.bookstore.data.local.LocalScreenProvider
-import com.example.bookstore.data.model.Screen
-import com.example.bookstore.ui.screens.navigation.AppHeader
+import com.example.bookstore.ui.utils.Screen
 import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable

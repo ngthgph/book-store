@@ -2,6 +2,7 @@ package com.example.bookstore.data.model
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.bookstore.ui.utils.Screen
 
 data class NavigationItem(
     val screen: Screen,

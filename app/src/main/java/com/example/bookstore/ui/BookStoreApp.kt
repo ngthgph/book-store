@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bookstore.data.model.Screen
+import com.example.bookstore.ui.utils.Screen
 import com.example.bookstore.ui.screens.book.BookDetailScreen
 import com.example.bookstore.ui.screens.cart.CartScreen
 import com.example.bookstore.ui.screens.categories.CategoriesScreen
