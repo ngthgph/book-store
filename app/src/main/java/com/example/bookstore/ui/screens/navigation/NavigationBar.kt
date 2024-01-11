@@ -1,10 +1,12 @@
 package com.example.bookstore.ui.screens.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
@@ -25,6 +27,7 @@ import com.example.bookstore.data.local.LocalScreenProvider
 import com.example.bookstore.data.model.NavigationItem
 import com.example.bookstore.data.model.Screen
 import com.example.bookstore.ui.screens.home.DrawerHeader
+import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
 fun AppBottomNavigationBar(
@@ -88,9 +91,13 @@ fun AppNavigationDrawer(
     PermanentNavigationDrawer(
         drawerContent = {
             PermanentDrawerSheet(
-                modifier = modifier.width(dimensionResource(id = R.dimen.drawer_width))
+                modifier = modifier
+                    .width(dimensionResource(id = R.dimen.drawer_width))
+                    .background(MaterialTheme.colorScheme.inverseOnSurface)
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                ) {
                     DrawerHeader(
                         text = stringResource(id = R.string.app_name),
                         description = stringResource(R.string.account),
@@ -113,13 +120,13 @@ fun AppNavigationDrawer(
                                 icon = {
                                     Icon(
                                         imageVector = item.icon,
-                                        contentDescription = stringResource(item.text)
+                                        contentDescription = stringResource(item.text),
+//                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 },
-                                colors = NavigationDrawerItemDefaults.colors(
-                                    unselectedContainerColor = Color.Transparent
+//                                colors = NavigationDrawerItemDefaults.colors(
+//                                    unselectedContainerColor = Color.Transparent
                                 )
-                            )
                         }
                     }
                 }
@@ -132,31 +139,37 @@ fun AppNavigationDrawer(
 @Preview
 @Composable
 fun NavigationBarPreview() {
-    AppBottomNavigationBar(
-        currentScreen = Screen.Home,
-        onPressed = {},
-        navigationItemList = LocalScreenProvider.screenList
-    )
+    BookStoreTheme {
+        AppBottomNavigationBar(
+            currentScreen = Screen.Home,
+            onPressed = {},
+            navigationItemList = LocalScreenProvider.screenList
+        )
+    }
 }
 
 
 @Preview
 @Composable
 fun NavigationRailPreview() {
-    AppNavigationRail(
-        currentScreen = Screen.Home,
-        onPressed = {},
-        navigationItemList = LocalScreenProvider.screenList
-    )
+    BookStoreTheme {
+        AppNavigationRail(
+            currentScreen = Screen.Home,
+            onPressed = {},
+            navigationItemList = LocalScreenProvider.screenList
+        )
+    }
 }
 
 @Preview
 @Composable
 fun NavigationDrawerPreview() {
-    AppNavigationDrawer(
-        currentScreen = Screen.Home,
-        onPressed = {},
-        navigationItemList = LocalScreenProvider.screenList
-    ) {
+    BookStoreTheme {
+        AppNavigationDrawer(
+            currentScreen = Screen.Home,
+            onPressed = {},
+            navigationItemList = LocalScreenProvider.screenList
+        ) {
+        }
     }
 }

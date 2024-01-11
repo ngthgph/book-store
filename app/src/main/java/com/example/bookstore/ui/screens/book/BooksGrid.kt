@@ -1,6 +1,5 @@
-package com.example.bookstore.ui.screens.home
+package com.example.bookstore.ui.screens.book
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,31 +36,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookstore.R
 import com.example.bookstore.data.model.Book
-import com.example.bookstore.ui.BookUiState
 import com.example.bookstore.ui.theme.BookStoreTheme
-import org.jetbrains.annotations.Async
 
 @Composable
 fun BooksGrid(
-    uiState: BookUiState,
-    modifier: Modifier = Modifier,
-    onSelect: (Book) -> Unit,
-    retryAction: () -> Unit,
-    ) {
-    when(uiState) {
-        is BookUiState.Loading -> LoadingContent()
-        is BookUiState.Success -> BooksGridContent(bookList = uiState.books)
-        is BookUiState.Error -> ErrorContent(retryAction = retryAction)
-    }
-}
-@Composable
-fun BooksGridContent(
     modifier: Modifier = Modifier,
     bookList: List<Book>
 ) {
@@ -161,6 +144,7 @@ fun CardButton(
     function: String,
 ) {
     Button(
+        modifier = modifier,
         onClick = {  },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
@@ -193,41 +177,7 @@ fun BookPhoto(
         modifier = modifier.fillMaxSize()
     )
 }
-@Composable
-fun LoadingContent(
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier.size(dimensionResource(id = R.dimen.image_size_large)),
-        painter = painterResource(id = R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading)
-    )
-}
-@Composable
-fun ErrorContent(
-    retryAction: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_connection_error),
-            contentDescription = ""
-        )
-        Text(
-            text = stringResource(R.string.fail_to_load),
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
-        )
-        Button(onClick = retryAction) {
-            Text(
-                text = stringResource(R.string.retry)
-            )
-        }
-    }
-}
+
 
 @Preview
 @Composable
@@ -243,7 +193,7 @@ fun BookGridPreview() {
             currencyCode = "VND"
         )
         val mockData = List(10){book}
-        BooksGridContent(bookList = mockData)
+        BooksGrid(bookList = mockData)
     }
 }
 
@@ -263,19 +213,5 @@ fun CardPreview() {
         BooksCard(
             book = book,
         )
-    }
-}
-@Preview
-@Composable
-fun LoadingPreview() {
-    BookStoreTheme {
-        LoadingContent()
-    }
-}
-@Preview
-@Composable
-fun ErrorPreview() {
-    BookStoreTheme {
-        ErrorContent(retryAction = {})
     }
 }

@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.bookstore.data.model.Screen
-import com.example.bookstore.ui.screens.book.BookScreen
+import com.example.bookstore.ui.screens.book.BookDetailScreen
 import com.example.bookstore.ui.screens.cart.CartScreen
 import com.example.bookstore.ui.screens.categories.CategoriesScreen
 import com.example.bookstore.ui.screens.categories.CategoryScreen
@@ -79,7 +79,7 @@ fun BookStoreApp(
             )
         }
         composable(Screen.Book.name) {
-            BookScreen(
+            BookDetailScreen(
                 navigationType = navigationType,
                 modifier = modifier
             )
