@@ -26,7 +26,7 @@ import com.example.bookstore.R
 import com.example.bookstore.data.local.LocalScreenProvider
 import com.example.bookstore.data.model.NavigationItem
 import com.example.bookstore.data.model.Screen
-import com.example.bookstore.ui.screens.home.DrawerHeader
+import com.example.bookstore.ui.screens.navigation.DrawerHeader
 import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable

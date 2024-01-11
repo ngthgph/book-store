@@ -1,4 +1,4 @@
-package com.example.bookstore.ui.screens.home
+package com.example.bookstore.ui.screens.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
