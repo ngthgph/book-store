@@ -15,19 +15,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
-import com.example.bookstore.ui.BookUiState
 import com.example.bookstore.ui.screens.book.BooksGrid
 import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
 fun NetworkBooksGrid(
-    uiState: BookUiState,
+    uiState: NetworkBookUiState,
     retryAction: () -> Unit,
 ) {
     when(uiState) {
-        is BookUiState.Loading -> LoadingContent()
-        is BookUiState.Success -> BooksGrid(bookList = uiState.books)
-        is BookUiState.Error -> ErrorContent(retryAction = retryAction)
+        is NetworkBookUiState.Loading -> LoadingContent()
+        is NetworkBookUiState.Success ->
+            BooksGrid(bookList = uiState.books, onCardClick = {}, onButtonClick = {})
+        is NetworkBookUiState.Error -> ErrorContent(retryAction = retryAction)
     }
 }
 
