@@ -33,6 +33,7 @@ fun AppBottomNavigationBar(
 ) {
     val navigationItemList = LocalScreenProvider.screenList
     NavigationBar(
+        containerColor = MaterialTheme.colorScheme.onPrimary,
         modifier = modifier
     ) {
         for (item in navigationItemList) {
@@ -59,7 +60,10 @@ fun AppNavigationRail(
     modifier: Modifier = Modifier
 ) {
     val navigationItemList = LocalScreenProvider.screenList
-    NavigationRail(modifier = modifier) {
+    NavigationRail(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.onPrimary
+    ) {
         for(item in navigationItemList) {
             NavigationRailItem(
                 selected = currentScreen == item.screen,
@@ -87,6 +91,7 @@ fun AppNavigationDrawer(
     PermanentNavigationDrawer(
         drawerContent = {
             PermanentDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = modifier
                     .width(dimensionResource(id = R.dimen.drawer_width))
                     .background(MaterialTheme.colorScheme.inverseOnSurface)
