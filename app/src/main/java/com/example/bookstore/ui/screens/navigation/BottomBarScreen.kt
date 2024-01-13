@@ -2,7 +2,6 @@ package com.example.bookstore.ui.screens.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +16,7 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
 fun BottomBarScreen(
+    currentScreen: Screen,
     uiState: BookStoreUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
@@ -27,13 +27,15 @@ fun BottomBarScreen(
         modifier = modifier,
         topBar = {
             AppHeaderBar(
+                currentScreen = currentScreen,
                 uiState = uiState,
                 onIconClick = onIconClick,
-                onBack = onBack)
+                onBack = onBack
+            )
         },
         bottomBar = {
             AppBottomNavigationBar(
-                currentScreen = uiState.currentScreen,
+                currentScreen = currentScreen,
                 onIconClick = onIconClick,
             )
         }
@@ -54,6 +56,7 @@ fun BottomBarScreen(
 fun BookBottomBarScreenPreview() {
     BookStoreTheme {
         BottomBarScreen(
+            currentScreen = Screen.Book,
             MockData.bookUiState,
             onIconClick = {},
             onBack = {}
@@ -65,6 +68,7 @@ fun BookBottomBarScreenPreview() {
 fun HomeBottomBarScreenPreview() {
     BookStoreTheme {
         BottomBarScreen(
+            currentScreen = Screen.Home,
             MockData.homeUiState,
             onIconClick = {},
             onBack = {}
@@ -76,6 +80,7 @@ fun HomeBottomBarScreenPreview() {
 fun CategoryBottomBarScreenPreview() {
     BookStoreTheme {
         BottomBarScreen(
+            currentScreen = Screen.Category,
             MockData.categoryUiState,
             onIconClick = {},
             onBack = {}

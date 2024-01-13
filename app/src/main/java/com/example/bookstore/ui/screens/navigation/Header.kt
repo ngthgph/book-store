@@ -32,12 +32,13 @@ import com.example.bookstore.ui.utils.Screen
 
 @Composable
 fun AppHeaderBar(
+    currentScreen: Screen,
     uiState: BookStoreUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (uiState.currentScreen) {
+    when (currentScreen) {
         Screen.Home -> {
             HomeHeader(
                 account = uiState.account?.name?: stringResource(id = R.string.account),
@@ -61,7 +62,7 @@ fun AppHeaderBar(
         }
         else -> {
             BookHeader(
-                title = uiState.currentScreen.name,
+                title = currentScreen.name,
                 onBack = onBack,
                 modifier = modifier
             )

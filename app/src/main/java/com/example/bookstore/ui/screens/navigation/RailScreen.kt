@@ -17,6 +17,7 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
 fun RailScreen(
+    currentScreen: Screen,
     uiState: BookStoreUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
@@ -30,7 +31,7 @@ fun RailScreen(
                 .padding(it)
         ) {
             AppNavigationRail(
-                currentScreen = uiState.currentScreen,
+                currentScreen = currentScreen,
                 onIconClick = onIconClick
             )
             Column(
@@ -40,6 +41,7 @@ fun RailScreen(
                     .fillMaxSize()
             ) {
                 AppHeaderBar(
+                    currentScreen = currentScreen,
                     uiState = uiState,
                     onIconClick = onIconClick,
                     onBack = onBack)
@@ -54,7 +56,10 @@ fun RailScreen(
 fun RailScreenPreview() {
     BookStoreTheme {
         RailScreen(
+            currentScreen = Screen.Categories,
             uiState = MockData.categoriesUiState,
-            onIconClick = {}, onBack = { /*TODO*/ }) {}
+            onIconClick = {},
+            onBack = { /*TODO*/ }
+        ) {}
     }
 }

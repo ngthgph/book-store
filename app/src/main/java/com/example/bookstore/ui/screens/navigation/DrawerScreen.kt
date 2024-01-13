@@ -20,6 +20,7 @@ import com.example.bookstore.ui.utils.NavigationType
 
 @Composable
 fun DrawerScreen(
+    currentScreen: Screen,
     uiState: BookStoreUiState,
     onIconClick: (Screen) -> Unit,
     onButtonClick: (Function) -> Unit,
@@ -28,7 +29,7 @@ fun DrawerScreen(
     content: @Composable () -> Unit
 ) {
     AppNavigationDrawer(
-        currentScreen = uiState.currentScreen,
+        currentScreen = currentScreen,
         onIconClick = onIconClick,
         modifier = modifier.padding()
     ) {
@@ -37,8 +38,9 @@ fun DrawerScreen(
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
                 .fillMaxSize()
         ) {
-            if(uiState.currentScreen != Screen.Home) {
+            if(currentScreen != Screen.Home) {
                 AppHeaderBar(
+                    currentScreen = currentScreen,
                     uiState = uiState,
                     onIconClick = onIconClick,
                     onBack = onBack
@@ -74,6 +76,7 @@ fun DrawerScreen(
 fun DrawerScreenPreview() {
     BookStoreTheme {
         DrawerScreen(
+            currentScreen = Screen.Book,
             uiState = MockData.bookUiState,
             onButtonClick = {},
             onBack = {},
@@ -87,6 +90,7 @@ fun DrawerScreenPreview() {
 fun HomeDrawerScreenPreview() {
     BookStoreTheme {
         DrawerScreen(
+            currentScreen = Screen.Home,
             uiState = MockData.homeUiState,
             onButtonClick = {},
             onBack = {},

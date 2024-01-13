@@ -6,12 +6,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.bookstore.data.model.BookStoreUiState
+import com.example.bookstore.ui.screens.account.AccountScreen
 import com.example.bookstore.ui.screens.book.BookDetailScreen
 import com.example.bookstore.ui.screens.cart.CartScreen
 import com.example.bookstore.ui.screens.categories.CategoriesScreen
 import com.example.bookstore.ui.screens.categories.CategoryScreen
 import com.example.bookstore.ui.screens.favorite.FavoriteScreen
 import com.example.bookstore.ui.screens.home.HomeScreen
+import com.example.bookstore.ui.utils.Function
 import com.example.bookstore.ui.utils.NavigationType
 import com.example.bookstore.ui.utils.Screen
 
@@ -20,6 +22,7 @@ fun BookStoreNavHost(
     navigationType: NavigationType,
     uiState: BookStoreUiState,
     navController: NavHostController,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -60,7 +63,13 @@ fun BookStoreNavHost(
             BookDetailScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onButtonClick = { },
+                onButtonClick = onButtonClick,
+                modifier = modifier
+            )
+        }
+        composable(Screen.Account.name) {
+            AccountScreen(
+                uiState = uiState,
                 modifier = modifier
             )
         }

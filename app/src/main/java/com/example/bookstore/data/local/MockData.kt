@@ -26,11 +26,11 @@ object MockData {
         name = "Emery Cremin",
         email = "emery@gmail.com",
         description = "Want to learn more from books universe")
-    val homeUiState = BookStoreUiState(null, null, Screen.Home, account)
-    val favoriteUiState = BookStoreUiState(category, book, Screen.Favorite, account)
-    val cartUiState = BookStoreUiState(category, book, Screen.Cart, account)
-    val categoriesUiState = BookStoreUiState(null, book, Screen.Categories, account)
-    val categoryUiState = BookStoreUiState(category, book, Screen.Category, account)
-    val bookUiState = BookStoreUiState(category, book, Screen.Book, account)
-    val accountUiState = BookStoreUiState(category, book, Screen.Account, account)
+    val homeUiState = BookStoreUiState(null, null, account)
+    val favoriteUiState = BookStoreUiState(category, book, account)
+    val cartUiState = BookStoreUiState(category, book, account)
+    val categoriesUiState = BookStoreUiState(null, book, account)
+    val categoryUiState = BookStoreUiState(category, book, account)
+    val bookUiState = BookStoreUiState(category, book, account)
+    val accountUiState = BookStoreUiState(category, book, account)
 }

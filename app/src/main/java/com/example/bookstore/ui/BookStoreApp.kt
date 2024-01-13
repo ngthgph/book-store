@@ -26,7 +26,7 @@ fun BookStoreApp(
     val navigationType: NavigationType
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = Screen.valueOf(
+    var currentScreen = Screen.valueOf(
         backStackEntry?.destination?.route?: Screen.Home.name
     )
     val uiState = MockData.homeUiState
@@ -47,47 +47,53 @@ fun BookStoreApp(
     }
     when (navigationType) {
         NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
-            var isBookScreen by remember { mutableStateOf(uiState.currentScreen == Screen.Book) }
-            if(isBookScreen)
+            var isBookScreen by remember { mutableStateOf(currentScreen == Screen.Book) }
+            if(isBookScreen) currentScreen = Screen.valueOf(navController.previousBackStackEntry?.destination?.route!!)
             DrawerScreen(
                 modifier = modifier,
+                currentScreen = currentScreen,
                 uiState = uiState,
                 onIconClick = { navController.navigate(it.name) },
-                onBack = {},
+                onBack = {navController.navigateUp()},
                 onButtonClick = {}
             ) {
                 BookStoreNavHost(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                     uiState = uiState,
-                    navController = navController
+                    navController = navController,
+                    onButtonClick = {}
                 )
             }
         }
 
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
+                currentScreen = currentScreen,
                 uiState = uiState,
-                onBack = {},
+                onBack = {navController.navigateUp()},
                 onIconClick = { navController.navigate(it.name) }
             ) {
                 BookStoreNavHost(
                     navigationType = NavigationType.NAVIGATION_RAIL,
                     uiState = uiState,
-                    navController = navController
+                    navController = navController,
+                    onButtonClick = {}
                 )
             }
         }
 
         else -> {
             BottomBarScreen(
+                currentScreen = currentScreen,
                 uiState = uiState,
                 onIconClick = { navController.navigate(it.name) },
-                onBack = {}
+                onBack = {navController.navigateUp()}
             ) {
                 BookStoreNavHost(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
                     uiState = uiState,
-                    navController = navController
+                    navController = navController,
+                    onButtonClick = {}
                 )
             }
         }
