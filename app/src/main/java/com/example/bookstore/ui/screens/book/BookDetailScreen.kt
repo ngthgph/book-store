@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.bookstore.data.local.MockData
+import com.example.bookstore.ui.screens.cart.BookPhoto
 import com.example.bookstore.ui.screens.navigation.DrawerBookHeader
 
 @Composable

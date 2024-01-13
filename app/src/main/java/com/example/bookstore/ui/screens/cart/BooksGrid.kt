@@ -1,4 +1,4 @@
-package com.example.bookstore.ui.screens.book
+package com.example.bookstore.ui.screens.cart
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

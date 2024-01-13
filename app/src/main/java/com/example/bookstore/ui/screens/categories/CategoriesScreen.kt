@@ -20,7 +20,7 @@ fun CategoriesScreen(
 fun CategoriesContent(
     modifier: Modifier = Modifier
 ) {
-    SearchBar(onSearch = {}, onClear = {}, isSearching = false)
+    SearchBar(onSearch = {}, isSearching = false)
 }
 
 @Preview(showBackground = true)

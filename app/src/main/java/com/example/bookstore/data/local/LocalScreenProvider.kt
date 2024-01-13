@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.ShoppingCart
 import com.example.bookstore.R
-import com.example.bookstore.data.model.NavigationItem
+import com.example.bookstore.ui.utils.NavigationItem
 import com.example.bookstore.ui.utils.Screen
 
 object LocalScreenProvider {

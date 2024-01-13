@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.data.local.MockData
 import com.example.bookstore.data.model.BookStoreUiState
-import com.example.bookstore.ui.screens.home.SearchBar
 import com.example.bookstore.ui.theme.BookStoreTheme
 
 @Composable
@@ -20,7 +19,6 @@ fun CartScreen(
 fun CartContent(
     modifier: Modifier = Modifier
 ) {
-    SearchBar(onSearch = {}, onClear = {}, isSearching = false)
 }
 
 @Preview(showBackground = true)

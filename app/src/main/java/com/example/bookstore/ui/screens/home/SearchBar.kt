@@ -33,7 +33,6 @@ import com.example.bookstore.ui.theme.BookStoreTheme
 fun SearchBar(
     modifier: Modifier = Modifier,
     onSearch: (String) -> Unit,
-    onClear: () -> Unit,
     isSearching: Boolean
 ) {
     var query by remember { mutableStateOf("") }
@@ -79,10 +78,7 @@ fun SearchBar(
                     contentDescription = stringResource(R.string.clear),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .clickable {
-                            query = ""
-                            onClear()
-                        }
+                        .clickable { query = "" }
                         .padding(dimensionResource(id = R.dimen.padding_small))
                 )
             }
@@ -94,6 +90,6 @@ fun SearchBar(
 @Composable
 fun SearchBarPreview() {
     BookStoreTheme {
-        SearchBar(onSearch = {}, onClear = {}, isSearching = false)
+        SearchBar(onSearch = {}, isSearching = false)
     }
 }
