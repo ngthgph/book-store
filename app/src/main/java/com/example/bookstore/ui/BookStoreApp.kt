@@ -29,7 +29,7 @@ fun BookStoreApp(
     var currentScreen = Screen.valueOf(
         backStackEntry?.destination?.route?: Screen.Home.name
     )
-    val uiState = MockData.homeUiState
+    val uiState = MockData.bookUiState
 
     when (windowSize) {
         WindowWidthSizeClass.Compact -> {

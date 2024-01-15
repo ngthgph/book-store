@@ -4,7 +4,7 @@
     <string name="account">Account</string>
     <string name="favorite">My Library</string>
     <string name="cart">My Cart</string>
-    <string name="categories">Book Categories</string>
+    <string name="book_categories">Book Categories</string>
     <string name="category">Category</string>
     <string name="book">Book</string>
     <string name="search">Search</string>
@@ -14,15 +14,16 @@
     <string name="loading">Loading</string>
     <string name="image">%1$s image</string>
     <string name="price_display">%1$s %2$s</string>
-    <string name="price">"Price: "</string>
+    <string name="categories">Categories: </string>
+    <string name="price">Price: </string>
     <string name="share">Share</string>
     <string name="add_to_favorite">Add to Favorite</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="back">Back</string>
-    <string name="page">"Page: "</string>
+    <string name="page">Page: </string>
     <string name="content">Content:</string>
     <string name="publisher">Publisher:</string>
     <string name="publish_date">Publish date:</string>
-    <string name="isbn_13">ISBN_13</string>
-    <string name="isbn_10">ISBN_10</string>
+    <string name="isbn_13">ISBN_13: </string>
+    <string name="isbn_10">ISBN_10: </string>
 </resources>

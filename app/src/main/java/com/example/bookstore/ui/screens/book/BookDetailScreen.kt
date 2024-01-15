@@ -30,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -133,8 +135,8 @@ fun BookDetailCard(
                     .fillMaxWidth()
                     .aspectRatio(1f)
             )
-            if(navigationType == NavigationType.BOTTOM_NAVIGATION) {
-                CompactBookDetailInfo(book = book)
+            if(navigationType == NavigationType.NAVIGATION_RAIL) {
+                RailBookDetailInfo(book = book)
             } else {
                 BookDetailInfo(book = book)
             }
@@ -142,7 +144,7 @@ fun BookDetailCard(
     }
 }
 @Composable
-fun BookDetailInfo(
+fun RailBookDetailInfo(
     book: Book,
     modifier: Modifier = Modifier,
 ) {
@@ -180,7 +182,7 @@ fun BookDetailInfo(
 }
 
 @Composable
-fun CompactBookDetailInfo(
+fun BookDetailInfo(
     book: Book,
     modifier: Modifier = Modifier,
 ) {
@@ -241,7 +243,7 @@ fun ContentDescription(
                 }
             }
             Text(
-                text = if(!expanded) "...Show More" else "...Show Less",
+                text = if(!expanded) "...Show More" else "Show Less",
                 textAlign = TextAlign.End,
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
@@ -280,7 +282,7 @@ fun DetailsButtonRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.inverseOnSurface),
+            .background(Color.Transparent),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -293,10 +295,11 @@ fun DetailsButtonRow(
             for (function in enumValues<Function>()) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Card (
-                    modifier = Modifier
-                        .weight(1f),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
                     shape = CircleShape,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(CircleShape),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
                 )  {
                     IconButton(
                         modifier = Modifier.fillMaxWidth(),
@@ -331,16 +334,16 @@ fun ContentDescriptionPreview(
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
-fun BookDetailInfoPreview() {
+fun RailBookDetailInfoPreview() {
     BookStoreTheme {
-        BookDetailInfo(MockData.bookUiState.currentBook!!)
+        RailBookDetailInfo(MockData.bookUiState.currentBook!!)
     }
 }
 @Preview
 @Composable
-fun CompactBookDetailInfoPreview() {
+fun BookDetailInfoPreview() {
     BookStoreTheme {
-        CompactBookDetailInfo(MockData.bookUiState.currentBook!!)
+        BookDetailInfo(MockData.bookUiState.currentBook!!)
     }
 }
 @Preview

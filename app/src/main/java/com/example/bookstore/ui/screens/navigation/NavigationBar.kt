@@ -123,11 +123,8 @@ fun AppNavigationDrawer(
                                     Icon(
                                         imageVector = item.icon,
                                         contentDescription = stringResource(item.text),
-//                                        tint = MaterialTheme.colorScheme.primary
                                     )
-                                },
-//                                colors = NavigationDrawerItemDefaults.colors(
-//                                    unselectedContainerColor = Color.Transparent
+                                       },
                                 )
                         }
                     }

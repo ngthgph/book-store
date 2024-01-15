@@ -45,7 +45,10 @@ fun RailScreen(
                     uiState = uiState,
                     onIconClick = onIconClick,
                     onBack = onBack)
-                content()
+                Column(modifier = Modifier.weight(1f)) {
+                    content()
+//                AdsBanner()
+                }
             }
         }
     }

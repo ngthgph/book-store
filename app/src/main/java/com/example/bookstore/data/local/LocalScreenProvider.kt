@@ -29,7 +29,7 @@ object LocalScreenProvider {
         NavigationItem(
             screen = Screen.Categories,
             icon = Icons.Default.List,
-            text = R.string.categories
+            text = R.string.book_categories
         ),
     )
 }

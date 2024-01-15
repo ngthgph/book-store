@@ -3,13 +3,17 @@ package com.example.bookstore.ui.screens.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.bookstore.R
 import com.example.bookstore.data.local.MockData
 import com.example.bookstore.data.model.BookStoreUiState
 import com.example.bookstore.ui.screens.book.BookDetailScreen
@@ -47,7 +51,16 @@ fun DrawerScreen(
                 )
             }
             if (uiState.currentBook == null) {
-                content()
+                Spacer(modifier = Modifier.weight(0.5f))
+                Column(
+                    modifier = Modifier.weight(2f)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        content()
+//                AdsBanner()
+                    }
+                }
+                Spacer(modifier = Modifier.weight(0.5f))
             } else {
                 Row (
                     modifier = Modifier
@@ -57,7 +70,10 @@ fun DrawerScreen(
                         modifier = Modifier
                             .weight(1f)
                     ) {
-                        content()
+                        Column(modifier = Modifier.weight(1f)) {
+                            content()
+//                AdsBanner()
+                        }
                     }
                     BookDetailScreen(
                         navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,

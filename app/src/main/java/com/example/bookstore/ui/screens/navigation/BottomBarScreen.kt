@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.data.local.MockData
 import com.example.bookstore.data.model.BookStoreUiState
+import com.example.bookstore.ui.screens.home.AdsBanner
 import com.example.bookstore.ui.utils.Screen
 import com.example.bookstore.ui.theme.BookStoreTheme
 
@@ -46,9 +47,12 @@ fun BottomBarScreen(
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
                 .fillMaxSize()
         ) {
+            Column(modifier = Modifier.weight(1f)) {
                 content()
+//                AdsBanner()
             }
         }
+    }
 }
 
 @Preview(showBackground = true)
