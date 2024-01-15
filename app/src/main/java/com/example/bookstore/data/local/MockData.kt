@@ -26,7 +26,7 @@ object MockData {
         name = "Emery Cremin",
         email = "emery@gmail.com",
         description = "Want to learn more from books universe")
-    val homeUiState = BookStoreUiState(null, null, account)
+    val homeUiState = BookStoreUiState(null, book, account)
     val favoriteUiState = BookStoreUiState(category, book, account)
     val cartUiState = BookStoreUiState(category, book, account)
     val categoriesUiState = BookStoreUiState(null, book, account)

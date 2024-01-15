@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import com.example.bookstore.data.model.BookStoreUiState
 import com.example.bookstore.ui.screens.account.AccountScreen
 import com.example.bookstore.ui.screens.book.BookDetailScreen
@@ -31,6 +32,7 @@ fun BookStoreNavHost(
     ) {
         composable(Screen.Home.name) {
             HomeScreen(
+                navigationType = navigationType,
                 uiState = uiState,
                 modifier = modifier
             )

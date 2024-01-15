@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -37,18 +38,92 @@ import com.example.bookstore.data.local.MockData
 import com.example.bookstore.data.model.Book
 import com.example.bookstore.ui.theme.BookStoreTheme
 import com.example.bookstore.ui.utils.Function
+import com.example.bookstore.ui.utils.NavigationType
 
 @Composable
-fun BooksGrid(
+fun BooksGridSection(
+    navigationType: NavigationType,
+    bookList: List<Book>,
+    bookListTitle: String,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        BooksGridTitle(
+            navigationType = navigationType,
+            title = bookListTitle
+        )
+        BooksGrid(
+            navigationType = navigationType,
+            bookList = bookList,
+            onButtonClick = onButtonClick,
+            onCardClick = onCardClick
+        )
+    }
+}
+@Composable
+fun BooksGridTitle(
+    navigationType: NavigationType,
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    val thickness: Int
+    val padding: Int
+    if(navigationType == NavigationType.BOTTOM_NAVIGATION) {
+        thickness = R.dimen.divider_thickness
+        padding = R.dimen.padding_extra_small
+    } else {
+        thickness = R.dimen.divider_thickness_large
+        padding = R.dimen.padding_small
+    }
+    Column(modifier = modifier) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(
+                    start = dimensionResource(id = padding),
+                )
+            )
+        Divider(
+            thickness = dimensionResource(id = thickness),
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = dimensionResource(id = padding),
+                    top = dimensionResource(id = padding),
+                    bottom = dimensionResource(id = padding)
+                )
+        )
+    }
+}
+@Composable
+fun BooksGrid(
+    navigationType: NavigationType,
     bookList: List<Book>,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val column: Int
+    val padding: Int
+    if(navigationType == NavigationType.BOTTOM_NAVIGATION) {
+        column = R.dimen.grid_column_small
+        padding = R.dimen.padding_extra_small
+    } else {
+        column = R.dimen.grid_column
+        padding = R.dimen.padding_small
+    }
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(dimensionResource(id = R.dimen.grid_column)),
+        columns = GridCells.Adaptive(dimensionResource(id = column)),
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_extra_small))
+        contentPadding = PaddingValues(dimensionResource(id = padding))
     ) {
         items(bookList) {
             BooksCard(
@@ -57,7 +132,7 @@ fun BooksGrid(
                 selected = false,
                 onCardClick = onCardClick,
                 modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_extra_small))
+                    .padding(dimensionResource(id = padding))
                     .fillMaxWidth()
                     .aspectRatio(0.8f)
             )
@@ -183,10 +258,58 @@ fun BookPhoto(
 
 @Preview
 @Composable
+fun BookGridSectionPreview() {
+    BookStoreTheme {
+        val mockData = List(10){MockData.bookUiState.currentBook!!}
+        BooksGridSection(
+            navigationType = NavigationType.BOTTOM_NAVIGATION,
+            bookListTitle = "Music",
+            bookList = mockData,
+            onButtonClick = {},
+            onCardClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700)
+@Composable
+fun MediumBookGridSectionPreview() {
+    BookStoreTheme {
+        val mockData = List(10){MockData.bookUiState.currentBook!!}
+        BooksGridSection(
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            bookListTitle = "Music",
+            bookList = mockData,
+            onButtonClick = {},
+            onCardClick = {}
+        )
+    }
+}
+@Preview
+@Composable
 fun BookGridPreview() {
     BookStoreTheme {
         val mockData = List(10){MockData.bookUiState.currentBook!!}
-        BooksGrid(bookList = mockData, onButtonClick = {}, onCardClick = {})
+        BooksGrid(
+            navigationType = NavigationType.BOTTOM_NAVIGATION,
+            bookList = mockData,
+            onButtonClick = {},
+            onCardClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700)
+@Composable
+fun MediumBookGridPreview() {
+    BookStoreTheme {
+        val mockData = List(10){MockData.bookUiState.currentBook!!}
+        BooksGrid(
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            bookList = mockData,
+            onButtonClick = {},
+            onCardClick = {}
+        )
     }
 }
 

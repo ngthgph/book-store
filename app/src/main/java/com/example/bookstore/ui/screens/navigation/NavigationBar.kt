@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
 import com.example.bookstore.data.local.LocalScreenProvider
+import com.example.bookstore.data.local.MockData
+import com.example.bookstore.data.model.BookStoreUiState
 import com.example.bookstore.ui.utils.Screen
 import com.example.bookstore.ui.theme.BookStoreTheme
 
@@ -83,6 +86,7 @@ fun AppNavigationRail(
 @Composable
 fun AppNavigationDrawer(
     currentScreen: Screen,
+    uiState: BookStoreUiState,
     onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -99,13 +103,25 @@ fun AppNavigationDrawer(
                 Column(
                     modifier = Modifier
                 ) {
-                    DrawerHeader(
-                        text = stringResource(id = R.string.app_name),
-                        description = stringResource(R.string.account),
-                        onAccountClick = { onIconClick(Screen.Account) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                    if (currentScreen == Screen.Home) {
+                        Surface(
+                            shadowElevation = dimensionResource(id = R.dimen.elevation),
+                            modifier = modifier.fillMaxWidth()
+                        ) {
+                            OnlyAccountHomeHeader(
+                                account = uiState.account?.name?: stringResource(id = R.string.account),
+                                onAccountClick = { /*TODO*/ }
+                            )
+                        }
+                    } else {
+                        DrawerHeader(
+                            text = stringResource(id = R.string.app_name),
+                            account = stringResource(R.string.account),
+                            onAccountClick = { onIconClick(Screen.Account) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
                     Column (
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small),)
                     ){
@@ -160,10 +176,24 @@ fun NavigationRailPreview() {
 
 @Preview
 @Composable
-fun NavigationDrawerPreview() {
+fun HomeNavigationDrawerPreview() {
     BookStoreTheme {
         AppNavigationDrawer(
             currentScreen = Screen.Home,
+            uiState = MockData.homeUiState,
+            onIconClick = {}
+        ) {
+        }
+    }
+}
+
+@Preview
+@Composable
+fun NavigationDrawerPreview() {
+    BookStoreTheme {
+        AppNavigationDrawer(
+            currentScreen = Screen.Book,
+            uiState = MockData.bookUiState,
             onIconClick = {}
         ) {
         }

@@ -17,16 +17,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
 import com.example.bookstore.ui.screens.cart.BooksGrid
 import com.example.bookstore.ui.theme.BookStoreTheme
+import com.example.bookstore.ui.utils.NavigationType
 
 @Composable
 fun NetworkBooksGrid(
+    navigationType: NavigationType,
     uiState: NetworkBookUiState,
     retryAction: () -> Unit,
 ) {
     when(uiState) {
         is NetworkBookUiState.Loading -> LoadingContent()
         is NetworkBookUiState.Success ->
-            BooksGrid(bookList = uiState.books, onCardClick = {}, onButtonClick = {})
+            BooksGrid(
+                navigationType = navigationType,
+                bookList = uiState.books,
+                onCardClick = {},
+                onButtonClick = {}
+            )
         is NetworkBookUiState.Error -> ErrorContent(retryAction = retryAction)
     }
 }

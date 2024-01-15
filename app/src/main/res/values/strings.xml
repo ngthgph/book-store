@@ -26,4 +26,6 @@
     <string name="publish_date">Publish date:</string>
     <string name="isbn_13">ISBN_13: </string>
     <string name="isbn_10">ISBN_10: </string>
+    <string name="g_book_slogan">Your gateway to Google book universe. Online book shopping for everyone</string>
+    <string name="personally_recommended">Personally Recommended</string>
 </resources>

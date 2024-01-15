@@ -35,6 +35,7 @@ fun DrawerScreen(
     AppNavigationDrawer(
         currentScreen = currentScreen,
         onIconClick = onIconClick,
+        uiState = uiState,
         modifier = modifier.padding()
     ) {
         Column(

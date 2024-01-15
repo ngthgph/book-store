@@ -11,6 +11,7 @@
     <dimen name="card_size_small">150dp</dimen>
     <dimen name="divider_thickness">1dp</dimen>
     <dimen name="divider_thickness_large">2dp</dimen>
+    <dimen name="grid_column_small">120dp</dimen>
     <dimen name="grid_column">150dp</dimen>
     <dimen name="icon_small">15dp</dimen>
     <dimen name="rounded_shape">30dp</dimen>

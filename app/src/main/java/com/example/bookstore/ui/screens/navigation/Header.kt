@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -122,6 +124,27 @@ fun DrawerBookHeader(
     }
 }
 @Composable
+fun OnlyAccountHomeHeader(
+    account: String,
+    onAccountClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = Modifier
+            .padding(dimensionResource(R.dimen.padding_small))
+            .fillMaxWidth()
+            .background(Color.Transparent),
+    ) {
+        Image(
+            imageVector = Icons.Default.AccountCircle,
+            contentDescription = account,
+            modifier = Modifier
+                .clickable (onClick = onAccountClick)
+                .align(Alignment.CenterEnd)
+        )
+    }
+}
+@Composable
 fun HomeHeader(
     account: String,
     onAccountClick: () -> Unit,
@@ -158,7 +181,7 @@ fun HomeHeader(
 @Composable
 fun DrawerHeader(
     text: String,
-    description: String,
+    account: String,
     onAccountClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -178,7 +201,7 @@ fun DrawerHeader(
             )
             Image(
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = description,
+                contentDescription = account,
                 modifier = Modifier.clickable (onClick = onAccountClick)
             )
         }
@@ -204,6 +227,17 @@ fun HomeHeaderPreview() {
         )
     }
 }
+@Preview
+@Composable
+fun OnlyAccountHomeHeaderPreview() {
+    BookStoreTheme {
+        OnlyAccountHomeHeader(
+            account = stringResource(id = R.string.account),
+            onAccountClick = {}
+        )
+    }
+}
+
 
 @Preview
 @Composable
@@ -211,7 +245,7 @@ fun DrawerHeaderPreview() {
     BookStoreTheme {
         DrawerHeader(
             text = stringResource(id = R.string.app_name),
-            description = stringResource(id = R.string.app_name),
+            account = stringResource(id = R.string.account),
             onAccountClick = {}
         )
     }
