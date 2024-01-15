@@ -1,13 +1,13 @@
 package com.example.bookstore.data.local
 
+import com.example.bookstore.R
 import com.example.bookstore.data.model.Account
 import com.example.bookstore.data.model.Book
 import com.example.bookstore.data.model.Category
 import com.example.bookstore.data.model.BookStoreUiState
-import com.example.bookstore.ui.utils.Screen
 
 object MockData {
-    private val category = Category("Music")
+    private val category = Category("Music", R.drawable.literature)
     private val book = Book(
         title = "The History of Jazz",
         author = "Ted Gioia",

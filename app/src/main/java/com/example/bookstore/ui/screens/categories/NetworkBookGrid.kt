@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
-import com.example.bookstore.ui.screens.cart.BooksGrid
+import com.example.bookstore.ui.screens.home.BooksGrid
 import com.example.bookstore.ui.theme.BookStoreTheme
 import com.example.bookstore.ui.utils.NavigationType
 

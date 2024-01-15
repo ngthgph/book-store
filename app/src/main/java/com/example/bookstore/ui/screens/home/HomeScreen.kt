@@ -2,9 +2,7 @@ package com.example.bookstore.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +18,6 @@ import com.example.bookstore.R
 import com.example.bookstore.data.local.MockData
 import com.example.bookstore.data.model.Book
 import com.example.bookstore.data.model.BookStoreUiState
-import com.example.bookstore.ui.screens.cart.BooksGridSection
 import com.example.bookstore.ui.theme.BookStoreTheme
 import com.example.bookstore.ui.utils.Function
 import com.example.bookstore.ui.utils.NavigationType

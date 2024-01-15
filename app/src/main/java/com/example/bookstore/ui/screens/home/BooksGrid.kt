@@ -1,4 +1,4 @@
-package com.example.bookstore.ui.screens.cart
+package com.example.bookstore.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -80,16 +80,18 @@ fun BooksGridTitle(
         padding = R.dimen.padding_small
     }
     Column(modifier = modifier) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(
-                    start = dimensionResource(id = padding),
-                )
+        if(title.isNotEmpty()) {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(
+                        start = dimensionResource(id = padding),
+                    )
             )
+        }
         Divider(
             thickness = dimensionResource(id = thickness),
             color = MaterialTheme.colorScheme.primary,
