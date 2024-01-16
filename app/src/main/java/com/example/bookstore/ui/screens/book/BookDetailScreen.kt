@@ -292,7 +292,7 @@ fun DetailsButtonRow(
                 .weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            for (function in enumValues<Function>()) {
+            for (function in arrayOf(Function.Favorite, Function.Cart, Function.Share)) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Card (
                     shape = CircleShape,

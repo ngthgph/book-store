@@ -1,8 +1,9 @@
 package com.example.bookstore.data.model
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 
 data class Category(
-    val name: String,
+    @StringRes val name: Int,
     @DrawableRes val image: Int,
 )

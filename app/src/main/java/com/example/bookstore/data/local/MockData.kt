@@ -7,7 +7,7 @@ import com.example.bookstore.data.model.Category
 import com.example.bookstore.data.model.BookStoreUiState
 
 object MockData {
-    private val category = Category("Music", R.drawable.literature)
+    val category = LocalCategoriesProvider.categories[0]
     private val book = Book(
         title = "The History of Jazz",
         author = "Ted Gioia",
@@ -26,9 +26,11 @@ object MockData {
         name = "Emery Cremin",
         email = "emery@gmail.com",
         description = "Want to learn more from books universe")
+    private val shoppingList = List(3) {Pair(book,1)}
+
     val homeUiState = BookStoreUiState(null, book, account)
     val favoriteUiState = BookStoreUiState(category, book, account)
-    val cartUiState = BookStoreUiState(category, book, account)
+    val cartUiState = BookStoreUiState(category, book, account, shoppingList)
     val categoriesUiState = BookStoreUiState(null, book, account)
     val categoryUiState = BookStoreUiState(category, book, account)
     val bookUiState = BookStoreUiState(category, book, account)

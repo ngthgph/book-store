@@ -110,7 +110,7 @@ fun AppNavigationDrawer(
                         ) {
                             OnlyAccountHomeHeader(
                                 account = uiState.account?.name?: stringResource(id = R.string.account),
-                                onAccountClick = { /*TODO*/ }
+                                onAccountClick = { onIconClick(Screen.Account) }
                             )
                         }
                     } else {

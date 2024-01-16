@@ -159,7 +159,6 @@ fun BooksCard(
                 MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = modifier
-            .size(dimensionResource(id = R.dimen.card_size_small))
             .clickable { onCardClick(book) }
     ) {
         Column(
@@ -168,11 +167,13 @@ fun BooksCard(
         ) {
             Text(
                 text = book.title,
+                maxLines = 1,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Text(
                 text = book.author,
+                maxLines = 1,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -193,6 +194,7 @@ fun BooksCard(
                 Text(
                     text = stringResource(R.string.price_display, price, book.currencyCode),
                     style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
                 )
             }
             Divider(thickness = dimensionResource(id = R.dimen.divider_thickness))

@@ -1,9 +1,11 @@
 package com.example.bookstore.ui.screens.categories
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -11,12 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.input.key.Key.Companion.F
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookstore.R
@@ -44,7 +48,7 @@ fun CategoryScreen(
         CategoryContent(
             navigationType = navigationType,
             bookList = mockData,
-            title = uiState.currentCategory?.name?: stringResource(R.string.category),
+            title = stringResource(id = uiState.currentCategory!!.name).replaceFirstChar { it.uppercase() },
             image = painterResource(id = uiState.currentCategory!!.image),
             onButtonClick = {},
             onCardClick = {},
@@ -103,7 +107,7 @@ fun CategoryTitle(
     modifier: Modifier = Modifier
 ) {
     val padding = if (navigationType == NavigationType.BOTTOM_NAVIGATION)
-        R.dimen.padding_small else R.dimen.padding_medium
+        R.dimen.padding_extra_small else R.dimen.padding_small
     Box(modifier = modifier.fillMaxWidth()) {
         Image(
             painter = image,
@@ -111,15 +115,32 @@ fun CategoryTitle(
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.Crop
         )
-        Text(
-            text = title,
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.displayLarge,
+        Row (
             modifier = Modifier
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.onPrimaryContainer.copy(0.5f),
+                            Color.Transparent
+                        ),
+                        startY = 100f,
+                        endY = 0f // Adjust the endX value based on your preference
+                    )
+                )
                 .align(Alignment.BottomStart)
-                .padding(dimensionResource(id = padding)),
-        )
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = title,
+                textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayLarge,
+                modifier = Modifier
+                    .padding(dimensionResource(id = padding))
+                    .background(Color.Transparent),
+            )
+        }
     }
 }
 

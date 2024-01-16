@@ -50,7 +50,7 @@ fun AppHeaderBar(
         }
         Screen.Category -> {
             BookHeader(
-                title = uiState.currentCategory!!.name,
+                title = stringResource(id = uiState.currentCategory!!.name),
                 onBack = onBack,
                 modifier = modifier
             )
@@ -99,7 +99,7 @@ fun BookHeader(
                 .padding(end = dimensionResource(id = R.dimen.padding_small))
         ) {
             Text(
-                text = title,
+                text = title.replaceFirstChar { it.uppercase() },
                 style = MaterialTheme.typography.headlineSmall
             )
         }
@@ -139,7 +139,7 @@ fun OnlyAccountHomeHeader(
             imageVector = Icons.Default.AccountCircle,
             contentDescription = account,
             modifier = Modifier
-                .clickable (onClick = onAccountClick)
+                .clickable(onClick = onAccountClick)
                 .align(Alignment.CenterEnd)
         )
     }

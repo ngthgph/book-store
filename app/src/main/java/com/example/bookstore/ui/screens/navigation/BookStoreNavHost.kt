@@ -51,7 +51,7 @@ fun BookStoreNavHost(
         }
         composable(Screen.Categories.name) {
             CategoriesScreen(
-                uiState = uiState,
+                navigationType = navigationType,
                 modifier = modifier
             )
         }
