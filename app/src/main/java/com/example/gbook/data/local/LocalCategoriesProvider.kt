@@ -4,6 +4,7 @@ import com.example.gbook.R
 import com.example.gbook.data.model.Category
 
 object LocalCategoriesProvider {
+    val favorite = Category(R.string.favorite, R.drawable.favorite)
     val categories = listOf(
         Category(R.string.economics, R.drawable.economics),
         Category(R.string.fiction, R.drawable.fiction),

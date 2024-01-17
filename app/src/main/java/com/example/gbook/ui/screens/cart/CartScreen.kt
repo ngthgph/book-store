@@ -9,11 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,20 +26,23 @@ import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GbookUiState
 import com.example.gbook.ui.items.BookItemCard
 import com.example.gbook.ui.items.ButtonItem
+import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun CartScreen(
+    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
     uiState: GbookUiState,
     modifier: Modifier = Modifier
 ) {
     CartContent(
-        navigationType = NavigationType.BOTTOM_NAVIGATION,
+        navigationType = navigationType,
         shoppingList = uiState.cart,
         onButtonClick = {},
-        onCardClick = {}
+        onCardClick = {},
+        modifier = modifier
     )
 }
 @Composable
@@ -184,19 +183,11 @@ fun CartList(
         item {
             Row {
                 Spacer(modifier = Modifier.weight(1f))
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                    shape = CircleShape,
-                    onClick = {onButtonClick(Function.AddToCart)},
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(space)
-                ) {
-                    Icon(
-                        imageVector = Function.AddToCart.icon,
-                        contentDescription = stringResource(id = Function.AddToCart.description)
-                    )
-                }
+                FABItem(
+                    function = Function.AddToCart,
+                    padding = space,
+                    onButtonClick = onButtonClick
+                )
             }
         }
     }

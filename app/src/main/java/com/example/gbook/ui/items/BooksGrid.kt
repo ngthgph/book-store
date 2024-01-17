@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,16 +49,16 @@ import com.example.gbook.ui.utils.NavigationType
 fun BooksGridSection(
     navigationType: NavigationType,
     bookList: List<Book>,
-    isFavorite: Boolean = false,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
 ) {
     Column(
         modifier = modifier
     ) {
-        BooksGridTitle(
+        CollectionTitle(
             navigationType = navigationType,
             title = bookListTitle
         )
@@ -74,7 +72,7 @@ fun BooksGridSection(
     }
 }
 @Composable
-fun BooksGridTitle(
+fun CollectionTitle(
     navigationType: NavigationType,
     title: String,
     modifier: Modifier = Modifier,
@@ -118,10 +116,10 @@ fun BooksGridTitle(
 fun BooksGrid(
     navigationType: NavigationType,
     bookList: List<Book>,
-    isFavorite: Boolean = false,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
 ) {
     val column: Int
     val padding: Int
@@ -156,13 +154,13 @@ fun BooksGrid(
 
 @Composable
 fun BooksCard(
-    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
-    modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
     selected: Boolean,
     book: Book,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
+    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     Card(
         elevation = CardDefaults.cardElevation(dimensionResource(id = R.dimen.elevation)),
@@ -245,7 +243,8 @@ fun BooksCard(
                                 if(navigationType != NavigationType.BOTTOM_NAVIGATION)
                                     dimensionResource(id = R.dimen.button_medium)
                                 else dimensionResource(id = R.dimen.button_small)
-                            )
+                            ),
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -255,9 +254,10 @@ fun BooksCard(
 }
 @Composable
 fun CardButtonRow(
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
-    onButtonClick: (Function) -> Unit
+    color: Color = MaterialTheme.colorScheme.tertiary,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -267,34 +267,17 @@ fun CardButtonRow(
         for(function in if(isFavorite)
             arrayOf(Function.Cart, Function.Share)
             else
-            arrayOf(Function.Favorite, Function.Cart, Function.Share)
+            arrayOf(Function.Library, Function.Cart, Function.Share)
         ) {
             CardButton(
                 function = function,
                 modifier = Modifier
                     .weight(1f)
                     .padding(dimensionResource(id = R.dimen.padding_extra_small)),
-                onButtonClick = onButtonClick
+                onButtonClick = onButtonClick,
+                color = color
             )
         }
-    }
-}
-@Composable
-fun CardButton(
-    modifier: Modifier = Modifier,
-    function: Function,
-    onButtonClick: (Function) -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = { onButtonClick(function) },
-    ) {
-        Icon(
-            imageVector = function.icon,
-            contentDescription = stringResource(function.description),
-            modifier = Modifier,
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
     }
 }
 @Composable

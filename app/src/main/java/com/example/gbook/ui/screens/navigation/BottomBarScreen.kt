@@ -10,7 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.gbook.R
 import com.example.gbook.data.local.MockData
 import com.example.gbook.data.model.GbookUiState
 import com.example.gbook.ui.items.AppHeaderBar
@@ -51,7 +53,7 @@ fun BottomBarScreen(
                     .fillMaxSize()
             ) {
                 OnlyAccountHomeHeader(
-                    account = uiState.account!!.name,
+                    account = uiState.account?.name?: stringResource(id = R.string.account),
                     onAccountClick = { onIconClick(Screen.Account) },
                     modifier = Modifier.background(Color.Transparent)
                 )

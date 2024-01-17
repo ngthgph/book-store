@@ -70,7 +70,7 @@ fun AppHeaderBar(
         else -> {
             BookHeader(
                 currentScreen = currentScreen,
-                title = currentScreen.name,
+                title = stringResource(id = currentScreen.title),
                 onBack = onBack,
                 modifier = modifier
             )
@@ -112,14 +112,14 @@ fun BookHeader(
             )
         }
         if(
-            currentScreen == Screen.Favorite ||
+//            currentScreen == Screen.MyLibrary ||
             currentScreen == Screen.Category
             ) {
             Image(
                 painter = painterResource(id = R.drawable.display_configuration),
                 contentDescription = stringResource(R.string.display_configuration),
                 modifier = Modifier
-                    .clickable(onClick = { onButtonClick(Function.Configuration)})
+                    .clickable(onClick = { onButtonClick(Function.Configuration) })
                     .padding(horizontal = dimensionResource(R.dimen.padding_medium)),
             )
         }

@@ -17,9 +17,9 @@ object LocalScreenProvider {
             text = R.string.home
         ),
         NavigationItem(
-            screen = Screen.Favorite,
+            screen = Screen.MyLibrary,
             icon = Icons.Default.Favorite,
-            text = R.string.favorite
+            text = R.string.my_library
         ),
         NavigationItem(
             screen = Screen.Cart,

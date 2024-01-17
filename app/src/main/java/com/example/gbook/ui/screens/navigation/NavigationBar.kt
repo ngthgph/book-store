@@ -51,7 +51,7 @@ fun AppBottomNavigationBar(
                         contentDescription = stringResource(item.text)
                     )
                 },
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small),)
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
 
             )
         }
@@ -125,7 +125,7 @@ fun AppNavigationDrawer(
                         )
                     }
                     Column (
-                        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small),)
+                        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
                     ){
                         for (item in navigationItemList) {
                             NavigationDrawerItem(

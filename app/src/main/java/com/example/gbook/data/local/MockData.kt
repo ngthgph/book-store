@@ -26,8 +26,10 @@ object MockData {
         description = "Want to learn more from books universe")
     private val shoppingList = List(3) {Pair(book,1)}
 
-    val homeUiState = GbookUiState(null, book, account)
-    val favoriteUiState = GbookUiState(category, book, account)
+    val bookList = List(10) {book}
+
+    val homeUiState = GbookUiState(null, null, null)
+    val libraryUiState = GbookUiState(category, null, account, shoppingList, favorite = bookList)
     val cartUiState = GbookUiState(category, book, account, shoppingList)
     val categoriesUiState = GbookUiState(null, book, account)
     val categoryUiState = GbookUiState(category, book, account)

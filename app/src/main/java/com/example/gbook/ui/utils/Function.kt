@@ -18,9 +18,9 @@ enum class Function(
     val doneIcon: ImageVector = Icons.Default.Done,
     @StringRes val description: Int
 ) {
-    Favorite(
+    Library(
         icon = Icons.Default.Add,
-        description = R.string.add_to_favorite
+        description = R.string.add_to_library
     ),
     Cart(
         icon = Icons.Default.ShoppingCart,

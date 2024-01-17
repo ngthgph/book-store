@@ -43,7 +43,33 @@ import androidx.compose.ui.text.TextStyle
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
-fun BookList(
+fun BooksListSection(
+    navigationType: NavigationType,
+    bookList: List<Book>,
+    isFavorite: Boolean = false,
+    bookListTitle: String,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        CollectionTitle(
+            navigationType = navigationType,
+            title = bookListTitle
+        )
+        BooksList(
+            navigationType = navigationType,
+            bookList = bookList,
+            isFavorite = isFavorite,
+            onButtonClick = onButtonClick,
+            onCardClick = onCardClick
+        )
+    }
+}
+@Composable
+fun BooksList(
     navigationType: NavigationType,
     bookList: List<Book>,
     isFavorite: Boolean = false,
@@ -87,7 +113,7 @@ fun BookItemCard(
     val functions = if(isCart)
         arrayOf(Function.Add, Function.Decline)
         else arrayOf(Function.Cart, Function.Share)
-    val besideFunction = if(!isCart) Function.Favorite else Function.Delete
+    val besideFunction = if(!isCart) Function.Library else Function.Delete
     if(navigationType != NavigationType.BOTTOM_NAVIGATION) {
         maxHeight = dimensionResource(id = R.dimen.book_item_row_medium)
         padding = dimensionResource(id = R.dimen.padding_medium)

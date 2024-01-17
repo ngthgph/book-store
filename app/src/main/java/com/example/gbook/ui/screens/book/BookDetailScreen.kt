@@ -292,7 +292,7 @@ fun DetailsButtonRow(
                 .weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            val functions = arrayOf(Function.Favorite, Function.Cart, Function.Share)
+            val functions = arrayOf(Function.Library, Function.Cart, Function.Share)
             for (function in functions) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 ButtonCard(

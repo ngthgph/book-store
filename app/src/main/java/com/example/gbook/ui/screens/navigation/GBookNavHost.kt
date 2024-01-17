@@ -11,14 +11,14 @@ import com.example.gbook.ui.screens.book.BookDetailScreen
 import com.example.gbook.ui.screens.cart.CartScreen
 import com.example.gbook.ui.screens.categories.CategoriesScreen
 import com.example.gbook.ui.screens.categories.CategoryScreen
-import com.example.gbook.ui.screens.favorite.FavoriteScreen
 import com.example.gbook.ui.screens.home.HomeScreen
+import com.example.gbook.ui.screens.library.MyLibraryScreen
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.Screen
 
 @Composable
-fun BookStoreNavHost(
+fun GBookNavHost(
     navigationType: NavigationType,
     uiState: GbookUiState,
     navController: NavHostController,
@@ -36,14 +36,16 @@ fun BookStoreNavHost(
                 modifier = modifier
             )
         }
-        composable(Screen.Favorite.name) {
-            FavoriteScreen(
+        composable(Screen.MyLibrary.name) {
+            MyLibraryScreen(
+                navigationType = navigationType,
                 uiState = uiState,
                 modifier = modifier
             )
         }
         composable(Screen.Cart.name) {
             CartScreen(
+                navigationType = navigationType,
                 uiState = uiState,
                 modifier = modifier
             )
@@ -71,6 +73,7 @@ fun BookStoreNavHost(
         }
         composable(Screen.Account.name) {
             AccountScreen(
+                navigationType = navigationType,
                 uiState = uiState,
                 modifier = modifier
             )

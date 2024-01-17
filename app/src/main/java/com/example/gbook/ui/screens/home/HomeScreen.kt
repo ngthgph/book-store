@@ -30,7 +30,7 @@ fun HomeScreen(
     uiState: GbookUiState,
     modifier: Modifier = Modifier
 ) {
-    val mockData = List(10){MockData.homeUiState.currentBook!!}
+    val mockData = MockData.bookList
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

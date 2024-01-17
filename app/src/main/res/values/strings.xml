@@ -2,7 +2,7 @@
     <string name="app_name">G book</string>
     <string name="home">Home</string>
     <string name="account">Account</string>
-    <string name="favorite">My Library</string>
+    <string name="my_library">My Library</string>
     <string name="cart">My Cart</string>
     <string name="book_categories">Book Categories</string>
     <string name="category">Category</string>
@@ -15,10 +15,11 @@
     <string name="image">%1$s image</string>
     <string name="price_display">%1$s %2$s</string>
     <string name="price_summary">%1$s</string>
+    <string name="categories_screen">Categories</string>
     <string name="categories">Categories: </string>
     <string name="price">Price: </string>
     <string name="share">Share</string>
-    <string name="add_to_favorite">Add to Favorite</string>
+    <string name="add_to_library">Add to Library</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="back">Back</string>
     <string name="page">Page: </string>
@@ -50,4 +51,5 @@
     <string name="display_configuration">Display Configuration</string>
     <string name="author">"Author: "</string>
     <string name="delete">Delete</string>
+    <string name="favorite">Favorite</string>
 </resources>
