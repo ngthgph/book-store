@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -99,7 +100,7 @@ fun AppNavigationDrawer(
             PermanentDrawerSheet(
                 drawerContainerColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = modifier
-                    .width(dimensionResource(id = R.dimen.drawer_width))
+                    .sizeIn(maxWidth = dimensionResource(id = R.dimen.drawer_width))
                     .background(MaterialTheme.colorScheme.inverseOnSurface)
             ) {
                 Column(
@@ -108,10 +109,11 @@ fun AppNavigationDrawer(
                     if (currentScreen == Screen.Home) {
                         Surface(
                             shadowElevation = dimensionResource(id = R.dimen.elevation),
-                            modifier = modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             OnlyAccountHomeHeader(
-                                account = uiState.account?.name?: stringResource(id = R.string.account),
+                                account = uiState.account?.name
+                                    ?: stringResource(id = R.string.account),
                                 onAccountClick = { onIconClick(Screen.Account) }
                             )
                         }

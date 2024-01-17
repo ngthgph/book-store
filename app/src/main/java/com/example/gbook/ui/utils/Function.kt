@@ -54,5 +54,15 @@ enum class Function(
     ),
     Configuration(
         description = R.string.display_configuration
+    ),
+    SignIn(
+        description = R.string.sign_in
+    ),
+    ForgetPassword(
+        description = R.string.forget_password
+    ),
+    SignUp(
+        description = R.string.sign_up
     )
+
 }

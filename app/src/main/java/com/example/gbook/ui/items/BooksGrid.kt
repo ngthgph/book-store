@@ -269,7 +269,7 @@ fun CardButtonRow(
             else
             arrayOf(Function.Library, Function.Cart, Function.Share)
         ) {
-            CardButton(
+            CardIconButton(
                 function = function,
                 modifier = Modifier
                     .weight(1f)

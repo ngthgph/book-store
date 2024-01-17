@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -11,16 +12,44 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
 import com.example.gbook.ui.utils.Function
 
 @Composable
-fun CardButton(
+fun ClickableText(
+    function: Function,
+    onButtonClick: (Function) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    var isClicking by remember { mutableStateOf(false) }
+    Text(
+        text = stringResource(function.description),
+        textDecoration = if(isClicking) TextDecoration.Underline else null,
+        color = if(!isClicking) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = modifier.clickable(
+            enabled = enabled,
+            onClick = {
+                isClicking = !isClicking
+                onButtonClick(function)
+            }
+        )
+    )
+}
+
+@Composable
+fun CardIconButton(
     function: Function,
     onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier,
@@ -61,7 +90,7 @@ fun FABItem(
     }
 }
 @Composable
-fun ButtonItem(
+fun DescriptionButton(
     function: Function,
     enable: Boolean = true,
     onButtonClick: (Function) -> Unit,

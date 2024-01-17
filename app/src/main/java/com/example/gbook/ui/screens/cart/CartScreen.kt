@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +26,7 @@ import com.example.gbook.data.local.MockData
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GbookUiState
 import com.example.gbook.ui.items.BookItemCard
-import com.example.gbook.ui.items.ButtonItem
+import com.example.gbook.ui.items.DescriptionButton
 import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
@@ -57,11 +58,12 @@ fun CartContent(
     if(navigationType == NavigationType.BOTTOM_NAVIGATION) {
         padding = dimensionResource(id = R.dimen.padding_large)
     }
-    Scaffold(
+    Surface(
         modifier = modifier.padding(padding),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.padding_small)),
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             CartList(
@@ -86,7 +88,7 @@ fun CartContent(
                         .padding(dimensionResource(id = R.dimen.padding_medium))
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    ButtonItem(
+                    DescriptionButton(
                         function = Function.Checkout,
                         enable = shoppingList.isNotEmpty(),
                         onButtonClick = onButtonClick,

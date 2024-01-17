@@ -52,4 +52,9 @@
     <string name="author">"Author: "</string>
     <string name="delete">Delete</string>
     <string name="favorite">Favorite</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
+    <string name="email_address">Email address</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="sign_up">Sign up</string>
 </resources>

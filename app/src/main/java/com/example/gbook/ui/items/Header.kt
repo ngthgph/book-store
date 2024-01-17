@@ -150,7 +150,7 @@ fun OnlyAccountHomeHeader(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(dimensionResource(R.dimen.padding_small))
             .fillMaxWidth()
             .background(Color.Transparent),

@@ -23,7 +23,9 @@ object MockData {
     private val account = Account(
         name = "Emery Cremin",
         email = "emery@gmail.com",
-        description = "Want to learn more from books universe")
+        description = "Want to learn more from books universe",
+        password = ""
+    )
     private val shoppingList = List(3) {Pair(book,1)}
 
     val bookList = List(10) {book}

@@ -106,7 +106,7 @@ fun CollectionCard(
                 contentScale = ContentScale.Crop
             )
             if(!isLibrary) {
-                CardButton(
+                CardIconButton(
                     function = Function.Library,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small))
