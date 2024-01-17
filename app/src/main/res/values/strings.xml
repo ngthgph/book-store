@@ -40,11 +40,14 @@
     <string name="cancel">Cancel</string>
     <string name="amount">Amount: </string>
     <string name="add">Add</string>
-    <string name="remove">Remove</string>
+    <string name="decline">Decline</string>
     <string name="checkout">Checkout</string>
     <string name="summary">"Summary: "</string>
     <string name="total_price">"Total price: "</string>
     <string name="shipping_fee">"Shipping fee: "</string>
     <string name="vat">VAT: </string>
     <string name="subtotal">"Subtotal: "</string>
+    <string name="display_configuration">Display Configuration</string>
+    <string name="author">"Author: "</string>
+    <string name="delete">Delete</string>
 </resources>
