@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Book Store"
+rootProject.name = "G Book"
 include(":app")
