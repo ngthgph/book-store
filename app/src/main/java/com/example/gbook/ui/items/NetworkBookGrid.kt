@@ -1,11 +1,10 @@
-package com.example.gbook.ui.screens.categories
+package com.example.gbook.ui.items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,9 +14,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.ui.items.BooksGrid
+import com.example.gbook.ui.screens.categories.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.Function
 
 @Composable
 fun NetworkBooksGrid(
@@ -34,7 +34,7 @@ fun NetworkBooksGrid(
                 onCardClick = {},
                 onButtonClick = {}
             )
-        is NetworkBookUiState.Error -> ErrorContent(retryAction = retryAction)
+        is NetworkBookUiState.Error -> ErrorContent(onButtonClick = {})
     }
 }
 
@@ -50,7 +50,7 @@ fun LoadingContent(
 }
 @Composable
 fun ErrorContent(
-    retryAction: () -> Unit,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -66,11 +66,10 @@ fun ErrorContent(
             text = stringResource(R.string.fail_to_load),
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
         )
-        Button(onClick = retryAction) {
-            Text(
-                text = stringResource(R.string.retry)
-            )
-        }
+        DescriptionButton(
+            function = Function.Retry,
+            onButtonClick = onButtonClick
+        )
     }
 }
 @Preview
@@ -84,6 +83,6 @@ fun LoadingPreview() {
 @Composable
 fun ErrorPreview() {
     GBookTheme {
-        ErrorContent(retryAction = {})
+        ErrorContent(onButtonClick = {})
     }
 }

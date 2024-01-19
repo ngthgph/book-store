@@ -47,11 +47,11 @@ fun RailScreen(
                         .background(MaterialTheme.colorScheme.inverseOnSurface)
                         .fillMaxSize()
                 ) {
-//                    OnlyAccountHomeHeader(
-//                        account = uiState.account?.name?: stringResource(id = R.string.account),
-//                        onAccountClick = { onIconClick(Screen.Account) },
-//                        modifier = Modifier.background(Color.Transparent)
-//                    )
+                    OnlyAccountHomeHeader(
+                        account = uiState.account?.name?: stringResource(id = R.string.account),
+                        onAccountClick = { onIconClick(Screen.Account) },
+                        modifier = Modifier.background(Color.Transparent)
+                    )
                     Column(modifier = Modifier) {
                         content()
 //                AdsBanner()

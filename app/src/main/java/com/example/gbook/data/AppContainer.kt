@@ -12,7 +12,7 @@ interface AppContainer {
 
 class NetworkAppContainer: AppContainer {
     private val baseUrl =
-        "https://www.googleapis.com/books/v1/volumes?q="
+        "https://www.googleapis.com/books/"
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(baseUrl)
