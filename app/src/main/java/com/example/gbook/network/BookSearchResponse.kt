@@ -1,5 +1,6 @@
 package com.example.gbook.network
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +10,14 @@ data class BookSearchResponse (
 @Serializable
 data class BookItem(
     val id: String,
-    val volumeInfo: VolumeInfo?,
+    val volumeInfo: VolumeInfo,
+    val saleInfo: SaleInfo,
+)
+@Serializable
+data class VolumeInfo(
+    val title: String,
+    @SerialName(value = "authors")
+    val author: List<String>?,
     val publisher: String?,
     val publishedDate: String?,
     val description: String?,
@@ -17,12 +25,6 @@ data class BookItem(
     val printedPageCount: Int?,
     val categories: List<String>?,
     val imageLinks: ImageLinks?,
-    val saleInfo: SaleInfo?,
-)
-@Serializable
-data class VolumeInfo(
-    val title: String,
-    val author: List<String>,
 )
 @Serializable
 data class Isbn10(

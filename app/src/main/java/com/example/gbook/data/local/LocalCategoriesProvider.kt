@@ -1,18 +1,18 @@
 package com.example.gbook.data.local
 
 import com.example.gbook.R
-import com.example.gbook.data.model.Category
+import com.example.gbook.data.model.Collection
 
 object LocalCategoriesProvider {
-    val favorite = Category(R.string.favorite, R.drawable.favorite)
+    val favorite = Collection(R.string.favorite, R.drawable.favorite)
     val categories = listOf(
-        Category(R.string.economics, R.drawable.economics),
-        Category(R.string.fiction, R.drawable.fiction),
-        Category(R.string.health, R.drawable.health),
-        Category(R.string.history, R.drawable.history),
-        Category(R.string.music, R.drawable.music),
-        Category(R.string.science, R.drawable.science),
-        Category(R.string.self_help, R.drawable.self_help),
-        Category(R.string.sport, R.drawable.sport)
+        Collection(R.string.economics, R.drawable.economics),
+        Collection(R.string.fiction, R.drawable.fiction),
+        Collection(R.string.health, R.drawable.health),
+        Collection(R.string.history, R.drawable.history),
+        Collection(R.string.music, R.drawable.music),
+        Collection(R.string.science, R.drawable.science),
+        Collection(R.string.self_help, R.drawable.self_help),
+        Collection(R.string.sport, R.drawable.sport)
     )
 }

@@ -1,6 +1,8 @@
 package com.example.gbook.data
 
 import com.example.gbook.network.BookApiService
+import com.example.gbook.network.BooksRepository
+import com.example.gbook.network.NetworkBooksRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,7 +12,7 @@ interface AppContainer {
     val booksRepository: BooksRepository
 }
 
-class NetworkAppContainer: AppContainer {
+class DefaultAppContainer: AppContainer {
     private val baseUrl =
         "https://www.googleapis.com/books/"
     private val retrofit = Retrofit.Builder()

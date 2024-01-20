@@ -31,16 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.gbook.R
-import com.example.gbook.data.model.Category
+import com.example.gbook.data.model.Collection
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun CollectionGrid(
     navigationType: NavigationType,
-    categories: List<Category>,
+    categories: List<Collection>,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Category) -> Unit,
+    onCategoryClick: (Collection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -61,10 +61,10 @@ fun CollectionGrid(
         items(categories) {
             CollectionCard(
                 navigationType = navigationType,
-                category = it,
+                collection = it,
                 onButtonClick = onButtonClick,
                 selected = false,
-                onCardClick = onCardClick,
+                onCategoryClick = onCategoryClick,
                 isLibrary = isLibrary,
                 modifier = Modifier
                     .padding(dimensionResource(id = padding))
@@ -79,9 +79,9 @@ fun CollectionGrid(
 fun CollectionCard(
     navigationType: NavigationType,
     selected: Boolean,
-    category: Category,
+    collection: Collection,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Category) -> Unit,
+    onCategoryClick: (Collection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -96,12 +96,12 @@ fun CollectionCard(
                 MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = modifier
-            .clickable { onCardClick(category) }
+            .clickable { onCategoryClick(collection) }
     ) {
         Box(modifier = Modifier) {
             Image(
-                painter = painterResource(id = category.image),
-                contentDescription = stringResource(id = category.name),
+                painter = painterResource(id = collection.image),
+                contentDescription = stringResource(id = collection.name),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -135,7 +135,7 @@ fun CollectionCard(
                     .fillMaxWidth(),
             ){
                 Text(
-                    text = stringResource(id = category.name).replaceFirstChar { it.uppercase() },
+                    text = stringResource(id = collection.name).replaceFirstChar { it.uppercase() },
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     fontWeight = FontWeight.Bold,

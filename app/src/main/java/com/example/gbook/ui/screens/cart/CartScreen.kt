@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.local.MockData
 import com.example.gbook.data.model.Book
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.BookItemCard
 import com.example.gbook.ui.items.DescriptionButton
 import com.example.gbook.ui.items.FABItem
@@ -34,15 +34,17 @@ import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun CartScreen(
+    uiState: GBookUiState,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
-    uiState: GbookUiState,
-    modifier: Modifier = Modifier
 ) {
     CartContent(
         navigationType = navigationType,
         shoppingList = uiState.cart,
-        onButtonClick = {},
-        onCardClick = {},
+        onButtonClick = onButtonClick,
+        onCardClick = onCardClick,
         modifier = modifier
     )
 }
@@ -103,12 +105,12 @@ fun CartContent(
 
 @Composable
 fun CartSummary(
+    modifier: Modifier = Modifier,
     price: Double = 0.0,
     shipping: Double = 0.0,
     tax: Double = 0.0,
     total: Double = 0.0,
     currency: String = "VND",
-    modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
@@ -199,13 +201,21 @@ fun CartList(
 @Composable
 fun CompactCartScreenPreview() {
     GBookTheme {
-        CartScreen(uiState = MockData.cartUiState)
+        CartScreen(
+            uiState = MockData.cartUiState,
+            onButtonClick = {},
+            onCardClick = {}
+        )
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumCartScreenPreview() {
     GBookTheme {
-        CartScreen(uiState = MockData.cartUiState)
+        CartScreen(
+            uiState = MockData.cartUiState,
+            onButtonClick = {},
+            onCardClick = {}
+        )
     }
 }

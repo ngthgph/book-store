@@ -2,14 +2,15 @@ package com.example.gbook.ui
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.gbook.data.local.MockData
 import com.example.gbook.ui.utils.Screen
 import com.example.gbook.ui.screens.navigation.BottomBarScreen
 import com.example.gbook.ui.screens.navigation.DrawerScreen
@@ -22,12 +23,15 @@ fun GBookApp(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
+    val viewModel: GBookViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val uiState = viewModel.uiState.collectAsState().value
+    var networkBookUiState = viewModel.networkBookUiState
+
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     var currentScreen = Screen.valueOf(
         backStackEntry?.destination?.route?: Screen.Home.name
     )
-    val uiState = MockData.homeUiState
 
     val navigationType: NavigationType = when (windowSize) {
         WindowWidthSizeClass.Compact -> {
@@ -58,8 +62,13 @@ fun GBookApp(
                 GBookNavHost(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                     uiState = uiState,
+                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {}
+                    onButtonClick = {},
+                    onCardClick = {},
+                    onCategoryClick = {},
+                    onSearch = {},
+                    onInput = {},
                 )
             }
         }
@@ -74,8 +83,13 @@ fun GBookApp(
                 GBookNavHost(
                     navigationType = NavigationType.NAVIGATION_RAIL,
                     uiState = uiState,
+                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {}
+                    onButtonClick = {},
+                    onCardClick = {},
+                    onCategoryClick = {},
+                    onSearch = {},
+                    onInput = {},
                 )
             }
         }
@@ -90,8 +104,13 @@ fun GBookApp(
                 GBookNavHost(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
                     uiState = uiState,
+                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {}
+                    onButtonClick = {},
+                    onCardClick = {},
+                    onCategoryClick = {},
+                    onSearch = {},
+                    onInput = {},
                 )
             }
         }

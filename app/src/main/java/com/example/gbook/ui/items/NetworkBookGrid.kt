@@ -14,7 +14,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.ui.screens.categories.NetworkBookUiState
+import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.Function
@@ -23,18 +25,27 @@ import com.example.gbook.ui.utils.Function
 fun NetworkBooksGrid(
     navigationType: NavigationType,
     uiState: NetworkBookUiState,
-    retryAction: () -> Unit,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
 ) {
     when(uiState) {
-        is NetworkBookUiState.Loading -> LoadingContent()
+        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
         is NetworkBookUiState.Success ->
             BooksGrid(
                 navigationType = navigationType,
                 bookList = uiState.books,
-                onCardClick = {},
-                onButtonClick = {}
+                isFavorite = isFavorite,
+                onButtonClick = onButtonClick,
+                onCardClick = onCardClick,
+                modifier = modifier
             )
-        is NetworkBookUiState.Error -> ErrorContent(onButtonClick = {})
+        is NetworkBookUiState.Error ->
+            ErrorContent(
+                onButtonClick = onButtonClick,
+                modifier = modifier
+                )
     }
 }
 

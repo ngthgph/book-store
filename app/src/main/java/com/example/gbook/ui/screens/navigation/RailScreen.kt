@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.AppHeaderBar
 import com.example.gbook.ui.items.OnlyAccountHomeHeader
 import com.example.gbook.ui.theme.GBookTheme
@@ -24,7 +24,7 @@ import com.example.gbook.ui.utils.Screen
 @Composable
 fun RailScreen(
     currentScreen: Screen,
-    uiState: GbookUiState,
+    uiState: GBookUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,

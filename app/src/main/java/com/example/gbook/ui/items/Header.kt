@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
 import com.example.gbook.ui.utils.Function
@@ -38,7 +38,7 @@ import com.example.gbook.ui.utils.Function
 @Composable
 fun AppHeaderBar(
     currentScreen: Screen,
-    uiState: GbookUiState,
+    uiState: GBookUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -54,7 +54,7 @@ fun AppHeaderBar(
         Screen.Category -> {
             BookHeader(
                 currentScreen = currentScreen,
-                title = stringResource(id = uiState.currentCategory!!.name),
+                title = stringResource(id = uiState.currentCollection!!.name),
                 onBack = onBack,
                 modifier = modifier
             )
@@ -240,7 +240,7 @@ fun DrawerBookHeaderPreview() {
 fun BookHeaderPreview() {
     BookHeader(
         currentScreen = Screen.Category,
-        title = stringResource(id = MockData.categoryUiState.currentCategory!!.name),
+        title = stringResource(id = MockData.categoryUiState.currentCollection!!.name),
         onBack = { }
     )
 }

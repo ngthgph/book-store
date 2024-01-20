@@ -1,6 +1,4 @@
-package com.example.gbook.ui.screens.categories
-
-import com.example.gbook.data.model.Book
+package com.example.gbook.data.model
 
 sealed interface NetworkBookUiState {
     data class Success(val books: List<Book>): NetworkBookUiState
