@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BookSearchResponse (
-    val items: List<BookItem>?
+    val items: List<BookItem>? = null
 )
 @Serializable
 data class BookItem(
@@ -17,21 +17,17 @@ data class BookItem(
 data class VolumeInfo(
     val title: String,
     @SerialName(value = "authors")
-    val author: List<String>?,
-    val publisher: String?,
-    val publishedDate: String?,
-    val description: String?,
-    val industryIdentifiers: Pair<Isbn10, Isbn13>?,
-    val printedPageCount: Int?,
-    val categories: List<String>?,
-    val imageLinks: ImageLinks?,
+    val author: List<String>? = null,
+    val publisher: String? = null,
+    val publishedDate: String? = null,
+    val description: String? = null,
+    val industryIdentifiers: List<Isbn>? = null,
+    val printedPageCount: Int? = null,
+    val categories: List<String>? = null,
+    val imageLinks: ImageLinks? = null,
 )
 @Serializable
-data class Isbn10(
-    val identifier: String,
-)
-@Serializable
-data class Isbn13(
+data class Isbn(
     val identifier: String,
 )
 @Serializable
@@ -41,7 +37,7 @@ data class ImageLinks(
 @Serializable
 data class SaleInfo(
     val saleability: String,
-    val retailPrice: RetailPrice?
+    val retailPrice: RetailPrice? = null
 )
 @Serializable
 data class RetailPrice(

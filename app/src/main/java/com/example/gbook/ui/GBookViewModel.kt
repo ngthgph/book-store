@@ -26,7 +26,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
 
     fun innitializeUiState() {
         _uiState.value = GBookUiState()
-        getNetworkBookList("search+term")
+        getNetworkBookList("search term")
     }
 
     private fun getNetworkBookList(query: String) {

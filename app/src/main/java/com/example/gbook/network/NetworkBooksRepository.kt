@@ -1,5 +1,6 @@
 package com.example.gbook.network
 
+import com.example.gbook.data.local.LocalCategoriesProvider.categories
 import com.example.gbook.data.model.Book
 import com.example.gbook.network.BookApiService
 import com.example.gbook.network.BookItem
@@ -28,12 +29,13 @@ class NetworkBooksRepository(
             publisher = bookInfo.volumeInfo.publisher.orEmpty(),
             publishedDate = bookInfo.volumeInfo.publishedDate.orEmpty(),
             description = bookInfo.volumeInfo.description.orEmpty(),
-            isbn10 = bookInfo.volumeInfo.industryIdentifiers?.first?.identifier.orEmpty(),
-            isbn13 = bookInfo.volumeInfo.industryIdentifiers?.second?.identifier.orEmpty(),
+            isbn10 = bookInfo.volumeInfo.industryIdentifiers?.get(0)?.identifier.orEmpty(),
+            isbn13 = if (bookInfo.volumeInfo.industryIdentifiers != null && bookInfo.volumeInfo.industryIdentifiers.size >= 2)
+                bookInfo.volumeInfo.industryIdentifiers[1].identifier else "",
             pageCount = bookInfo.volumeInfo.printedPageCount?: 0,
             categories = bookInfo.volumeInfo.categories?.joinToString(", ").orEmpty(),
             imageLinks = bookInfo.volumeInfo.imageLinks?.thumbnail.orEmpty(),
-            saleability = bookInfo.saleInfo.saleability.orEmpty(),
+            saleability = bookInfo.saleInfo.saleability,
             retailPrice = bookInfo.saleInfo.retailPrice?.amount?: 0.0,
             currencyCode = bookInfo.saleInfo.retailPrice?.currencyCode.orEmpty(),
         )
