@@ -55,6 +55,9 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         getNetworkBookItem(book.networkId)
         updateCurrentBook(book)
     }
+    fun onBackFromBookDetail() {
+        updateCurrentBook(null)
+    }
     fun handleOnCollectionClick(collection: BookCollection) {
 
     }
@@ -92,7 +95,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         }
     }
 
-    fun updateCurrentBook(book: Book) {
+    fun updateCurrentBook(book: Book?) {
         _uiState.update { currentState ->
             currentState.copy(currentBook = book)
         }

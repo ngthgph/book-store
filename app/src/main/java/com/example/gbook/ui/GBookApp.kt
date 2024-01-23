@@ -55,10 +55,8 @@ fun GBookApp(
                 modifier = modifier,
                 currentScreen = currentScreen,
                 uiState = uiState,
-                networkBookUiState = networkBookUiState,
                 onIconClick = { navController.navigate(it.name) },
                 onBack = {navController.navigateUp()},
-                onButtonClick = {}
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
@@ -67,10 +65,7 @@ fun GBookApp(
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                                  },
+                    onCardClick = { viewModel.handleOnCardClick(it) },
                     onCollectionClick = {},
                     onSearch = {},
                     onInput = {},
@@ -82,7 +77,13 @@ fun GBookApp(
             RailScreen(
                 currentScreen = currentScreen,
                 uiState = uiState,
-                onBack = {navController.navigateUp()},
+                onBack = {
+                    if(uiState.currentBook == null) {
+                        navController.navigateUp()
+                    } else {
+                        viewModel.onBackFromBookDetail()
+                    }
+                         },
                 onIconClick = { navController.navigate(it.name) }
             ) {
                 GBookNavHost(
@@ -92,10 +93,7 @@ fun GBookApp(
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                    },
+                    onCardClick = { viewModel.handleOnCardClick(it) },
                     onCollectionClick = {},
                     onSearch = {},
                     onInput = {},
@@ -108,7 +106,13 @@ fun GBookApp(
                 currentScreen = currentScreen,
                 uiState = uiState,
                 onIconClick = { navController.navigate(it.name) },
-                onBack = {navController.navigateUp()}
+                onBack = {
+                    if(uiState.currentBook == null) {
+                        navController.navigateUp()
+                    } else {
+                        viewModel.onBackFromBookDetail()
+                    }
+                         },
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
@@ -117,10 +121,7 @@ fun GBookApp(
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                    },
+                    onCardClick = {  },
                     onCollectionClick = {},
                     onSearch = {},
                     onInput = {},

@@ -40,7 +40,7 @@ fun RailScreen(
                 currentScreen = currentScreen,
                 onIconClick = onIconClick
             )
-            if (currentScreen == Screen.Home) {
+            if (currentScreen == Screen.Home && uiState.currentBook == null) {
                 Box(
                     modifier = modifier
                         .weight(1f)

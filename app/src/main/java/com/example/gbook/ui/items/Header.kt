@@ -37,45 +37,46 @@ import com.example.gbook.ui.utils.Function
 
 @Composable
 fun AppHeaderBar(
-    currentScreen: Screen,
     uiState: GBookUiState,
-    onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    currentScreen: Screen,
+    onIconClick: ((Screen) -> Unit),
 ) {
-    when (currentScreen) {
-        Screen.Home -> {
-            HomeHeader(
-                account = uiState.account?.name?: stringResource(id = R.string.account),
-                onAccountClick = { onIconClick(Screen.Account) },
-                modifier = modifier
-            )
+    if(uiState.currentBook == null) {
+        when (currentScreen) {
+            Screen.Home -> {
+                HomeHeader(
+                    account = uiState.account?.name?: stringResource(id = R.string.account),
+                    onAccountClick = { onIconClick(Screen.Account) },
+                    modifier = modifier
+                )
+            }
+            Screen.Category -> {
+                BookHeader(
+                    currentScreen = currentScreen,
+                    title = uiState.currentBookCollection?.name
+                        ?: stringResource(id = R.string.category),
+                    onBack = onBack,
+                    modifier = modifier
+                )
+            }
+            else -> {
+                BookHeader(
+                    currentScreen = currentScreen,
+                    title = stringResource(id = currentScreen.title),
+                    onBack = onBack,
+                    modifier = modifier
+                )
+            }
         }
-        Screen.Category -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = uiState.currentBookCollection?.name
-                    ?: stringResource(id = R.string.category),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
-        Screen.Book -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = uiState.currentBook?.title?: stringResource(id = R.string.book),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
-        else -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = stringResource(id = currentScreen.title),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
+    } else {
+        BookHeader(
+            currentScreen = currentScreen,
+            title = uiState.currentBook?.title?: stringResource(id = R.string.book),
+            onBack = onBack,
+            modifier = modifier
+        )
     }
 }
 @Composable

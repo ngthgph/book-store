@@ -15,11 +15,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.BooksGridSection
 import com.example.gbook.ui.items.SearchBar
+import com.example.gbook.ui.screens.book.ListDetailHandler
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
@@ -27,23 +31,28 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun HomeScreen(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    viewModel: GBookViewModel,
+    uiState: GBookUiState,
+    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier.fillMaxWidth()
+    ListDetailHandler(
+        navigationType = navigationType,
+        viewModel = viewModel,
+        uiState = uiState,
+        networkBookUiState = networkBookUiState,
+        onButtonClick = onButtonClick,
+        modifier = modifier
     ) {
         HomeContent(
             navigationType = navigationType,
             uiState = uiState,
+            networkBookUiState = networkBookUiState,
             bookListTitle = stringResource(R.string.recommended),
             onButtonClick = onButtonClick,
-            onCardClick = onCardClick,
+            onCardClick = { viewModel.handleOnCardClick(it) },
             onSearch = onSearch,
         )
     }
@@ -52,7 +61,8 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    uiState: GBookUiState,
+    networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
@@ -70,7 +80,7 @@ fun HomeContent(
         SearchBar(onSearch = onSearch)
         BooksGridSection(
             navigationType = navigationType,
-            uiState = uiState,
+            uiState = networkBookUiState,
             bookListTitle = bookListTitle,
             onButtonClick = onButtonClick,
             onCardClick = onCardClick
@@ -122,9 +132,10 @@ fun CompactHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            uiState = MockData.networkBookUiState,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            uiState = GBookUiState(),
+            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
-            onCardClick = {},
             onSearch = {},
         )
     }
@@ -135,9 +146,10 @@ fun MediumHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
-            uiState = MockData.networkBookUiState,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            uiState = GBookUiState(),
+            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
-            onCardClick = {},
             onSearch = {},
         )
     }
@@ -149,9 +161,10 @@ fun ExpandedHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            uiState = MockData.networkBookUiState,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            uiState = GBookUiState(),
+            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
-            onCardClick = {},
             onSearch = {},
         )
     }

@@ -31,7 +31,7 @@ fun BottomBarScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { if (currentScreen != Screen.Home)
+        topBar = { if (currentScreen != Screen.Home || uiState.currentBook != null)
             AppHeaderBar(
                 currentScreen = currentScreen,
                 uiState = uiState,
@@ -46,7 +46,7 @@ fun BottomBarScreen(
             )
         }
     ) {
-        if (currentScreen == Screen.Home) {
+        if (currentScreen == Screen.Home && uiState.currentBook == null) {
             Box(
                 modifier = modifier
                     .background(MaterialTheme.colorScheme.inverseOnSurface)

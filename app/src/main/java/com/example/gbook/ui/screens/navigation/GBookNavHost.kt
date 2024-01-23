@@ -11,7 +11,6 @@ import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.screens.account.AccountScreen
-import com.example.gbook.ui.screens.book.BookDetailScreen
 import com.example.gbook.ui.screens.cart.CartScreen
 import com.example.gbook.ui.screens.categories.CategoriesScreen
 import com.example.gbook.ui.screens.categories.CategoryScreen
@@ -42,9 +41,10 @@ fun GBookNavHost(
         composable(Screen.Home.name) {
             HomeScreen(
                 navigationType = navigationType,
-                uiState = networkBookUiState,
+                viewModel = viewModel,
+                uiState = uiState,
+                networkBookUiState = networkBookUiState,
                 onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
                 onSearch = onSearch,
                 modifier = modifier,
             )
@@ -85,17 +85,6 @@ fun GBookNavHost(
                 onSearch = onSearch,
                 modifier = modifier
             )
-        }
-        if(navigationType != NavigationType.PERMANENT_NAVIGATION_DRAWER) {
-            composable(Screen.Book.name) {
-                BookDetailScreen(
-                    navigationType = navigationType,
-                    uiState = uiState,
-                    networkBookUiState = networkBookUiState,
-                    onButtonClick = onButtonClick,
-                    modifier = modifier
-                )
-            }
         }
         composable(Screen.Account.name) {
             AccountScreen(
