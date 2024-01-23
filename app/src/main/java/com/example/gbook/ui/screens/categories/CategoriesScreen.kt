@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.data.local.LocalCategoriesProvider
-import com.example.gbook.data.model.Category
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.ui.items.CollectionGrid
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.theme.GBookTheme
@@ -16,6 +16,8 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun CategoriesScreen(
     navigationType: NavigationType,
+    onButtonClick: (Function) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val categories = LocalCategoriesProvider.categories
@@ -23,28 +25,28 @@ fun CategoriesScreen(
         modifier = modifier,
         navigationType = navigationType,
         categories = categories,
-        onButtonClick = {},
-        onCardClick = {}
+        onButtonClick = onButtonClick,
+        onCollectionClick = onCollectionClick,
     )
 }
 
 @Composable
 fun CategoriesContent(
     navigationType: NavigationType,
-    categories: List<Category>,
+    categories: List<BookCollection>,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Category) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        SearchBar(onSearch = {}, isSearching = false)
+        SearchBar(onSearch = {})
         CollectionGrid(
             navigationType = navigationType,
             categories = categories,
             onButtonClick = onButtonClick,
-            onCardClick = onCardClick
+            onCollectionClick = onCollectionClick,
         )
     }
 }
@@ -52,13 +54,21 @@ fun CategoriesContent(
 @Composable
 fun CompactCategoriesScreenPreview() {
     GBookTheme {
-        CategoriesScreen(navigationType = NavigationType.BOTTOM_NAVIGATION)
+        CategoriesScreen(
+            navigationType = NavigationType.BOTTOM_NAVIGATION,
+            onButtonClick = {},
+            onCollectionClick = {},
+        )
     }
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
 fun MediumCategoriesScreenPreview() {
     GBookTheme {
-        CategoriesScreen(navigationType = NavigationType.NAVIGATION_RAIL)
+        CategoriesScreen(
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            onButtonClick = {},
+            onCollectionClick = {},
+        )
     }
 }

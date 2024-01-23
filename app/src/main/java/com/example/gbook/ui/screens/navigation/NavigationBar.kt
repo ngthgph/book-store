@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -24,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.local.LocalScreenProvider
-import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.DrawerHeader
 import com.example.gbook.ui.items.OnlyAccountHomeHeader
 import com.example.gbook.ui.theme.GBookTheme
@@ -89,7 +88,7 @@ fun AppNavigationRail(
 @Composable
 fun AppNavigationDrawer(
     currentScreen: Screen,
-    uiState: GbookUiState,
+    uiState: GBookUiState,
     onIconClick: (Screen) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit

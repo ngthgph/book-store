@@ -31,16 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.gbook.R
-import com.example.gbook.data.model.Category
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun CollectionGrid(
     navigationType: NavigationType,
-    categories: List<Category>,
+    categories: List<BookCollection>,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Category) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -61,10 +61,10 @@ fun CollectionGrid(
         items(categories) {
             CollectionCard(
                 navigationType = navigationType,
-                category = it,
+                bookCollection = it,
                 onButtonClick = onButtonClick,
                 selected = false,
-                onCardClick = onCardClick,
+                onCollectionClick = onCollectionClick,
                 isLibrary = isLibrary,
                 modifier = Modifier
                     .padding(dimensionResource(id = padding))
@@ -79,9 +79,9 @@ fun CollectionGrid(
 fun CollectionCard(
     navigationType: NavigationType,
     selected: Boolean,
-    category: Category,
+    bookCollection: BookCollection,
     onButtonClick: (Function) -> Unit,
-    onCardClick: (Category) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -96,12 +96,13 @@ fun CollectionCard(
                 MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = modifier
-            .clickable { onCardClick(category) }
+            .clickable { onCollectionClick(bookCollection) }
     ) {
         Box(modifier = Modifier) {
             Image(
-                painter = painterResource(id = category.image),
-                contentDescription = stringResource(id = category.name),
+                painter = painterResource(
+                    id = bookCollection.image?:R.drawable.ic_broken_image),
+                contentDescription = bookCollection.name?: stringResource(id = R.string.fail_to_load),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -135,7 +136,9 @@ fun CollectionCard(
                     .fillMaxWidth(),
             ){
                 Text(
-                    text = stringResource(id = category.name).replaceFirstChar { it.uppercase() },
+                    text = bookCollection.name
+                        ?: stringResource(id = R.string.no_book_collection_name)
+                        .replaceFirstChar { it.uppercase() },
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     fontWeight = FontWeight.Bold,

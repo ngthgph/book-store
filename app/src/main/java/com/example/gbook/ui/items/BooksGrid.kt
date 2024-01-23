@@ -39,8 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
@@ -48,7 +49,7 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun BooksGridSection(
     navigationType: NavigationType,
-    bookList: List<Book>,
+    uiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
@@ -62,9 +63,9 @@ fun BooksGridSection(
             navigationType = navigationType,
             title = bookListTitle
         )
-        BooksGrid(
+        NetworkBooksGrid(
             navigationType = navigationType,
-            bookList = bookList,
+            uiState = uiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
             onCardClick = onCardClick
@@ -110,6 +111,34 @@ fun CollectionTitle(
                     bottom = dimensionResource(id = padding)
                 )
         )
+    }
+}
+@Composable
+fun NetworkBooksGrid(
+    navigationType: NavigationType,
+    uiState: NetworkBookUiState,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
+) {
+    when(uiState) {
+        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+        is NetworkBookUiState.Success -> {
+            BooksGrid(
+                navigationType = navigationType,
+                bookList = uiState.books,
+                isFavorite = isFavorite,
+                onButtonClick = onButtonClick,
+                onCardClick = onCardClick,
+                modifier = modifier
+            )
+        }
+        is NetworkBookUiState.Error ->
+            ErrorContent(
+                onButtonClick = onButtonClick,
+                modifier = modifier
+            )
     }
 }
 @Composable
@@ -288,7 +317,7 @@ fun BookPhoto(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(context = LocalContext.current)
-            .data(imgSrc)
+            .data(imgSrc.replace("http","https"))
             .crossfade(true)
             .build(),
         placeholder = painterResource(id = R.drawable.loading_img),
@@ -303,13 +332,12 @@ fun BookPhoto(
 @Composable
 fun BookGridSectionPreview() {
     GBookTheme {
-        val mockData = List(10){MockData.bookUiState.currentBook!!}
         BooksGridSection(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             bookListTitle = "Music",
-            bookList = mockData,
             onButtonClick = {},
-            onCardClick = {}
+            onCardClick = {},
+            uiState = MockData.networkBookUiState
         )
     }
 }
@@ -318,53 +346,12 @@ fun BookGridSectionPreview() {
 @Composable
 fun MediumBookGridSectionPreview() {
     GBookTheme {
-        val mockData = List(10){MockData.bookUiState.currentBook!!}
         BooksGridSection(
             navigationType = NavigationType.NAVIGATION_RAIL,
             bookListTitle = "Music",
-            bookList = mockData,
             onButtonClick = {},
-            onCardClick = {}
-        )
-    }
-}
-@Preview
-@Composable
-fun BookGridPreview() {
-    GBookTheme {
-        val mockData = List(10){MockData.bookUiState.currentBook!!}
-        BooksGrid(
-            navigationType = NavigationType.BOTTOM_NAVIGATION,
-            bookList = mockData,
-            onButtonClick = {},
-            onCardClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 700)
-@Composable
-fun MediumBookGridPreview() {
-    GBookTheme {
-        val mockData = List(10){MockData.bookUiState.currentBook!!}
-        BooksGrid(
-            navigationType = NavigationType.NAVIGATION_RAIL,
-            bookList = mockData,
-            onButtonClick = {},
-            onCardClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun CardPreview() {
-    GBookTheme {
-        BooksCard(
-            book = MockData.bookUiState.currentBook!!,
-            onButtonClick = {},
-            selected = true,
-            onCardClick = {}
+            onCardClick = {},
+            uiState = MockData.networkBookUiState
         )
     }
 }

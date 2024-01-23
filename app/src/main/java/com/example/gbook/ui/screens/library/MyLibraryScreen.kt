@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.Category
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.BookCollection
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.CollectionGrid
 import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.items.SearchBar
@@ -20,14 +20,18 @@ import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun MyLibraryScreen(
-    uiState: GbookUiState,
+    uiState: GBookUiState,
+    onSearch: (String) -> Unit,
+    onButtonClick: (Function) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     MyLibraryContent(
         modifier = modifier,
-        onSearch = {},
-        onButtonClick = {},
+        onSearch = onSearch,
+        onButtonClick = onButtonClick,
+        onCollectionClick = onCollectionClick,
         navigationType = navigationType,
         library = MockData.libraryUiState.library
     )
@@ -35,12 +39,12 @@ fun MyLibraryScreen(
 
 @Composable
 fun MyLibraryContent(
-    onSearch: (String) -> Unit,
     navigationType: NavigationType,
-    library: List<Category>,
+    library: List<BookCollection>,
+    onSearch: (String) -> Unit,
     onButtonClick: (Function) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
-    isSearching: Boolean = false,
 ) {
     Scaffold(
         modifier = modifier,
@@ -58,14 +62,13 @@ fun MyLibraryContent(
         ) {
             SearchBar(
                 onSearch = onSearch,
-                isSearching = isSearching
             )
             CollectionGrid(
                 modifier = modifier,
                 navigationType = navigationType,
                 categories = library,
-                onButtonClick = {},
-                onCardClick = {},
+                onButtonClick = onButtonClick,
+                onCollectionClick = onCollectionClick,
                 isLibrary = true
             )
         }
@@ -76,7 +79,12 @@ fun MyLibraryContent(
 @Composable
 fun CompactFavoriteScreenPreview() {
     GBookTheme {
-        MyLibraryScreen(MockData.libraryUiState)
+        MyLibraryScreen(
+            MockData.libraryUiState,
+            onButtonClick = {},
+            onCollectionClick = {},
+            onSearch = {},
+        )
     }
 }
 @Preview(showBackground = true, widthDp = 700)
@@ -85,7 +93,10 @@ fun MediumFavoriteScreenPreview() {
     GBookTheme {
         MyLibraryScreen(
             uiState = MockData.libraryUiState,
-            navigationType = NavigationType.NAVIGATION_RAIL
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            onButtonClick = {},
+            onCollectionClick = {},
+            onSearch = {},
         )
     }
 }

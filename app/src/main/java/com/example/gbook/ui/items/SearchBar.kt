@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,9 +34,9 @@ import com.example.gbook.ui.theme.GBookTheme
 fun SearchBar(
     modifier: Modifier = Modifier,
     onSearch: (String) -> Unit,
-    isSearching: Boolean
 ) {
-    var query by remember { mutableStateOf("") }
+    var query by rememberSaveable { mutableStateOf("") }
+    var isSearching by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
@@ -67,6 +68,7 @@ fun SearchBar(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         keyboardController?.hide()
+                        isSearching = !isSearching
                     }
                 ),
                 modifier = Modifier
@@ -90,6 +92,6 @@ fun SearchBar(
 @Composable
 fun SearchBarPreview() {
     GBookTheme {
-        SearchBar(onSearch = {}, isSearching = false)
+        SearchBar(onSearch = {})
     }
 }

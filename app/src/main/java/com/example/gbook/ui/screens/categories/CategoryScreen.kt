@@ -24,9 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.BooksGrid
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.theme.GBookTheme
@@ -36,10 +36,12 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun CategoryScreen(
     navigationType: NavigationType,
-    uiState: GbookUiState,
+    uiState: GBookUiState,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mockData = List(10){MockData.homeUiState.currentBook!!}
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -47,13 +49,12 @@ fun CategoryScreen(
     ) {
         CategoryContent(
             navigationType = navigationType,
-            bookList = mockData,
-            title = stringResource(id = uiState.currentCategory!!.name).replaceFirstChar { it.uppercase() },
-            image = painterResource(id = uiState.currentCategory!!.image),
-            onButtonClick = {},
-            onCardClick = {},
-            onSearch = {},
-            isSearching = false
+            bookList = MockData.bookList,
+            title = uiState.currentBookCollection?.name!!.replaceFirstChar { it.uppercase() },
+            image = painterResource(id = uiState.currentBookCollection?.image!!),
+            onButtonClick = onButtonClick,
+            onCardClick = onCardClick,
+            onSearch = onSearch,
         )
     }
 }
@@ -67,7 +68,6 @@ fun CategoryContent(
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
-    isSearching: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val space = if (navigationType == NavigationType.BOTTOM_NAVIGATION)
@@ -88,7 +88,7 @@ fun CategoryContent(
         Column(
             modifier = Modifier.weight(3f)
         ) {
-            SearchBar(onSearch = onSearch, isSearching = isSearching)
+            SearchBar(onSearch = onSearch)
             BooksGrid(
                 navigationType = navigationType,
                 bookList = bookList,
@@ -150,7 +150,10 @@ fun CompactCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            uiState = MockData.categoryUiState
+            uiState = MockData.categoryUiState,
+            onButtonClick = {},
+            onCardClick = {},
+            onSearch = {},
         )
     }
 }
@@ -160,7 +163,10 @@ fun MediumCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
-            uiState = MockData.categoryUiState
+            uiState = MockData.categoryUiState,
+            onButtonClick = {},
+            onCardClick = {},
+            onSearch = {},
         )
     }
 }
@@ -171,7 +177,10 @@ fun ExpandedCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            uiState = MockData.categoryUiState
+            uiState = MockData.categoryUiState,
+            onButtonClick = {},
+            onCardClick = {},
+            onSearch = {},
         )
     }
 }

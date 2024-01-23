@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.ClickableText
 import com.example.gbook.ui.items.DescriptionButton
 import com.example.gbook.ui.items.InputTextField
@@ -32,23 +32,25 @@ import com.example.gbook.ui.utils.NavigationType
 
 @Composable
 fun AccountScreen(
-    uiState: GbookUiState,
+    uiState: GBookUiState,
+    onInput:(String) -> Unit,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     AccountContent(
-        onInput = {},
+        onButtonClick = onButtonClick,
+        onInput = onInput,
         navigationType = navigationType,
         modifier = modifier,
-        onButtonClick = {},
     )
 }
 
 @Composable
 fun AccountContent(
     onInput:(String) -> Unit,
-    navigationType: NavigationType,
     onButtonClick: (Function) -> Unit,
+    navigationType: NavigationType,
     modifier: Modifier = Modifier
 ) {
     var padding = dimensionResource(id = R.dimen.padding_large)
@@ -150,6 +152,8 @@ fun CompactAccountScreenPreview() {
     GBookTheme {
         AccountScreen(
             uiState = MockData.accountUiState,
+            onButtonClick = {},
+            onInput = {}
         )
     }
 }
@@ -159,7 +163,9 @@ fun MediumAccountScreenPreview() {
     GBookTheme {
         AccountScreen(
             uiState = MockData.accountUiState,
-            navigationType = NavigationType.NAVIGATION_RAIL
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            onButtonClick = {},
+            onInput = {}
         )
     }
 }

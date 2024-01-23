@@ -1,20 +1,22 @@
 package com.example.gbook.data.model
 
 data class Book(
-    val id: Int = 0,
+    val id: Int,
+    val networkId: String,
     val title: String,
     val author: String,
     val publisher: String,
     val publishedDate: String,
     val description: String,
-    val ISBN_13: String,
-    val ISBN_10: String,
+    val isbn13: String,
+    val isbn10: String,
     val pageCount: Int,
     val categories: String,
     val imageLinks: String,
-    val retailPrice: Int,
+    val saleability: String,
+    val retailPrice: Double,
     val currencyCode: String,
-    val rating: Int = 0,
+    val rating: Int? = null,
     val note: String = "",
     val favorite: Boolean = false
 )

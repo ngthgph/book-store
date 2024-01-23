@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.GbookUiState
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.AppHeaderBar
 import com.example.gbook.ui.items.OnlyAccountHomeHeader
 import com.example.gbook.ui.theme.GBookTheme
@@ -24,7 +24,7 @@ import com.example.gbook.ui.utils.Screen
 @Composable
 fun RailScreen(
     currentScreen: Screen,
-    uiState: GbookUiState,
+    uiState: GBookUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -47,11 +47,11 @@ fun RailScreen(
                         .background(MaterialTheme.colorScheme.inverseOnSurface)
                         .fillMaxSize()
                 ) {
-//                    OnlyAccountHomeHeader(
-//                        account = uiState.account?.name?: stringResource(id = R.string.account),
-//                        onAccountClick = { onIconClick(Screen.Account) },
-//                        modifier = Modifier.background(Color.Transparent)
-//                    )
+                    OnlyAccountHomeHeader(
+                        account = uiState.account?.name?: stringResource(id = R.string.account),
+                        onAccountClick = { onIconClick(Screen.Account) },
+                        modifier = Modifier.background(Color.Transparent)
+                    )
                     Column(modifier = Modifier) {
                         content()
 //                AdsBanner()

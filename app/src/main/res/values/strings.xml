@@ -29,7 +29,7 @@
     <string name="isbn_13">ISBN_13: </string>
     <string name="isbn_10">ISBN_10: </string>
     <string name="g_book_slogan">Your gateway to Google book universe. Online book shopping for everyone</string>
-    <string name="personally_recommended">Personally Recommended</string>
+    <string name="recommended">Recommended</string>
     <string name="economics">economics</string>
     <string name="fiction">fiction</string>
     <string name="health">health</string>
@@ -57,4 +57,5 @@
     <string name="sign_in">Sign In</string>
     <string name="forget_password">Forget Password</string>
     <string name="sign_up">Sign up</string>
+    <string name="no_book_collection_name">No book collection name</string>
 </resources>
