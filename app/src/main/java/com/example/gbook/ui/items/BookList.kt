@@ -35,22 +35,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.TextStyle
+import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
 fun BooksListSection(
     navigationType: NavigationType,
-    bookList: List<Book>,
-    isFavorite: Boolean = false,
+    uiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -59,9 +60,9 @@ fun BooksListSection(
             navigationType = navigationType,
             title = bookListTitle
         )
-        BooksList(
+        NetworkBooksList(
             navigationType = navigationType,
-            bookList = bookList,
+            uiState = uiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
             onCardClick = onCardClick
@@ -69,19 +70,46 @@ fun BooksListSection(
     }
 }
 @Composable
-fun BooksList(
+fun NetworkBooksList(
     navigationType: NavigationType,
-    bookList: List<Book>,
-    isFavorite: Boolean = false,
+    uiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
+) {
+    when(uiState) {
+        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+        is NetworkBookUiState.Success ->
+            BooksList(
+                navigationType = navigationType,
+                bookList = uiState.books,
+                isFavorite = isFavorite,
+                onButtonClick = onButtonClick,
+                onCardClick = onCardClick,
+                modifier = modifier
+            )
+        is NetworkBookUiState.Error ->
+            ErrorContent(
+                onButtonClick = onButtonClick,
+                modifier = modifier
+            )
+    }
+}
+@Composable
+fun BooksList(
+    navigationType: NavigationType,
+    bookList: List<Book>,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
 ) {
     var padding = dimensionResource(id = R.dimen.padding_large)
     if(navigationType != NavigationType.BOTTOM_NAVIGATION) {
         padding = dimensionResource(id = R.dimen.padding_medium)
     }
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(bookList) {
             BookItemCard(
                 navigationType = navigationType,
@@ -98,14 +126,14 @@ fun BooksList(
 }
 @Composable
 fun BookItemCard(
-    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
     book: Book,
-    isCart: Boolean = false,
-    amount: Int = 0,
-    isFavorite: Boolean = false,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    isCart: Boolean = false,
+    amount: Int = 0,
+    isFavorite: Boolean = false,
+    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     var maxHeight = dimensionResource(id = R.dimen.book_item_row)
     var padding = dimensionResource(id = R.dimen.padding_small)

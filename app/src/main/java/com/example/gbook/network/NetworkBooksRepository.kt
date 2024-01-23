@@ -1,12 +1,10 @@
 package com.example.gbook.network
 
-import com.example.gbook.data.local.LocalCategoriesProvider.categories
 import com.example.gbook.data.model.Book
-import com.example.gbook.network.BookApiService
-import com.example.gbook.network.BookItem
 
 interface BooksRepository {
     suspend fun searchBookTerm(query: String): List<Book>
+    suspend fun searchBookItem(networkId: String): Book
 }
 
 class NetworkBooksRepository(
@@ -15,15 +13,21 @@ class NetworkBooksRepository(
     override suspend fun searchBookTerm(query: String): List<Book> {
         val searchResult = bookApiService.searchBooks(query)
         val bookList = searchResult.items?.map { resultItem ->
-            bookApiService.getBook(resultItem.id)
+            bookApiService.getBook(resultItem.networkId)
         }
         return bookList?.map { transformToBook(it, bookList.indexOf(it))
         } ?: emptyList()
     }
 
-    private fun transformToBook(bookInfo: BookItem, bookId: Int): Book {
+    override suspend fun searchBookItem(networkId: String): Book {
+        val bookItem = bookApiService.getBook(networkId)
+        return transformToBook(bookItem, 0)
+    }
+
+    private fun transformToBook(bookInfo: BookItem, listId: Int): Book {
         return Book(
-            id = bookId,
+            id = listId,
+            networkId = bookInfo.networkId,
             title = bookInfo.volumeInfo.title,
             author = bookInfo.volumeInfo.author?.joinToString(", ").orEmpty(),
             publisher = bookInfo.volumeInfo.publisher.orEmpty(),

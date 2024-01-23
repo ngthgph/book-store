@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.data.local.LocalCategoriesProvider
-import com.example.gbook.data.model.Collection
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.ui.items.CollectionGrid
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.theme.GBookTheme
@@ -17,7 +17,7 @@ import com.example.gbook.ui.utils.NavigationType
 fun CategoriesScreen(
     navigationType: NavigationType,
     onButtonClick: (Function) -> Unit,
-    onCategoryClick: (Collection) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val categories = LocalCategoriesProvider.categories
@@ -26,16 +26,16 @@ fun CategoriesScreen(
         navigationType = navigationType,
         categories = categories,
         onButtonClick = onButtonClick,
-        onCategoryClick = onCategoryClick,
+        onCollectionClick = onCollectionClick,
     )
 }
 
 @Composable
 fun CategoriesContent(
     navigationType: NavigationType,
-    categories: List<Collection>,
+    categories: List<BookCollection>,
     onButtonClick: (Function) -> Unit,
-    onCategoryClick: (Collection) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -46,7 +46,7 @@ fun CategoriesContent(
             navigationType = navigationType,
             categories = categories,
             onButtonClick = onButtonClick,
-            onCategoryClick = onCategoryClick,
+            onCollectionClick = onCollectionClick,
         )
     }
 }
@@ -57,7 +57,7 @@ fun CompactCategoriesScreenPreview() {
         CategoriesScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             onButtonClick = {},
-            onCategoryClick = {},
+            onCollectionClick = {},
         )
     }
 }
@@ -68,7 +68,7 @@ fun MediumCategoriesScreenPreview() {
         CategoriesScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
             onButtonClick = {},
-            onCategoryClick = {},
+            onCollectionClick = {},
         )
     }
 }

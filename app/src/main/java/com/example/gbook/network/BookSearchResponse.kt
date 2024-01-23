@@ -9,7 +9,8 @@ data class BookSearchResponse (
 )
 @Serializable
 data class BookItem(
-    val id: String,
+    @SerialName(value = "id")
+    val networkId: String,
     val volumeInfo: VolumeInfo,
     val saleInfo: SaleInfo,
 )

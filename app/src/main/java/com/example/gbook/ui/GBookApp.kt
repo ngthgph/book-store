@@ -55,18 +55,23 @@ fun GBookApp(
                 modifier = modifier,
                 currentScreen = currentScreen,
                 uiState = uiState,
+                networkBookUiState = networkBookUiState,
                 onIconClick = { navController.navigate(it.name) },
                 onBack = {navController.navigateUp()},
                 onButtonClick = {}
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
+                    viewModel = viewModel,
                     uiState = uiState,
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {},
-                    onCategoryClick = {},
+                    onCardClick = {
+                        viewModel.handleOnCardClick(it)
+                        navController.navigate(Screen.Book.name)
+                                  },
+                    onCollectionClick = {},
                     onSearch = {},
                     onInput = {},
                 )
@@ -82,12 +87,16 @@ fun GBookApp(
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.NAVIGATION_RAIL,
+                    viewModel = viewModel,
                     uiState = uiState,
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {},
-                    onCategoryClick = {},
+                    onCardClick = {
+                        viewModel.handleOnCardClick(it)
+                        navController.navigate(Screen.Book.name)
+                    },
+                    onCollectionClick = {},
                     onSearch = {},
                     onInput = {},
                 )
@@ -103,12 +112,16 @@ fun GBookApp(
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
+                    viewModel = viewModel,
                     uiState = uiState,
                     networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
-                    onCardClick = {},
-                    onCategoryClick = {},
+                    onCardClick = {
+                        viewModel.handleOnCardClick(it)
+                        navController.navigate(Screen.Book.name)
+                    },
+                    onCollectionClick = {},
                     onSearch = {},
                     onInput = {},
                 )

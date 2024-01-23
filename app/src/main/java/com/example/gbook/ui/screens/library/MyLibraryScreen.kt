@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.gbook.data.local.MockData
-import com.example.gbook.data.model.Collection
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.CollectionGrid
 import com.example.gbook.ui.items.FABItem
@@ -23,7 +23,7 @@ fun MyLibraryScreen(
     uiState: GBookUiState,
     onSearch: (String) -> Unit,
     onButtonClick: (Function) -> Unit,
-    onCategoryClick: (Collection) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
@@ -31,7 +31,7 @@ fun MyLibraryScreen(
         modifier = modifier,
         onSearch = onSearch,
         onButtonClick = onButtonClick,
-        onCategoryClick = onCategoryClick,
+        onCollectionClick = onCollectionClick,
         navigationType = navigationType,
         library = MockData.libraryUiState.library
     )
@@ -40,10 +40,10 @@ fun MyLibraryScreen(
 @Composable
 fun MyLibraryContent(
     navigationType: NavigationType,
-    library: List<Collection>,
+    library: List<BookCollection>,
     onSearch: (String) -> Unit,
     onButtonClick: (Function) -> Unit,
-    onCategoryClick: (Collection) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -68,7 +68,7 @@ fun MyLibraryContent(
                 navigationType = navigationType,
                 categories = library,
                 onButtonClick = onButtonClick,
-                onCategoryClick = onCategoryClick,
+                onCollectionClick = onCollectionClick,
                 isLibrary = true
             )
         }
@@ -82,7 +82,7 @@ fun CompactFavoriteScreenPreview() {
         MyLibraryScreen(
             MockData.libraryUiState,
             onButtonClick = {},
-            onCategoryClick = {},
+            onCollectionClick = {},
             onSearch = {},
         )
     }
@@ -95,7 +95,7 @@ fun MediumFavoriteScreenPreview() {
             uiState = MockData.libraryUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
             onButtonClick = {},
-            onCategoryClick = {},
+            onCollectionClick = {},
             onSearch = {},
         )
     }

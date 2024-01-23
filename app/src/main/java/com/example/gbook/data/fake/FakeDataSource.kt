@@ -1,25 +1,24 @@
-package com.example.gbook.fake
+package com.example.gbook.data.fake
 
 import com.example.gbook.data.model.Book
 import com.example.gbook.network.BookItem
 import com.example.gbook.network.BookSearchResponse
 import com.example.gbook.network.ImageLinks
-import com.example.gbook.network.Isbn10
-import com.example.gbook.network.Isbn13
+import com.example.gbook.network.Isbn
 import com.example.gbook.network.RetailPrice
 import com.example.gbook.network.SaleInfo
 import com.example.gbook.network.VolumeInfo
 
 object FakeDataSource {
     val fakeBookItem1 = BookItem(
-        id = "123456789",
+        networkId  = "123456789",
         volumeInfo = VolumeInfo(
             title = "Fake Book 1",
             author = listOf("Author A", "Author B"),
             publisher = "Fake Publisher 1",
             publishedDate = "2022-01-15",
             description = "This is a fake book.",
-            industryIdentifiers = Pair(Isbn10("123456789X"), Isbn13("9781234567890")),
+            industryIdentifiers = listOf(Isbn("123456789X"), Isbn("9781234567890")),
             printedPageCount = 250,
             categories = listOf("Fiction", "Mystery"),
             imageLinks = ImageLinks("https://example.com/thumbnail1.jpg")
@@ -30,14 +29,14 @@ object FakeDataSource {
         )
     )
     val fakeBookItem2 = BookItem(
-        id = "2123456789",
+        networkId = "2123456789",
         volumeInfo = VolumeInfo(
             title = "Fake Book 2",
             author = listOf("Author C", "Author D"),
             publisher = "Fake Publisher 2",
             publishedDate = "2022-02-20",
             description = "Another fake book.",
-            industryIdentifiers = Pair(Isbn10("9876543210"), Isbn13("9789876543210")),
+            industryIdentifiers = listOf(Isbn("9876543210"), Isbn("9789876543210")),
             printedPageCount = 180,
             categories = listOf("Science Fiction", "Adventure"),
             imageLinks = ImageLinks("https://example.com/thumbnail2.jpg")
@@ -53,6 +52,7 @@ object FakeDataSource {
 
     private val fakeBook1 = Book(
         id = 0,
+        networkId = "123456789",
         title = "Fake Book 1",
         author = "Author A, Author B",
         publisher = "Fake Publisher 1",
@@ -72,6 +72,7 @@ object FakeDataSource {
     )
     private val fakeBook2 = Book(
         id = 1,
+        networkId = "2123456789",
         title = "Fake Book 2",
         author = "Author C, Author D",
         publisher = "Fake Publisher 2",

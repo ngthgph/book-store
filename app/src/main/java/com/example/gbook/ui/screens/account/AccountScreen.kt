@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.ClickableText
 import com.example.gbook.ui.items.DescriptionButton

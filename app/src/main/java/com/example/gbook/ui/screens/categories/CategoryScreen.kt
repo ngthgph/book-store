@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.BooksGrid
@@ -42,7 +42,6 @@ fun CategoryScreen(
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mockData = List(10){ MockData.homeUiState.currentBook!!}
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -50,9 +49,9 @@ fun CategoryScreen(
     ) {
         CategoryContent(
             navigationType = navigationType,
-            bookList = mockData,
-            title = stringResource(id = uiState.currentCollection!!.name).replaceFirstChar { it.uppercase() },
-            image = painterResource(id = uiState.currentCollection.image),
+            bookList = MockData.bookList,
+            title = uiState.currentBookCollection?.name!!.replaceFirstChar { it.uppercase() },
+            image = painterResource(id = uiState.currentBookCollection?.image!!),
             onButtonClick = onButtonClick,
             onCardClick = onCardClick,
             onSearch = onSearch,

@@ -2,6 +2,7 @@ package com.example.gbook.data.model
 
 data class Book(
     val id: Int,
+    val networkId: String,
     val title: String,
     val author: String,
     val publisher: String,

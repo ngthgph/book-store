@@ -1,8 +1,8 @@
 package com.example.gbook.test
 
 import com.example.gbook.data.model.NetworkBookUiState
-import com.example.gbook.fake.FakeDataSource
-import com.example.gbook.fake.FakeNetworkBooksRepository
+import com.example.gbook.data.fake.FakeDataSource
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.rules.TestDispatcherRule
 import com.example.gbook.ui.GBookViewModel
 import kotlinx.coroutines.test.runTest

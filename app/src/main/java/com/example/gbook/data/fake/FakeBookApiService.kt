@@ -1,4 +1,4 @@
-package com.example.gbook.fake
+package com.example.gbook.data.fake
 
 import com.example.gbook.network.BookApiService
 import com.example.gbook.network.BookItem
@@ -9,7 +9,7 @@ class FakeBookApiService: BookApiService {
         return FakeDataSource.fakeBookResponse
     }
     override suspend fun getBook(bookId: String): BookItem {
-        return if(FakeDataSource.fakeBookItem1.id == bookId)
+        return if(FakeDataSource.fakeBookItem1.networkId == bookId)
             FakeDataSource.fakeBookItem1
         else
             FakeDataSource.fakeBookItem2

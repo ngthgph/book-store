@@ -6,9 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.gbook.data.model.Book
-import com.example.gbook.data.model.Collection
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.screens.account.AccountScreen
 import com.example.gbook.ui.screens.book.BookDetailScreen
 import com.example.gbook.ui.screens.cart.CartScreen
@@ -23,12 +24,13 @@ import com.example.gbook.ui.utils.Screen
 @Composable
 fun GBookNavHost(
     navigationType: NavigationType,
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
     networkBookUiState: NetworkBookUiState,
     navController: NavHostController,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
-    onCategoryClick: (Collection) -> Unit,
+    onCollectionClick: (BookCollection) -> Unit,
     onSearch: (String) -> Unit,
     onInput:(String) -> Unit,
     modifier: Modifier = Modifier
@@ -53,7 +55,7 @@ fun GBookNavHost(
                 uiState = uiState,
                 onSearch = onSearch,
                 onButtonClick = onButtonClick,
-                onCategoryClick = onCategoryClick,
+                onCollectionClick = onCollectionClick,
                 modifier = modifier
             )
         }
@@ -70,7 +72,7 @@ fun GBookNavHost(
             CategoriesScreen(
                 navigationType = navigationType,
                 onButtonClick = onButtonClick,
-                onCategoryClick = onCategoryClick,
+                onCollectionClick = onCollectionClick,
                 modifier = modifier
             )
         }
@@ -84,13 +86,16 @@ fun GBookNavHost(
                 modifier = modifier
             )
         }
-        composable(Screen.Book.name) {
-            BookDetailScreen(
-                navigationType = navigationType,
-                uiState = uiState,
-                onButtonClick = onButtonClick,
-                modifier = modifier
-            )
+        if(navigationType != NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+            composable(Screen.Book.name) {
+                BookDetailScreen(
+                    navigationType = navigationType,
+                    uiState = uiState,
+                    networkBookUiState = networkBookUiState,
+                    onButtonClick = onButtonClick,
+                    modifier = modifier
+                )
+            }
         }
         composable(Screen.Account.name) {
             AccountScreen(

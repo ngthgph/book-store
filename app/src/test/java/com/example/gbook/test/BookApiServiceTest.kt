@@ -1,6 +1,6 @@
 package com.example.gbook.test
 
-import com.example.gbook.fake.FakeDataSource
+import com.example.gbook.data.fake.FakeDataSource
 import com.example.gbook.network.BookApiService
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

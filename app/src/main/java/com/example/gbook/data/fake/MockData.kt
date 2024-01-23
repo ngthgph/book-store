@@ -1,5 +1,6 @@
-package com.example.gbook.data.local
+package com.example.gbook.data.fake
 
+import com.example.gbook.data.local.LocalCategoriesProvider
 import com.example.gbook.data.model.Account
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
@@ -10,6 +11,7 @@ object MockData {
     val category = LocalCategoriesProvider.categories[0]
     private val book = Book(
         id = 0,
+        networkId = "",
         title = "The History of Jazz",
         author = "Ted Gioia",
         publisher = "HarperCollins UK",
@@ -32,7 +34,7 @@ object MockData {
     )
     private val shoppingList = List(3) {Pair(book,1)}
 
-    val bookList = List(10) { book }
+    val bookList = List(20) { book }
 
     val homeUiState = GBookUiState(null, null, null)
     val libraryUiState = GBookUiState(category, null, account, shoppingList, favorite = bookList)

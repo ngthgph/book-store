@@ -43,15 +43,19 @@ import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.items.BookPhoto
 import com.example.gbook.ui.items.DrawerBookHeader
+import com.example.gbook.ui.items.ErrorContent
+import com.example.gbook.ui.items.LoadingContent
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
 fun BookDetailScreen(
     navigationType: NavigationType,
     uiState: GBookUiState,
+    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,11 +65,22 @@ fun BookDetailScreen(
         if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
             DrawerBookHeader(title = uiState.currentBook!!.title)
         }
-        BookDetailContent(
-            navigationType = navigationType,
-            book = uiState.currentBook!!,
-            onButtonClick = onButtonClick,
-        )
+        when(networkBookUiState) {
+            is NetworkBookUiState.Loading -> LoadingContent(modifier = Modifier)
+            is NetworkBookUiState.Success -> {
+                BookDetailContent(
+                    navigationType = navigationType,
+                    book = uiState.currentBook!!,
+                    onButtonClick = onButtonClick,
+                )
+            }
+            is NetworkBookUiState.Error ->
+                ErrorContent(
+                    onButtonClick = onButtonClick,
+                    modifier = Modifier
+                )
+        }
+
     }
 }
 
@@ -382,6 +397,7 @@ fun CompactBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
             uiState = MockData.bookUiState,
+            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             onButtonClick = {}
         )
@@ -393,6 +409,7 @@ fun MediumBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
             uiState = MockData.bookUiState,
+            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
             onButtonClick = {}
         )
@@ -405,6 +422,7 @@ fun ExpandedBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
             uiState = MockData.bookUiState,
+            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
             onButtonClick = {}
         )

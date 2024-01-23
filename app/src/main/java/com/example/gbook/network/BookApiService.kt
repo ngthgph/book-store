@@ -10,8 +10,8 @@ interface BookApiService {
         @Query("q") query: String
     ): BookSearchResponse
 
-    @GET("v1/volumes/{id}")
+    @GET("v1/volumes/{networkId}")
     suspend fun getBook(
-        @Path("id") bookId: String
+        @Path("networkId") networkId: String
     ): BookItem
 }

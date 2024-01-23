@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gbook.R
-import com.example.gbook.data.local.MockData
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
@@ -111,6 +111,34 @@ fun CollectionTitle(
                     bottom = dimensionResource(id = padding)
                 )
         )
+    }
+}
+@Composable
+fun NetworkBooksGrid(
+    navigationType: NavigationType,
+    uiState: NetworkBookUiState,
+    onButtonClick: (Function) -> Unit,
+    onCardClick: (Book) -> Unit,
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
+) {
+    when(uiState) {
+        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+        is NetworkBookUiState.Success -> {
+            BooksGrid(
+                navigationType = navigationType,
+                bookList = uiState.books,
+                isFavorite = isFavorite,
+                onButtonClick = onButtonClick,
+                onCardClick = onCardClick,
+                modifier = modifier
+            )
+        }
+        is NetworkBookUiState.Error ->
+            ErrorContent(
+                onButtonClick = onButtonClick,
+                modifier = modifier
+            )
     }
 }
 @Composable
@@ -304,7 +332,6 @@ fun BookPhoto(
 @Composable
 fun BookGridSectionPreview() {
     GBookTheme {
-        val mockData = List(10){ MockData.bookUiState.currentBook!!}
         BooksGridSection(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             bookListTitle = "Music",
@@ -319,7 +346,6 @@ fun BookGridSectionPreview() {
 @Composable
 fun MediumBookGridSectionPreview() {
     GBookTheme {
-        val mockData = List(10){ MockData.bookUiState.currentBook!!}
         BooksGridSection(
             navigationType = NavigationType.NAVIGATION_RAIL,
             bookListTitle = "Music",
