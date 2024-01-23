@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -150,11 +151,14 @@ fun BookDetailCard(
                     .fillMaxWidth()
                     .aspectRatio(1f)
             )
-            if(navigationType == NavigationType.NAVIGATION_RAIL) {
-                RailBookDetailInfo(book = book)
-            } else {
-                BookDetailInfo(book = book)
-            }
+//            if(navigationType == NavigationType.NAVIGATION_RAIL) {
+//                RailBookDetailInfo(book = book)
+//            } else {
+                BookDetailInfo(
+                    book = book,
+                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+                )
+//            }
         }
     }
 }
@@ -330,17 +334,21 @@ fun ButtonCard(
         shape = CircleShape,
         modifier = modifier
             .clip(CircleShape)
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .clickable { onButtonClick(function) },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
     )  {
-        IconButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onButtonClick(function) },
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
             Icon(
                 imageVector = function.icon,
                 contentDescription = stringResource(function.description),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(id = R.dimen.padding_extra_small)),
                 tint = MaterialTheme.colorScheme.outline
             )
         }
