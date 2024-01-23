@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.fake.FakeNetworkBooksRepository
-import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
@@ -33,26 +32,26 @@ fun HomeScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     ListDetailHandler(
         navigationType = navigationType,
         viewModel = viewModel,
         uiState = uiState,
-        networkBookUiState = networkBookUiState,
         onButtonClick = onButtonClick,
         modifier = modifier
     ) {
         HomeContent(
             navigationType = navigationType,
             uiState = uiState,
-            networkBookUiState = networkBookUiState,
+            recommendedUiState = viewModel.recommendedUiState,
             bookListTitle = stringResource(R.string.recommended),
             onButtonClick = onButtonClick,
             onCardClick = { viewModel.handleOnCardClick(it) },
+            retryAction = viewModel::getRecommended,
             onSearch = onSearch,
         )
     }
@@ -62,11 +61,12 @@ fun HomeScreen(
 fun HomeContent(
     navigationType: NavigationType,
     uiState: GBookUiState,
-    networkBookUiState: NetworkBookUiState,
+    recommendedUiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val space = if (navigationType == NavigationType.BOTTOM_NAVIGATION)
@@ -80,9 +80,10 @@ fun HomeContent(
         SearchBar(onSearch = onSearch)
         BooksGridSection(
             navigationType = navigationType,
-            uiState = networkBookUiState,
+            networkBookUiState = recommendedUiState,
             bookListTitle = bookListTitle,
             onButtonClick = onButtonClick,
+            retryAction = retryAction,
             onCardClick = onCardClick
         )
     }
@@ -105,12 +106,10 @@ fun HomeBrand(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
         )
-//        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
         Text(
             text = stringResource(R.string.g_book_slogan),
             fontStyle = FontStyle.Italic,
             textAlign = TextAlign.Center,
-//            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
         )
@@ -134,7 +133,6 @@ fun CompactHomeScreenPreview() {
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
             onSearch = {},
         )
@@ -148,7 +146,6 @@ fun MediumHomeScreenPreview() {
             navigationType = NavigationType.NAVIGATION_RAIL,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
             onSearch = {},
         )
@@ -163,7 +160,6 @@ fun ExpandedHomeScreenPreview() {
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            networkBookUiState = MockData.networkBookUiState,
             onButtonClick = {},
             onSearch = {},
         )

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.ui.theme.GBookTheme
-import com.example.gbook.ui.utils.Function
 
 @Composable
 fun LoadingContent(
@@ -33,7 +35,7 @@ fun LoadingContent(
 }
 @Composable
 fun ErrorContent(
-    onButtonClick: (Function) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -52,10 +54,22 @@ fun ErrorContent(
             text = stringResource(R.string.fail_to_load),
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
         )
-        DescriptionButton(
-            function = Function.Retry,
-            onButtonClick = onButtonClick
-        )
+        Button(
+            modifier = modifier,
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            elevation = ButtonDefaults
+                .buttonElevation(dimensionResource(id = R.dimen.elevation)),
+            onClick = retryAction,
+        ) {
+            Text(
+                text = stringResource(id = R.string.retry)
+            )
+        }
     }
 }
 @Preview
@@ -69,6 +83,6 @@ fun LoadingPreview() {
 @Composable
 fun ErrorPreview() {
     GBookTheme {
-        ErrorContent(onButtonClick = {})
+        ErrorContent(retryAction = {})
     }
 }

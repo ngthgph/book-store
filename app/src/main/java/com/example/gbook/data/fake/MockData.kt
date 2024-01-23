@@ -44,5 +44,5 @@ object MockData {
     val bookUiState = GBookUiState(category, book, account)
     val accountUiState = GBookUiState(category, book, account)
 
-    val networkBookUiState = NetworkBookUiState.Success(bookList)
+    val fakeNetworkBookUiState = NetworkBookUiState.Success(bookList)
 }

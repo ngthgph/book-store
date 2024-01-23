@@ -49,10 +49,11 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun BooksGridSection(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
@@ -65,10 +66,11 @@ fun BooksGridSection(
         )
         NetworkBooksGrid(
             navigationType = navigationType,
-            uiState = uiState,
+            networkBookUiState = networkBookUiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
-            onCardClick = onCardClick
+            onCardClick = onCardClick,
+            retryAction = retryAction,
         )
     }
 }
@@ -116,18 +118,19 @@ fun CollectionTitle(
 @Composable
 fun NetworkBooksGrid(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
-    when(uiState) {
+    when(networkBookUiState) {
         is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
         is NetworkBookUiState.Success -> {
             BooksGrid(
                 navigationType = navigationType,
-                bookList = uiState.books,
+                bookList = networkBookUiState.books,
                 isFavorite = isFavorite,
                 onButtonClick = onButtonClick,
                 onCardClick = onCardClick,
@@ -136,7 +139,7 @@ fun NetworkBooksGrid(
         }
         is NetworkBookUiState.Error ->
             ErrorContent(
-                onButtonClick = onButtonClick,
+                retryAction = retryAction,
                 modifier = modifier
             )
     }
@@ -337,7 +340,8 @@ fun BookGridSectionPreview() {
             bookListTitle = "Music",
             onButtonClick = {},
             onCardClick = {},
-            uiState = MockData.networkBookUiState
+            retryAction = {},
+            networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }
 }
@@ -351,7 +355,8 @@ fun MediumBookGridSectionPreview() {
             bookListTitle = "Music",
             onButtonClick = {},
             onCardClick = {},
-            uiState = MockData.networkBookUiState
+            retryAction = {},
+            networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }
 }

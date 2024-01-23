@@ -64,8 +64,4 @@ enum class Function(
     SignUp(
         description = R.string.sign_up
     ),
-    Retry(
-        description = R.string.retry
-    )
-
 }

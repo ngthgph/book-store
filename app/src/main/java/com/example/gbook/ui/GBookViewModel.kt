@@ -23,6 +23,8 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     val uiState: StateFlow<GBookUiState> = _uiState
 
     var networkBookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
+    var recommendedUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
+    var bookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
 
     init {
         innitializeUiState()
@@ -30,7 +32,11 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
 
     fun innitializeUiState() {
         _uiState.value = GBookUiState()
-        getNetworkBookList("search terms")
+        getRecommended()
+    }
+
+    fun getRecommended() {
+        getRecommendedBookList("search terms")
     }
 
     fun handleOnButtonClick(function: Function) {
@@ -48,7 +54,6 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
             Function.SignIn -> TODO()
             Function.ForgetPassword -> TODO()
             Function.SignUp -> TODO()
-            Function.Retry -> TODO()
         }
     }
     fun handleOnCardClick(book: Book) {
@@ -70,7 +75,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
 
     }
 
-    fun getNetworkBookList(query: String) {
+    private fun getNetworkBookList(query: String) {
         viewModelScope.launch {
             networkBookUiState = try {
                 NetworkBookUiState
@@ -83,9 +88,22 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         }
     }
 
-    fun getNetworkBookItem(networkId: String) {
+    private fun getRecommendedBookList(query: String) {
         viewModelScope.launch {
-            networkBookUiState = try {
+            recommendedUiState = try {
+                NetworkBookUiState
+                    .Success(booksRepository.searchBookTerm(query))
+            } catch (e: IOException) {
+                NetworkBookUiState.Error
+            } catch (e: retrofit2.HttpException) {
+                NetworkBookUiState.Error
+            }
+        }
+    }
+
+    private fun getNetworkBookItem(networkId: String) {
+        viewModelScope.launch {
+            bookUiState = try {
                 NetworkBookUiState.Success(List(1){booksRepository.searchBookItem(networkId)})
             } catch (e: IOException) {
                 NetworkBookUiState.Error

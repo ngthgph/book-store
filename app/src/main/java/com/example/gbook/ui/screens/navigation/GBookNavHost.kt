@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.GBookUiState
-import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.screens.account.AccountScreen
 import com.example.gbook.ui.screens.cart.CartScreen
@@ -25,7 +24,6 @@ fun GBookNavHost(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    networkBookUiState: NetworkBookUiState,
     navController: NavHostController,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
@@ -34,6 +32,7 @@ fun GBookNavHost(
     onInput:(String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     NavHost(
         navController = navController,
         startDestination = Screen.Home.name
@@ -43,7 +42,6 @@ fun GBookNavHost(
                 navigationType = navigationType,
                 viewModel = viewModel,
                 uiState = uiState,
-                networkBookUiState = networkBookUiState,
                 onButtonClick = onButtonClick,
                 onSearch = onSearch,
                 modifier = modifier,

@@ -25,7 +25,6 @@ fun GBookApp(
 ) {
     val viewModel: GBookViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState = viewModel.uiState.collectAsState().value
-    var networkBookUiState = viewModel.networkBookUiState
 
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -62,7 +61,6 @@ fun GBookApp(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
                     onCardClick = { viewModel.handleOnCardClick(it) },
@@ -90,7 +88,6 @@ fun GBookApp(
                     navigationType = NavigationType.NAVIGATION_RAIL,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
                     onCardClick = { viewModel.handleOnCardClick(it) },
@@ -118,7 +115,6 @@ fun GBookApp(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
                     onButtonClick = {},
                     onCardClick = {  },

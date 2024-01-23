@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.gbook.data.model.GBookUiState
-import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
@@ -20,7 +19,6 @@ fun ListDetailHandler(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     modifier: Modifier,
     content: @Composable () -> Unit,
@@ -48,7 +46,6 @@ fun ListDetailHandler(
                         navigationType = navigationType,
                         viewModel = viewModel,
                         uiState = uiState,
-                        networkBookUiState = networkBookUiState,
                         onButtonClick = onButtonClick,
                         modifier = Modifier.weight(1f)
                     )
@@ -58,7 +55,6 @@ fun ListDetailHandler(
                     navigationType = navigationType,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     onButtonClick = onButtonClick,
                     modifier = Modifier.weight(1f)
                 )

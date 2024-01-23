@@ -50,6 +50,7 @@ fun BooksListSection(
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
@@ -65,6 +66,7 @@ fun BooksListSection(
             uiState = uiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
+            retryAction = retryAction,
             onCardClick = onCardClick
         )
     }
@@ -75,6 +77,7 @@ fun NetworkBooksList(
     uiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
@@ -91,7 +94,7 @@ fun NetworkBooksList(
             )
         is NetworkBookUiState.Error ->
             ErrorContent(
-                onButtonClick = onButtonClick,
+                retryAction = retryAction,
                 modifier = modifier
             )
     }
