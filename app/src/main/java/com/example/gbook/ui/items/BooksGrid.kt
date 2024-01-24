@@ -40,7 +40,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gbook.R
 import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.fake.MockData.bookList
 import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
@@ -124,10 +126,18 @@ fun NetworkBooksGrid(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
+    isCollection: Boolean = false,
+    collection: BookCollection? = null,
 ) {
     when(networkBookUiState) {
         is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
         is NetworkBookUiState.Success -> {
+
+            // Not yet used
+            if(isCollection) {
+                val collectionBooks = collection?.bookList
+            }
+
             BooksGrid(
                 navigationType = navigationType,
                 bookList = networkBookUiState.books,

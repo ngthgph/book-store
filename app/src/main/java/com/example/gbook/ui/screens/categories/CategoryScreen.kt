@@ -24,11 +24,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.local.LocalCategoriesProvider
 import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.BooksGrid
+import com.example.gbook.ui.items.NetworkBooksGrid
 import com.example.gbook.ui.items.SearchBar
+import com.example.gbook.ui.screens.book.ListDetailHandler
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
@@ -36,7 +42,9 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun CategoryScreen(
     navigationType: NavigationType,
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
+    category: BookCollection,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
@@ -47,22 +55,32 @@ fun CategoryScreen(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxWidth()
     ) {
-        CategoryContent(
+        ListDetailHandler(
             navigationType = navigationType,
-            bookList = MockData.bookList,
-            title = uiState.currentBookCollection?.name!!.replaceFirstChar { it.uppercase() },
-            image = painterResource(id = uiState.currentBookCollection?.image!!),
+            viewModel = viewModel,
+            uiState = uiState,
             onButtonClick = onButtonClick,
-            onCardClick = onCardClick,
-            onSearch = onSearch,
-        )
+            modifier = Modifier
+        ) {
+            CategoryContent(
+                navigationType = navigationType,
+                viewModel = viewModel,
+                category = category,
+                title = category.name?: stringResource(id = R.string.category),
+                image = painterResource(id = category.image?: R.drawable.ic_broken_image),
+                onButtonClick = onButtonClick,
+                onCardClick = onCardClick,
+                onSearch = onSearch,
+            )
+        }
     }
 }
 
 @Composable
 fun CategoryContent(
     navigationType: NavigationType,
-    bookList: List<Book>,
+    viewModel: GBookViewModel,
+    category: BookCollection,
     title: String,
     image: Painter,
     onButtonClick: (Function) -> Unit,
@@ -89,11 +107,14 @@ fun CategoryContent(
             modifier = Modifier.weight(3f)
         ) {
             SearchBar(onSearch = onSearch)
-            BooksGrid(
+            NetworkBooksGrid(
                 navigationType = navigationType,
-                bookList = bookList,
+                networkBookUiState = viewModel.networkBookUiState,
                 onButtonClick = onButtonClick,
-                onCardClick = onCardClick
+                onCardClick = onCardClick,
+                retryAction = { viewModel.getSubjectBookList(title) },
+                isCollection = true,
+                collection = category
             )
         }
     }
@@ -150,7 +171,9 @@ fun CompactCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
+            category = LocalCategoriesProvider.categories[1],
             onButtonClick = {},
             onCardClick = {},
             onSearch = {},
@@ -163,7 +186,9 @@ fun MediumCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
+            category = LocalCategoriesProvider.categories[1],
             onButtonClick = {},
             onCardClick = {},
             onSearch = {},
@@ -177,7 +202,9 @@ fun ExpandedCategoryScreenPreview() {
     GBookTheme {
         CategoryScreen(
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
+            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
+            category = LocalCategoriesProvider.categories[1],
             onButtonClick = {},
             onCardClick = {},
             onSearch = {},

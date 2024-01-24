@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.util.Locale
 
 class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() {
 
@@ -57,11 +58,16 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         }
     }
     fun handleOnCardClick(book: Book) {
+        bookUiState = NetworkBookUiState.Loading
         getNetworkBookItem(book.networkId)
         updateCurrentBook(book)
     }
     fun onBackFromBookDetail() {
         updateCurrentBook(null)
+    }
+    fun getSubjectBookList(subject: String) {
+        networkBookUiState = NetworkBookUiState.Loading
+        getNetworkBookList("subject:${subject.lowercase(Locale.getDefault())}")
     }
     fun handleOnCollectionClick(collection: BookCollection) {
 
@@ -76,6 +82,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     private fun getNetworkBookList(query: String) {
+
         viewModelScope.launch {
             networkBookUiState = try {
                 NetworkBookUiState
@@ -89,6 +96,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     private fun getRecommendedBookList(query: String) {
+
         viewModelScope.launch {
             recommendedUiState = try {
                 NetworkBookUiState
@@ -102,6 +110,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     private fun getNetworkBookItem(networkId: String) {
+
         viewModelScope.launch {
             bookUiState = try {
                 NetworkBookUiState.Success(List(1){booksRepository.searchBookItem(networkId)})
