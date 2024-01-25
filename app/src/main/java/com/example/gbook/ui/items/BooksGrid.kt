@@ -53,7 +53,7 @@ fun BooksGridSection(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,7 +121,7 @@ fun CollectionTitle(
 fun NetworkBooksGrid(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
@@ -158,7 +158,7 @@ fun NetworkBooksGrid(
 fun BooksGrid(
     navigationType: NavigationType,
     bookList: List<Book>,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
@@ -198,7 +198,7 @@ fun BooksGrid(
 fun BooksCard(
     selected: Boolean,
     book: Book,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
@@ -278,9 +278,11 @@ fun BooksCard(
                             thickness = dimensionResource(id = R.dimen.divider_thickness),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
+                        val context = LocalContext.current
                         CardButtonRow(
                             isFavorite = isFavorite,
-                            onButtonClick = onButtonClick,
+                            onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                            else onButtonClick(it, null)},
                             modifier = Modifier.height(
                                 if(navigationType != NavigationType.BOTTOM_NAVIGATION)
                                     dimensionResource(id = R.dimen.button_medium)
@@ -348,7 +350,7 @@ fun BookGridSectionPreview() {
         BooksGridSection(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             bookListTitle = "Music",
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onCardClick = {},
             retryAction = {},
             networkBookUiState = MockData.fakeNetworkBookUiState
@@ -363,7 +365,7 @@ fun MediumBookGridSectionPreview() {
         BooksGridSection(
             navigationType = NavigationType.NAVIGATION_RAIL,
             bookListTitle = "Music",
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onCardClick = {},
             retryAction = {},
             networkBookUiState = MockData.fakeNetworkBookUiState

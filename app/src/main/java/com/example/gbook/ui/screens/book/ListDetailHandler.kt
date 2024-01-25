@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.utils.Function
@@ -19,7 +20,7 @@ fun ListDetailHandler(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     modifier: Modifier,
     content: @Composable () -> Unit,
 ) {

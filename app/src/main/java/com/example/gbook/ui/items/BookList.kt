@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +49,7 @@ fun BooksListSection(
     navigationType: NavigationType,
     uiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
@@ -75,7 +76,7 @@ fun BooksListSection(
 fun NetworkBooksList(
     navigationType: NavigationType,
     uiState: NetworkBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
@@ -103,7 +104,7 @@ fun NetworkBooksList(
 fun BooksList(
     navigationType: NavigationType,
     bookList: List<Book>,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
@@ -130,7 +131,7 @@ fun BooksList(
 @Composable
 fun BookItemCard(
     book: Book,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isCart: Boolean = false,
@@ -181,10 +182,12 @@ fun BookItemCard(
                         .height(maxHeight)
                         .padding(padding)
                 ) {
+                    val context = LocalContext.current
                     for(function in functions) {
                         OutlinedButtonCard(
                             function = function,
-                            onButtonClick = onButtonClick,
+                            onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                            else onButtonClick(it, null)},
                             modifier = Modifier
                                 .weight(1f)
                         )
@@ -202,7 +205,8 @@ fun BookItemCard(
             ) {
                 OutlinedButtonCard(
                     function = besideFunction,
-                    onButtonClick = onButtonClick,
+                    onButtonClick = {if(it == Function.Share) onButtonClick(it, book)
+                    else onButtonClick(it, null)},
                     modifier = Modifier
                         .size(buttonSize)
                         .fillMaxHeight()
@@ -396,7 +400,7 @@ fun BookListPreview() {
     GBookTheme {
         BookItemCard(
             book = MockData.bookUiState.currentBook!!,
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onCardClick = {}
         )
     }

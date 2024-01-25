@@ -27,10 +27,10 @@ fun GBookApp(
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    var screen = backStackEntry?.destination?.route
-    var currentScreen = if
+    val screen = backStackEntry?.destination?.route
+    val currentScreen = if
             (screen == null) Screen.Home else if
-                    (Screen.values().any {it.name.equals(screen) }) Screen.valueOf(screen) else
+                    (Screen.values().any { it.name == screen }) Screen.valueOf(screen) else
                         Screen.Category
 
     val navigationType: NavigationType = when (windowSize) {
@@ -64,7 +64,7 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )
@@ -92,7 +92,7 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )
@@ -120,7 +120,7 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )

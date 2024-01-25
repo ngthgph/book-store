@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +49,9 @@ import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.BookPhoto
+import com.example.gbook.ui.items.ButtonCard
 import com.example.gbook.ui.items.DrawerBookHeader
+import com.example.gbook.ui.items.shareBook
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
@@ -56,7 +59,7 @@ fun BookDetailScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -77,7 +80,7 @@ fun BookDetailScreen(
 fun BookDetailContent(
     navigationType: NavigationType,
     book: Book,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -104,8 +107,10 @@ fun BookDetailContent(
                         bottom = dimensionResource(id = R.dimen.padding_medium),
                     ),
                 )
+                val context = LocalContext.current
                 DetailsButtonRow(
-                    onButtonClick = onButtonClick,
+                    onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                    else onButtonClick(it, null)},
                     modifier = Modifier
                         .padding(
                             end = dimensionResource(id = R.dimen.padding_large),
@@ -139,14 +144,10 @@ fun BookDetailCard(
                     .fillMaxWidth()
                     .aspectRatio(1f)
             )
-//            if(navigationType == NavigationType.NAVIGATION_RAIL) {
-//                RailBookDetailInfo(book = book)
-//            } else {
-                BookDetailInfo(
-                    book = book,
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
-                )
-//            }
+            BookDetailInfo(
+                book = book,
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+            )
         }
     }
 }
@@ -312,36 +313,6 @@ fun DetailsButtonRow(
         }
     }
 }
-@Composable
-fun ButtonCard(
-    function: Function,
-    modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit
-) {
-    Card (
-        shape = CircleShape,
-        modifier = modifier
-            .clip(CircleShape)
-            .aspectRatio(1f)
-            .clickable { onButtonClick(function) },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-    )  {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Icon(
-                imageVector = function.icon,
-                contentDescription = stringResource(function.description),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.padding_extra_small)),
-                tint = MaterialTheme.colorScheme.outline
-            )
-        }
-    }
-}
 
 @Preview
 @Composable
@@ -395,7 +366,7 @@ fun CompactBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            onButtonClick = {}
+            onButtonClick = { _,_ -> }
         )
     }
 }
@@ -407,7 +378,7 @@ fun MediumBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
-            onButtonClick = {}
+            onButtonClick = { _,_ -> }
         )
     }
 }
@@ -420,7 +391,7 @@ fun ExpandedBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            onButtonClick = {}
+            onButtonClick = { _,_ -> }
         )
     }
 }

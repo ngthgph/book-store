@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.gbook.data.local.LocalCategoriesProvider
+import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.screens.account.AccountScreen
@@ -26,7 +27,7 @@ fun GBookNavHost(
     viewModel: GBookViewModel,
     uiState: GBookUiState,
     navController: NavHostController,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onSearch: (String) -> Unit,
     onInput:(String) -> Unit,
     modifier: Modifier = Modifier
@@ -51,7 +52,7 @@ fun GBookNavHost(
                 navigationType = navigationType,
                 uiState = uiState,
                 onSearch = onSearch,
-                onButtonClick = onButtonClick,
+                onButtonClick = {onButtonClick(it, null)},
                 onCollectionClick = { },
                 modifier = modifier
             )
@@ -69,7 +70,7 @@ fun GBookNavHost(
         composable(Screen.Categories.name) {
             CategoriesScreen(
                 navigationType = navigationType,
-                onButtonClick = onButtonClick,
+                onButtonClick = {onButtonClick(it, null)},
                 onCollectionClick = {
                     viewModel.getSubjectBookList(it.name!!)
                     navController.navigate("${Screen.Category.name}/${it.name!!}")
@@ -101,7 +102,7 @@ fun GBookNavHost(
             AccountScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onButtonClick = onButtonClick,
+                onButtonClick = {onButtonClick(it, null)},
                 onInput = onInput,
                 modifier = modifier
             )

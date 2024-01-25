@@ -40,11 +40,11 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         getRecommendedBookList("search terms")
     }
 
-    fun handleOnButtonClick(function: Function) {
+    fun handleOnButtonClick(function: Function, book: Book?) {
         when(function) {
             Function.Library -> TODO()
             Function.Cart -> TODO()
-            Function.Share -> TODO()
+            Function.Share -> TODO() // Done on each book card
             Function.Cancel -> TODO()
             Function.Add -> TODO()
             Function.Decline -> TODO()
@@ -57,21 +57,26 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
             Function.SignUp -> TODO()
         }
     }
+    // onCardClick
     fun handleOnCardClick(book: Book) {
         bookUiState = NetworkBookUiState.Loading
         getNetworkBookItem(book.networkId)
         updateCurrentBook(book)
     }
+    // get out of details book - reset currentBook to null
     fun onBackFromBookDetail() {
         updateCurrentBook(null)
     }
+    // onCollectionClick - get collection data from internet
     fun getSubjectBookList(subject: String) {
         networkBookUiState = NetworkBookUiState.Loading
         getNetworkBookList("subject:${subject.lowercase(Locale.getDefault())}")
     }
-    fun handleOnCollectionClick(collection: BookCollection) {
 
-    }
+    // PART OF HANDLING ON BUTTON CLICK FOR EACH FUNCTIONS ***************
+
+
+    // END OF HANDLE ON BUTTON CLICK FOR EACH FUNCTIONS PART *************
 
     fun handleOnSearch(query: String) {
 

@@ -32,7 +32,7 @@ fun HomeScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -63,7 +63,7 @@ fun HomeContent(
     uiState: GBookUiState,
     recommendedUiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
+    onButtonClick: (function: Function, book: Book?) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
     retryAction: () -> Unit,
@@ -133,7 +133,7 @@ fun CompactHomeScreenPreview() {
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onSearch = {},
         )
     }
@@ -146,7 +146,7 @@ fun MediumHomeScreenPreview() {
             navigationType = NavigationType.NAVIGATION_RAIL,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onSearch = {},
         )
     }
@@ -160,7 +160,7 @@ fun ExpandedHomeScreenPreview() {
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = GBookUiState(),
-            onButtonClick = {},
+            onButtonClick = { _,_ -> },
             onSearch = {},
         )
     }
