@@ -36,7 +36,8 @@ fun BottomBarScreen(
                 currentScreen = currentScreen,
                 uiState = uiState,
                 onIconClick = onIconClick,
-                onBack = onBack
+                onBack = onBack,
+                isConfiguration = uiState.currentBook == null
             )
         },
         bottomBar = {

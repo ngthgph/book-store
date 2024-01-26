@@ -39,9 +39,10 @@ import com.example.gbook.ui.utils.Function
 fun AppHeaderBar(
     uiState: GBookUiState,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier,
     currentScreen: Screen,
     onIconClick: ((Screen) -> Unit),
+    modifier: Modifier = Modifier,
+    isConfiguration: Boolean = true,
 ) {
     if(uiState.currentBook == null) {
         when (currentScreen) {
@@ -75,6 +76,7 @@ fun AppHeaderBar(
             currentScreen = currentScreen,
             title = uiState.currentBook?.title?: stringResource(id = R.string.book),
             onBack = onBack,
+            isConfiguration = isConfiguration,
             modifier = modifier
         )
     }
@@ -84,8 +86,9 @@ fun BookHeader(
     title: String,
     currentScreen: Screen,
     onBack: () -> Unit,
-    onButtonClick: (Function) -> Unit = {},
     modifier: Modifier = Modifier,
+    onButtonClick: (Function) -> Unit = {},
+    isConfiguration: Boolean = true,
 ) {
     Row (
         modifier = modifier.background(MaterialTheme.colorScheme.onPrimary),
@@ -114,15 +117,13 @@ fun BookHeader(
             )
         }
         if(
-//            currentScreen == Screen.MyLibrary ||
-            currentScreen == Screen.Category
+            currentScreen == Screen.Category && isConfiguration
             ) {
-            Image(
+            HeaderButton(
+                description = stringResource(R.string.display_configuration),
+                onClick = { onButtonClick(Function.Configuration) },
                 painter = painterResource(id = R.drawable.display_configuration),
-                contentDescription = stringResource(R.string.display_configuration),
-                modifier = Modifier
-                    .clickable(onClick = { onButtonClick(Function.Configuration) })
-                    .padding(horizontal = dimensionResource(R.dimen.padding_medium)),
+                modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
             )
         }
     }
@@ -157,13 +158,11 @@ fun OnlyAccountHomeHeader(
             .fillMaxWidth()
             .background(Color.Transparent),
     ) {
-        Image(
+        HeaderButton(
+            description = account,
+            onClick = onAccountClick,
             imageVector = Icons.Default.AccountCircle,
-            contentDescription = account,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .clickable(onClick = onAccountClick)
-                .align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
 }
@@ -192,11 +191,10 @@ fun HomeHeader(
                     style = MaterialTheme.typography.headlineSmall,
                 )
             }
-            Image(
+            HeaderButton(
+                description = account,
+                onClick = onAccountClick,
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = account,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.clickable (onClick = onAccountClick)
             )
         }
     }
@@ -223,11 +221,10 @@ fun DrawerHeader(
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineSmall
             )
-            Image(
+            HeaderButton(
+                description = account,
+                onClick = onAccountClick,
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = account,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.clickable (onClick = onAccountClick)
             )
         }
     }
@@ -240,11 +237,13 @@ fun DrawerBookHeaderPreview() {
 @Preview
 @Composable
 fun BookHeaderPreview() {
-    BookHeader(
-        currentScreen = Screen.Category,
-        title = MockData.categoryUiState.currentBookCollection?.name!!,
-        onBack = { }
-    )
+    GBookTheme {
+        BookHeader(
+            currentScreen = Screen.Category,
+            title = MockData.categoryUiState.currentBookCollection?.name!!,
+            onBack = { }
+        )
+    }
 }
 @Preview
 @Composable

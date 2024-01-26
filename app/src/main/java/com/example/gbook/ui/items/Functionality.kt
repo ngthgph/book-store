@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import com.example.gbook.R
 import com.example.gbook.data.model.Book

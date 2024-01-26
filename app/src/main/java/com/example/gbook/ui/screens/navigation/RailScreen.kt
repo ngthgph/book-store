@@ -30,8 +30,7 @@ fun RailScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Scaffold(
-    ) {
+    Scaffold {
         Row(
             modifier = Modifier
                 .padding(it)
@@ -69,7 +68,9 @@ fun RailScreen(
                         currentScreen = currentScreen,
                         uiState = uiState,
                         onIconClick = onIconClick,
-                        onBack = onBack)
+                        onBack = onBack,
+                        isConfiguration = uiState.currentBook == null
+                    )
                     Column(modifier = Modifier.weight(1f)) {
                         content()
 //                AdsBanner()

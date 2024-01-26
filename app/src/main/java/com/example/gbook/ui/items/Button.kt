@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -34,6 +37,36 @@ import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
 import com.example.gbook.ui.utils.Function
 
+@Composable
+fun HeaderButton(
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter? = null,
+    imageVector: ImageVector? = null
+){
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_small))
+            .background(Color.Transparent, CircleShape)
+            .clip(CircleShape)
+    ) {
+        if(painter!=null) {
+            Icon(
+                painter = painter,
+                contentDescription = description,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        } else {
+            Icon(
+                imageVector = imageVector!!,
+                contentDescription = description,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
 @Composable
 fun ButtonCard(
     function: Function,
