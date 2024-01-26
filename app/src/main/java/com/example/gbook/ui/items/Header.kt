@@ -123,7 +123,7 @@ fun BookHeader(
                 description = stringResource(R.string.display_configuration),
                 onClick = { onButtonClick(Function.Configuration) },
                 painter = painterResource(id = R.drawable.display_configuration),
-                modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
+                modifier = Modifier
             )
         }
     }

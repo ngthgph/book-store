@@ -49,7 +49,7 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         )
     }
 
-    fun handleOnButtonClick(function: Function, book: Book?) {
+    fun handleOnButtonClick(function: Function) {
         when(function) {
             Function.Library -> TODO()
             Function.Cart -> TODO()
@@ -64,6 +64,8 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
             Function.SignIn -> TODO()
             Function.ForgetPassword -> TODO()
             Function.SignUp -> TODO()
+            Function.PreviousPage -> TODO()
+            Function.NextPage -> TODO()
         }
     }
     // onCardClick

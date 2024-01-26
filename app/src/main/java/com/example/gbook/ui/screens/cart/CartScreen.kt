@@ -35,7 +35,7 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun CartScreen(
     uiState: GBookUiState,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
@@ -52,7 +52,7 @@ fun CartScreen(
 fun CartContent(
     navigationType: NavigationType,
     shoppingList: List<Pair<Book, Int>>,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,7 +93,7 @@ fun CartContent(
                     DescriptionButton(
                         function = Function.Checkout,
                         enable = shoppingList.isNotEmpty(),
-                        onButtonClick = {onButtonClick(it, null)},
+                        onButtonClick = {onButtonClick(it)},
                         modifier = Modifier.wrapContentWidth()
                     )
                     Spacer(modifier = Modifier.weight(1f))
@@ -160,7 +160,7 @@ fun CartSummary(
 fun CartList(
     navigationType: NavigationType,
     shoppingList: List<Pair<Book, Int>>,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -190,7 +190,7 @@ fun CartList(
                 FABItem(
                     function = Function.AddToCart,
                     padding = space,
-                    onButtonClick = {onButtonClick(it, null)}
+                    onButtonClick = onButtonClick
                 )
             }
         }
@@ -203,7 +203,7 @@ fun CompactCartScreenPreview() {
     GBookTheme {
         CartScreen(
             uiState = MockData.cartUiState,
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {}
         )
     }
@@ -214,7 +214,7 @@ fun MediumCartScreenPreview() {
     GBookTheme {
         CartScreen(
             uiState = MockData.cartUiState,
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {}
         )
     }

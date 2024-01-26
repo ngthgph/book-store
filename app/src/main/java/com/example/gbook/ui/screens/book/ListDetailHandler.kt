@@ -20,7 +20,7 @@ fun ListDetailHandler(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier,
     content: @Composable () -> Unit,
 ) {

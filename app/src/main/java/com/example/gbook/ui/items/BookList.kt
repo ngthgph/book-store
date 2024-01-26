@@ -49,15 +49,13 @@ fun BooksListSection(
     navigationType: NavigationType,
     uiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         CollectionTitle(
             navigationType = navigationType,
             title = bookListTitle
@@ -76,35 +74,46 @@ fun BooksListSection(
 fun NetworkBooksList(
     navigationType: NavigationType,
     uiState: NetworkBookUiState,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
-    when(uiState) {
-        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
-        is NetworkBookUiState.Success ->
-            BooksList(
-                navigationType = navigationType,
-                bookList = uiState.books,
-                isFavorite = isFavorite,
-                onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
-                modifier = modifier
-            )
-        is NetworkBookUiState.Error ->
-            ErrorContent(
-                retryAction = retryAction,
-                modifier = modifier
-            )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        PageNavigation(
+            PrevEnabled = false,
+            NextEnabled = false,
+            onButtonClick = onButtonClick
+        )
+        when(uiState) {
+            is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+            is NetworkBookUiState.Success ->
+                BooksList(
+                    navigationType = navigationType,
+                    bookList = uiState.books,
+                    isFavorite = isFavorite,
+                    onButtonClick = onButtonClick,
+                    onCardClick = onCardClick,
+                    modifier = modifier
+                )
+            is NetworkBookUiState.Error ->
+                ErrorContent(
+                    retryAction = retryAction,
+                    modifier = modifier
+                )
+        }
     }
 }
 @Composable
 fun BooksList(
     navigationType: NavigationType,
     bookList: List<Book>,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
@@ -113,7 +122,11 @@ fun BooksList(
     if(navigationType != NavigationType.BOTTOM_NAVIGATION) {
         padding = dimensionResource(id = R.dimen.padding_medium)
     }
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         items(bookList) {
             BookItemCard(
                 navigationType = navigationType,
@@ -131,7 +144,7 @@ fun BooksList(
 @Composable
 fun BookItemCard(
     book: Book,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
     isCart: Boolean = false,
@@ -156,6 +169,7 @@ fun BookItemCard(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val context = LocalContext.current
         Card(
             modifier = Modifier
                 .weight(1f)
@@ -182,12 +196,11 @@ fun BookItemCard(
                         .height(maxHeight)
                         .padding(padding)
                 ) {
-                    val context = LocalContext.current
                     for(function in functions) {
                         OutlinedButtonCard(
                             function = function,
                             onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                            else onButtonClick(it, null)},
+                            else onButtonClick(it)},
                             modifier = Modifier
                                 .weight(1f)
                         )
@@ -205,8 +218,8 @@ fun BookItemCard(
             ) {
                 OutlinedButtonCard(
                     function = besideFunction,
-                    onButtonClick = {if(it == Function.Share) onButtonClick(it, book)
-                    else onButtonClick(it, null)},
+                    onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                    else onButtonClick(it)},
                     modifier = Modifier
                         .size(buttonSize)
                         .fillMaxHeight()
@@ -218,8 +231,8 @@ fun BookItemCard(
 @Composable
 fun OutlinedButtonCard(
     function: Function,
-    enable: Boolean = true,
     modifier: Modifier = Modifier,
+    enable: Boolean = true,
     onButtonClick: (Function) -> Unit
 ) {
     Card (
@@ -252,10 +265,10 @@ fun OutlinedButtonCard(
 @Composable
 fun BookItem(
     book: Book,
+    modifier: Modifier = Modifier,
     amount: Int = 0,
     isCart: Boolean = false,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
-    modifier: Modifier = Modifier
 ) {
 
     var maxHeight = dimensionResource(id = R.dimen.book_item_row)
@@ -400,7 +413,7 @@ fun BookListPreview() {
     GBookTheme {
         BookItemCard(
             book = MockData.bookUiState.currentBook!!,
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {}
         )
     }

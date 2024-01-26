@@ -27,7 +27,7 @@ fun GBookNavHost(
     viewModel: GBookViewModel,
     uiState: GBookUiState,
     navController: NavHostController,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onSearch: (String) -> Unit,
     onInput:(String) -> Unit,
     modifier: Modifier = Modifier
@@ -52,7 +52,7 @@ fun GBookNavHost(
                 navigationType = navigationType,
                 uiState = uiState,
                 onSearch = onSearch,
-                onButtonClick = {onButtonClick(it, null)},
+                onButtonClick = onButtonClick,
                 onCollectionClick = { },
                 modifier = modifier
             )
@@ -70,7 +70,7 @@ fun GBookNavHost(
         composable(Screen.Categories.name) {
             CategoriesScreen(
                 navigationType = navigationType,
-                onButtonClick = {onButtonClick(it, null)},
+                onButtonClick = onButtonClick,
                 onCollectionClick = {
                     viewModel.getSubjectBookList(it.name!!)
                     navController.navigate("${Screen.Category.name}/${it.name!!}")
@@ -102,7 +102,7 @@ fun GBookNavHost(
             AccountScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onButtonClick = {onButtonClick(it, null)},
+                onButtonClick = onButtonClick,
                 onInput = onInput,
                 modifier = modifier
             )

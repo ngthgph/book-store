@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -64,4 +65,10 @@ enum class Function(
     SignUp(
         description = R.string.sign_up
     ),
+    PreviousPage(
+        description = R.string.previous_page
+    ),
+    NextPage(
+        description = R.string.next_page
+    )
 }

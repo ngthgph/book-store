@@ -4,12 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,10 +36,39 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
+import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 
+@Composable
+fun PageNavigation(
+    onButtonClick: (Function) -> Unit,
+    PrevEnabled: Boolean,
+    NextEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.padding_small))
+    ) {
+        ClickableText(
+            function = Function.PreviousPage,
+            onButtonClick = onButtonClick,
+            enabled = PrevEnabled,
+        )
+        Text(text = " | ")
+        ClickableText(
+            function = Function.NextPage,
+            onButtonClick = onButtonClick,
+            enabled = NextEnabled,
+        )
+    }
+}
 @Composable
 fun HeaderButton(
     description: String,
@@ -48,7 +80,6 @@ fun HeaderButton(
     IconButton(
         onClick = onClick,
         modifier = modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_small))
             .background(Color.Transparent, CircleShape)
             .clip(CircleShape)
     ) {
@@ -71,7 +102,7 @@ fun HeaderButton(
 fun ButtonCard(
     function: Function,
     modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit
+    onButtonClick: (Function) -> Unit,
 ) {
     Card (
         shape = CircleShape,
@@ -108,7 +139,7 @@ fun ClickableText(
     Text(
         text = stringResource(function.description),
         textDecoration = if(isClicking) TextDecoration.Underline else null,
-        color = if(!isClicking) MaterialTheme.colorScheme.primary
+        color = if(!isClicking && enabled) MaterialTheme.colorScheme.primary
         else MaterialTheme.colorScheme.onPrimaryContainer,
         modifier = modifier.clickable(
             enabled = enabled,
@@ -184,5 +215,63 @@ fun DescriptionButton(
         Text(
             text = stringResource(id = function.description)
         )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewHeaderButton() {
+    GBookTheme {
+        HeaderButton(
+            description = "Button",
+            onClick = { /*TODO*/ },
+            imageVector = Icons.Default.AccountCircle
+        )
+    }
+}
+@Preview
+@Composable
+fun PreviewPageNavigation() {
+    GBookTheme {
+        PageNavigation(
+            PrevEnabled = false,
+            NextEnabled = true,
+            onButtonClick = {}
+        )
+    }
+}
+@Preview
+@Composable
+fun PreviewButtonCard() {
+    GBookTheme {
+        ButtonCard(function = Function.Share, onButtonClick = {})
+    }
+}
+@Preview
+@Composable
+fun PreviewClickableText() {
+    GBookTheme {
+        ClickableText(function = Function.NextPage, onButtonClick = {})
+    }
+}
+@Preview
+@Composable
+fun PreviewCardIconButton() {
+    GBookTheme {
+        CardIconButton(function = Function.Add, onButtonClick = {})
+    }
+}
+@Preview
+@Composable
+fun PreviewFABItem() {
+    GBookTheme {
+        FABItem(function = Function.Add, onButtonClick = {})
+    }
+}
+@Preview
+@Composable
+fun PreviewDescriptionButton() {
+    GBookTheme {
+        DescriptionButton(function = Function.SignIn, onButtonClick = {})
     }
 }

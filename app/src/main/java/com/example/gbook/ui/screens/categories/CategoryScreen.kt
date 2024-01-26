@@ -45,7 +45,7 @@ fun CategoryScreen(
     viewModel: GBookViewModel,
     uiState: GBookUiState,
     category: BookCollection,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -83,7 +83,7 @@ fun CategoryContent(
     category: BookCollection,
     title: String,
     image: Painter,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -174,7 +174,7 @@ fun CompactCategoryScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
             category = LocalCategoriesProvider.categories[1],
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {},
             onSearch = {},
         )
@@ -189,7 +189,7 @@ fun MediumCategoryScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
             category = LocalCategoriesProvider.categories[1],
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {},
             onSearch = {},
         )
@@ -205,7 +205,7 @@ fun ExpandedCategoryScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.categoryUiState,
             category = LocalCategoriesProvider.categories[1],
-            onButtonClick = { _,_ -> },
+            onButtonClick = {},
             onCardClick = {},
             onSearch = {},
         )

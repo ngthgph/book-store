@@ -59,7 +59,7 @@ fun BookDetailScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,7 +80,7 @@ fun BookDetailScreen(
 fun BookDetailContent(
     navigationType: NavigationType,
     book: Book,
-    onButtonClick: (function: Function, book: Book?) -> Unit,
+    onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -110,7 +110,7 @@ fun BookDetailContent(
                 val context = LocalContext.current
                 DetailsButtonRow(
                     onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                    else onButtonClick(it, null)},
+                    else onButtonClick(it)},
                     modifier = Modifier
                         .padding(
                             end = dimensionResource(id = R.dimen.padding_large),
@@ -366,7 +366,7 @@ fun CompactBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            onButtonClick = { _,_ -> }
+            onButtonClick = {}
         )
     }
 }
@@ -378,7 +378,7 @@ fun MediumBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
-            onButtonClick = { _,_ -> }
+            onButtonClick = {}
         )
     }
 }
@@ -391,7 +391,7 @@ fun ExpandedBookScreenPreview() {
             viewModel = GBookViewModel(FakeNetworkBooksRepository()),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            onButtonClick = { _,_ -> }
+            onButtonClick = {}
         )
     }
 }
