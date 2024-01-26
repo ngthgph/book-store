@@ -40,7 +40,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gbook.R
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.fake.MockData.bookList
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.NetworkBookUiState

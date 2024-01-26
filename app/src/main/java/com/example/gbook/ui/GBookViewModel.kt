@@ -5,6 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gbook.data.local.BookFilter
+import com.example.gbook.data.local.OrderBy
+import com.example.gbook.data.local.PrintType
+import com.example.gbook.data.local.Projection
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.BookCollection
 import com.example.gbook.network.BooksRepository
@@ -37,7 +41,12 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     fun getRecommended() {
-        getRecommendedBookList("search terms")
+        getRecommendedBookList(
+            query = "search term",
+            maxResults = 40,
+            filter = BookFilter.PAID_EBOOKS,
+            orderBy = OrderBy.NEWEST
+        )
     }
 
     fun handleOnButtonClick(function: Function, book: Book?) {
@@ -70,7 +79,14 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     // onCollectionClick - get collection data from internet
     fun getSubjectBookList(subject: String) {
         networkBookUiState = NetworkBookUiState.Loading
-        getNetworkBookList("subject:${subject.lowercase(Locale.getDefault())}")
+        onBackFromBookDetail()
+        getNetworkBookList(
+            query = "",
+            subject = subject.lowercase(Locale.getDefault()),
+            maxResults = 40,
+            filter = BookFilter.PAID_EBOOKS,
+            orderBy = OrderBy.NEWEST
+        )
     }
 
     // PART OF HANDLING ON BUTTON CLICK FOR EACH FUNCTIONS ***************
@@ -86,12 +102,35 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
 
     }
 
-    private fun getNetworkBookList(query: String) {
-
+    private fun getNetworkBookList(
+        query: String,
+        intitle: String? = null,
+        inauthor: String? = null,
+        inpublisher: String? = null,
+        subject: String? = null,
+        isbn: String? = null,
+        lccn: String? = null,
+        oclc: String? = null,
+        filter: BookFilter? = null,
+        startIndex: Int? = null,
+        maxResults: Int? = null,
+        printType: PrintType? = null,
+        projection: Projection? = null,
+        orderBy: OrderBy? = null,
+    ) {
         viewModelScope.launch {
             networkBookUiState = try {
                 NetworkBookUiState
-                    .Success(booksRepository.searchBookTerm(query))
+                    .Success(booksRepository.searchBookTerm(
+                        query,
+                        intitle, inauthor, inpublisher, subject, isbn, lccn, oclc,
+                        filter,
+                        startIndex,
+                        maxResults,
+                        printType,
+                        projection,
+                        orderBy
+                    ))
             } catch (e: IOException) {
                 NetworkBookUiState.Error
             } catch (e: retrofit2.HttpException) {
@@ -100,12 +139,35 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
         }
     }
 
-    private fun getRecommendedBookList(query: String) {
-
+    private fun getRecommendedBookList(
+        query: String,
+        intitle: String? = null,
+        inauthor: String? = null,
+        inpublisher: String? = null,
+        subject: String? = null,
+        isbn: String? = null,
+        lccn: String? = null,
+        oclc: String? = null,
+        filter: BookFilter? = null,
+        startIndex: Int? = null,
+        maxResults: Int? = null,
+        printType: PrintType? = null,
+        projection: Projection? = null,
+        orderBy: OrderBy? = null,
+    ) {
         viewModelScope.launch {
             recommendedUiState = try {
                 NetworkBookUiState
-                    .Success(booksRepository.searchBookTerm(query))
+                    .Success(booksRepository.searchBookTerm(
+                        query,
+                        intitle, inauthor, inpublisher, subject, isbn, lccn, oclc,
+                        filter,
+                        startIndex,
+                        maxResults,
+                        printType,
+                        projection,
+                        orderBy
+                    ))
             } catch (e: IOException) {
                 NetworkBookUiState.Error
             } catch (e: retrofit2.HttpException) {
@@ -115,7 +177,6 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     private fun getNetworkBookItem(networkId: String) {
-
         viewModelScope.launch {
             bookUiState = try {
                 NetworkBookUiState.Success(List(1){booksRepository.searchBookItem(networkId)})
