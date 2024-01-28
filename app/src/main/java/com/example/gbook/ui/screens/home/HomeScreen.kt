@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -15,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
 import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
@@ -131,7 +134,10 @@ fun CompactHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = GBookUiState(),
             onButtonClick = {},
             onSearch = {},
@@ -144,7 +150,10 @@ fun MediumHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = GBookUiState(),
             onButtonClick = {},
             onSearch = {},
@@ -158,7 +167,10 @@ fun ExpandedHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = GBookUiState(),
             onButtonClick = {},
             onSearch = {},

@@ -5,7 +5,7 @@ import com.example.gbook.data.model.Account
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
-import com.example.gbook.network.Saleability
+import com.example.gbook.data.local.Saleability
 
 object MockData {
     val category = LocalCategoriesProvider.categories[0]

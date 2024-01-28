@@ -1,4 +1,4 @@
-package com.example.gbook.network
+package com.example.gbook.data
 
 import com.example.gbook.data.local.BookFilter
 import com.example.gbook.data.local.OrderBy
@@ -6,6 +6,8 @@ import com.example.gbook.data.local.PrintType
 import com.example.gbook.data.local.Projection
 import com.example.gbook.data.local.QueryType
 import com.example.gbook.data.model.Book
+import com.example.gbook.network.BookApiService
+import com.example.gbook.network.BookItem
 
 interface BooksRepository {
     //You can paginate the volumes list by specifying two values in the parameters for the request:

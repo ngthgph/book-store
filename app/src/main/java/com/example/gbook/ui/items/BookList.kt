@@ -47,7 +47,7 @@ import com.example.gbook.ui.theme.GBookTheme
 @Composable
 fun BooksListSection(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
@@ -62,7 +62,7 @@ fun BooksListSection(
         )
         NetworkBooksList(
             navigationType = navigationType,
-            uiState = uiState,
+            networkBookUiState = networkBookUiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
             retryAction = retryAction,
@@ -73,7 +73,7 @@ fun BooksListSection(
 @Composable
 fun NetworkBooksList(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
     retryAction: () -> Unit,
@@ -85,17 +85,17 @@ fun NetworkBooksList(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        PageNavigation(
-            PrevEnabled = false,
-            NextEnabled = false,
-            onButtonClick = onButtonClick
-        )
-        when(uiState) {
+//        PageNavigation(
+//            PrevEnabled = false,
+//            NextEnabled = false,
+//            onButtonClick = onButtonClick
+//        )
+        when(networkBookUiState) {
             is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
             is NetworkBookUiState.Success ->
                 BooksList(
                     navigationType = navigationType,
-                    bookList = uiState.books,
+                    bookList = networkBookUiState.books,
                     isFavorite = isFavorite,
                     onButtonClick = onButtonClick,
                     onCardClick = onCardClick,
@@ -118,9 +118,11 @@ fun BooksList(
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
-    var padding = dimensionResource(id = R.dimen.padding_large)
+    var padding = dimensionResource(id = R.dimen.padding_small)
+    var padding_start = dimensionResource(id = R.dimen.padding_medium)
     if(navigationType != NavigationType.BOTTOM_NAVIGATION) {
-        padding = dimensionResource(id = R.dimen.padding_medium)
+        padding = dimensionResource(id = R.dimen.padding_small)
+        padding_start = dimensionResource(id = R.dimen.padding_large)
     }
     LazyColumn(
         modifier = modifier,
@@ -135,7 +137,11 @@ fun BooksList(
                 onButtonClick = onButtonClick,
                 onCardClick = onCardClick,
                 modifier = Modifier
-                    .padding(padding)
+                    .padding(
+                        top = padding,
+                        bottom = padding,
+                        start = padding_start
+                    )
                     .fillMaxWidth()
             )
         }
@@ -150,7 +156,7 @@ fun BookItemCard(
     isCart: Boolean = false,
     amount: Int = 0,
     isFavorite: Boolean = false,
-    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
+    navigationType: NavigationType,
 ) {
     var maxHeight = dimensionResource(id = R.dimen.book_item_row)
     var padding = dimensionResource(id = R.dimen.padding_small)
@@ -194,71 +200,32 @@ fun BookItemCard(
                 Column(
                     modifier = Modifier
                         .height(maxHeight)
-                        .padding(padding)
                 ) {
                     for(function in functions) {
-                        OutlinedButtonCard(
+                        CardIconButton(
                             function = function,
                             onButtonClick = {if(it == Function.Share) shareBook(context, book)
                             else onButtonClick(it)},
                             modifier = Modifier
                                 .weight(1f)
                         )
-                        Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.padding_extra_small)))
                     }
                 }
-                Spacer(modifier = Modifier.width(padding))
             }
         }
         if (!isFavorite) {
             Row(
-                modifier = Modifier
-                    .padding(start = padding),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                OutlinedButtonCard(
+                CardIconButton(
                     function = besideFunction,
                     onButtonClick = {if(it == Function.Share) shareBook(context, book)
                     else onButtonClick(it)},
                     modifier = Modifier
-                        .size(buttonSize)
-                        .fillMaxHeight()
                 )
             }
-        }
-    }
-}
-@Composable
-fun OutlinedButtonCard(
-    function: Function,
-    modifier: Modifier = Modifier,
-    enable: Boolean = true,
-    onButtonClick: (Function) -> Unit
-) {
-    Card (
-        shape = CircleShape,
-        elevation = CardDefaults
-            .cardElevation(dimensionResource(id = R.dimen.elevation)),
-        border = BorderStroke(
-            dimensionResource(id = R.dimen.divider_thickness),
-            MaterialTheme.colorScheme.outlineVariant),
-        modifier = modifier
-            .clip(CircleShape)
-            .aspectRatio(1f)
-            .clickable { onButtonClick(function) },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-    )  {
-        IconButton(
-            modifier = Modifier.fillMaxSize(),
-            onClick = {},
-        ) {
-            Icon(
-                imageVector = function.icon,
-                contentDescription = stringResource(function.description),
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_extra_small)),
-                tint = if(enable) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.outline
-            )
         }
     }
 }
@@ -268,7 +235,7 @@ fun BookItem(
     modifier: Modifier = Modifier,
     amount: Int = 0,
     isCart: Boolean = false,
-    navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
+    navigationType: NavigationType,
 ) {
 
     var maxHeight = dimensionResource(id = R.dimen.book_item_row)
@@ -294,12 +261,12 @@ fun BookItem(
             title = book.title,
             imgSrc = book.imageLinks,
             modifier = Modifier
-                .aspectRatio(0.75f)
+                .aspectRatio(1f)
         )
         Spacer(modifier = Modifier.width(imagePadding))
         Column(
             modifier = Modifier
-                .weight(2f)
+                .weight(1f)
                 .padding(top = titlePadding),
             verticalArrangement = Arrangement
                 .spacedBy(titlePadding)
@@ -411,8 +378,22 @@ fun InfoColumn(
 @Composable
 fun BookListPreview() {
     GBookTheme {
-        BookItemCard(
-            book = MockData.bookUiState.currentBook!!,
+        BooksList(
+            navigationType = NavigationType.BOTTOM_NAVIGATION,
+            bookList = MockData.bookList,
+            onButtonClick = {},
+            onCardClick = {}
+        )
+    }
+}
+
+@Preview(widthDp = 700)
+@Composable
+fun RailBookListPreview() {
+    GBookTheme {
+        BooksList(
+            navigationType = NavigationType.NAVIGATION_RAIL,
+            bookList = MockData.bookList,
             onButtonClick = {},
             onCardClick = {}
         )

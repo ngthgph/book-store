@@ -45,6 +45,8 @@ import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
 import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.ui.GBookViewModel
@@ -363,7 +365,10 @@ fun ButtonRowPreview() {
 fun CompactBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             onButtonClick = {}
@@ -375,7 +380,10 @@ fun CompactBookScreenPreview() {
 fun MediumBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
             onButtonClick = {}
@@ -388,7 +396,10 @@ fun MediumBookScreenPreview() {
 fun ExpandedBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(FakeNetworkBooksRepository()),
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
             onButtonClick = {}

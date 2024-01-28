@@ -5,7 +5,7 @@ import com.example.gbook.data.local.OrderBy
 import com.example.gbook.data.local.PrintType
 import com.example.gbook.data.local.Projection
 import com.example.gbook.data.model.Book
-import com.example.gbook.network.BooksRepository
+import com.example.gbook.data.BooksRepository
 
 class FakeNetworkBooksRepository: BooksRepository {
     override suspend fun searchBookTerm(

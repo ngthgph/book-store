@@ -127,28 +127,20 @@ fun NetworkBooksGrid(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
-    isCollection: Boolean = false,
-    collection: BookCollection? = null,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        PageNavigation(
-            PrevEnabled = false,
-            NextEnabled = false,
-            onButtonClick = onButtonClick
-        )
+//        PageNavigation(
+//            PrevEnabled = false,
+//            NextEnabled = false,
+//            onButtonClick = onButtonClick
+//        )
         when(networkBookUiState) {
             is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
             is NetworkBookUiState.Success -> {
-
-                // Not yet used
-                if(isCollection) {
-                    val collectionBooks = collection?.bookList
-                }
-
                 BooksGrid(
                     navigationType = navigationType,
                     bookList = networkBookUiState.books,
