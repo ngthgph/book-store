@@ -11,9 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.AppHeaderBar
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
@@ -21,6 +26,7 @@ import com.example.gbook.ui.utils.Screen
 @Composable
 fun DrawerScreen(
     currentScreen: Screen,
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
     onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
@@ -41,6 +47,7 @@ fun DrawerScreen(
             if(currentScreen != Screen.Home) {
                 AppHeaderBar(
                     currentScreen = currentScreen,
+                    viewModel = viewModel,
                     uiState = uiState,
                     onIconClick = onIconClick,
                     onBack = onBack
@@ -75,6 +82,10 @@ fun DrawerScreenPreview() {
     GBookTheme {
         DrawerScreen(
             currentScreen = Screen.Book,
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
             onBack = {},
             onIconClick = {}
@@ -88,6 +99,10 @@ fun HomeDrawerScreenPreview() {
     GBookTheme {
         DrawerScreen(
             currentScreen = Screen.Home,
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.homeUiState,
             onBack = {},
             onIconClick = {}

@@ -52,6 +52,7 @@ fun GBookApp(
             DrawerScreen(
                 modifier = modifier,
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
                 onIconClick = {
                     viewModel.onBackFromBookDetail()
@@ -74,6 +75,7 @@ fun GBookApp(
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
                 onBack = {
                     if(uiState.currentBook == null) {
@@ -102,6 +104,7 @@ fun GBookApp(
         else -> {
             BottomBarScreen(
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
                 onIconClick = {
                     viewModel.onBackFromBookDetail()

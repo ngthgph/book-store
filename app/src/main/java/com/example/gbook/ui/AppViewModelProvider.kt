@@ -8,7 +8,12 @@ import com.example.gbook.GBookApplication
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        initializer { GBookViewModel(gBookApplication().container.booksRepository) }
+        initializer {
+            GBookViewModel(
+                gBookApplication().container.booksRepository,
+                gBookApplication().container.layoutPreferencesRepository
+            )
+        }
     }
 }
 

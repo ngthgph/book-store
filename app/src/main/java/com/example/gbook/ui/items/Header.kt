@@ -19,24 +19,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.gbook.R
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
 import com.example.gbook.ui.utils.Function
 
 @Composable
 fun AppHeaderBar(
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
     onBack: () -> Unit,
     currentScreen: Screen,
@@ -56,6 +64,7 @@ fun AppHeaderBar(
             Screen.Category -> {
                 BookHeader(
                     currentScreen = currentScreen,
+                    viewModel = viewModel,
                     title = uiState.currentBookCollection?.name
                         ?: stringResource(id = R.string.category),
                     onBack = onBack,
@@ -65,6 +74,7 @@ fun AppHeaderBar(
             else -> {
                 BookHeader(
                     currentScreen = currentScreen,
+                    viewModel = viewModel,
                     title = stringResource(id = currentScreen.title),
                     onBack = onBack,
                     modifier = modifier
@@ -74,6 +84,7 @@ fun AppHeaderBar(
     } else {
         BookHeader(
             currentScreen = currentScreen,
+            viewModel = viewModel,
             title = uiState.currentBook?.title?: stringResource(id = R.string.book),
             onBack = onBack,
             isConfiguration = isConfiguration,
@@ -85,11 +96,12 @@ fun AppHeaderBar(
 fun BookHeader(
     title: String,
     currentScreen: Screen,
+    viewModel: GBookViewModel,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit = {},
     isConfiguration: Boolean = true,
 ) {
+    val layoutPreferencesUiState = viewModel.layoutPreferencesUiState.collectAsState().value
     Row (
         modifier = modifier.background(MaterialTheme.colorScheme.onPrimary),
         verticalAlignment = Alignment.CenterVertically
@@ -120,9 +132,9 @@ fun BookHeader(
             currentScreen == Screen.Category && isConfiguration
             ) {
             HeaderButton(
-                description = stringResource(R.string.display_configuration),
-                onClick = { onButtonClick(Function.Configuration) },
-                painter = painterResource(id = R.drawable.display_configuration),
+                description = stringResource(layoutPreferencesUiState.toggleContentDescription),
+                onClick = { viewModel.selectLayout(!layoutPreferencesUiState.isGridLayout) },
+                painter = painterResource(layoutPreferencesUiState.toggleIcon),
                 modifier = Modifier
             )
         }
@@ -240,6 +252,10 @@ fun BookHeaderPreview() {
     GBookTheme {
         BookHeader(
             currentScreen = Screen.Category,
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             title = MockData.categoryUiState.currentBookCollection?.name!!,
             onBack = { }
         )

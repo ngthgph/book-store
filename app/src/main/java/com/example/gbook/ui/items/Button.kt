@@ -159,7 +159,8 @@ fun CardIconButton(
     color: Color = MaterialTheme.colorScheme.tertiary
 ) {
     IconButton(
-        modifier = modifier,
+        modifier = modifier
+            .wrapContentWidth(),
         onClick = { onButtonClick(function) },
     ) {
         Icon(

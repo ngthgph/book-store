@@ -1,5 +1,6 @@
 package com.example.gbook.ui
 
+import android.widget.GridLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,18 +12,26 @@ import com.example.gbook.data.local.PrintType
 import com.example.gbook.data.local.Projection
 import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.BookCollection
-import com.example.gbook.network.BooksRepository
+import com.example.gbook.data.BooksRepository
+import com.example.gbook.data.LayoutPreferencesRepository
 import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.data.model.LayoutPreferencesUiState
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.utils.Function
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.Locale
 
-class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() {
+class GBookViewModel(
+    private val booksRepository: BooksRepository,
+    private val layoutPreferencesRepository: LayoutPreferencesRepository
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(GBookUiState())
     val uiState: StateFlow<GBookUiState> = _uiState
@@ -30,6 +39,15 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     var networkBookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
     var recommendedUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
     var bookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
+
+    val layoutPreferencesUiState: StateFlow<LayoutPreferencesUiState> =
+        layoutPreferencesRepository.isGridLayout
+            .map { LayoutPreferencesUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = LayoutPreferencesUiState()
+            )
 
     init {
         innitializeUiState()
@@ -60,7 +78,6 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
             Function.Delete -> TODO()
             Function.Checkout -> TODO()
             Function.AddToCart -> TODO()
-            Function.Configuration -> TODO()
             Function.SignIn -> TODO()
             Function.ForgetPassword -> TODO()
             Function.SignUp -> TODO()
@@ -92,8 +109,11 @@ class GBookViewModel(private val booksRepository: BooksRepository): ViewModel() 
     }
 
     // PART OF HANDLING ON BUTTON CLICK FOR EACH FUNCTIONS ***************
-
-
+    fun selectLayout(isGridLayout: Boolean) {
+        viewModelScope.launch {
+            layoutPreferencesRepository.saveLayoutPreferences(isGridLayout = isGridLayout)
+        }
+    }
     // END OF HANDLE ON BUTTON CLICK FOR EACH FUNCTIONS PART *************
 
     fun handleOnSearch(query: String) {

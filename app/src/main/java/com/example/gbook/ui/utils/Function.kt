@@ -53,9 +53,6 @@ enum class Function(
         icon = Icons.Default.Add,
         description = R.string.add_to_cart
     ),
-    Configuration(
-        description = R.string.display_configuration
-    ),
     SignIn(
         description = R.string.sign_in
     ),
