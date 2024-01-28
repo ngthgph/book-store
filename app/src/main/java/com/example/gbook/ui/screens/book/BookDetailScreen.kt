@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,19 +45,22 @@ import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.model.NetworkBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.BookPhoto
+import com.example.gbook.ui.items.ButtonCard
 import com.example.gbook.ui.items.DrawerBookHeader
-import com.example.gbook.ui.items.ErrorContent
-import com.example.gbook.ui.items.LoadingContent
+import com.example.gbook.ui.items.shareBook
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
 fun BookDetailScreen(
     navigationType: NavigationType,
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
-    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -65,22 +70,11 @@ fun BookDetailScreen(
         if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
             DrawerBookHeader(title = uiState.currentBook!!.title)
         }
-        when(networkBookUiState) {
-            is NetworkBookUiState.Loading -> LoadingContent(modifier = Modifier)
-            is NetworkBookUiState.Success -> {
-                BookDetailContent(
-                    navigationType = navigationType,
-                    book = uiState.currentBook!!,
-                    onButtonClick = onButtonClick,
-                )
-            }
-            is NetworkBookUiState.Error ->
-                ErrorContent(
-                    onButtonClick = onButtonClick,
-                    modifier = Modifier
-                )
-        }
-
+        BookDetailContent(
+            navigationType = navigationType,
+            book = uiState.currentBook!!,
+            onButtonClick = onButtonClick,
+        )
     }
 }
 
@@ -115,8 +109,10 @@ fun BookDetailContent(
                         bottom = dimensionResource(id = R.dimen.padding_medium),
                     ),
                 )
+                val context = LocalContext.current
                 DetailsButtonRow(
-                    onButtonClick = onButtonClick,
+                    onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                    else onButtonClick(it)},
                     modifier = Modifier
                         .padding(
                             end = dimensionResource(id = R.dimen.padding_large),
@@ -150,11 +146,10 @@ fun BookDetailCard(
                     .fillMaxWidth()
                     .aspectRatio(1f)
             )
-            if(navigationType == NavigationType.NAVIGATION_RAIL) {
-                RailBookDetailInfo(book = book)
-            } else {
-                BookDetailInfo(book = book)
-            }
+            BookDetailInfo(
+                book = book,
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small))
+            )
         }
     }
 }
@@ -320,32 +315,6 @@ fun DetailsButtonRow(
         }
     }
 }
-@Composable
-fun ButtonCard(
-    function: Function,
-    modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit
-) {
-    Card (
-        shape = CircleShape,
-        modifier = modifier
-            .clip(CircleShape)
-            .aspectRatio(1f),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-    )  {
-        IconButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onButtonClick(function) },
-        ) {
-            Icon(
-                imageVector = function.icon,
-                contentDescription = stringResource(function.description),
-                modifier = Modifier.fillMaxWidth(),
-                tint = MaterialTheme.colorScheme.outline
-            )
-        }
-    }
-}
 
 @Preview
 @Composable
@@ -396,8 +365,11 @@ fun ButtonRowPreview() {
 fun CompactBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
-            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             onButtonClick = {}
         )
@@ -408,8 +380,11 @@ fun CompactBookScreenPreview() {
 fun MediumBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
-            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
             onButtonClick = {}
         )
@@ -421,8 +396,11 @@ fun MediumBookScreenPreview() {
 fun ExpandedBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
             uiState = MockData.bookUiState,
-            networkBookUiState = MockData.networkBookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
             onButtonClick = {}
         )

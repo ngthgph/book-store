@@ -4,8 +4,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -25,13 +23,15 @@ fun GBookApp(
 ) {
     val viewModel: GBookViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState = viewModel.uiState.collectAsState().value
-    var networkBookUiState = viewModel.networkBookUiState
 
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    var currentScreen = Screen.valueOf(
-        backStackEntry?.destination?.route?: Screen.Home.name
-    )
+
+    val screen = backStackEntry?.destination?.route
+    val currentScreen = if
+            (screen == null) Screen.Home else if
+                    (Screen.values().any { it.name == screen }) Screen.valueOf(screen) else
+                        Screen.Category
 
     val navigationType: NavigationType = when (windowSize) {
         WindowWidthSizeClass.Compact -> {
@@ -49,29 +49,23 @@ fun GBookApp(
     }
     when (navigationType) {
         NavigationType.PERMANENT_NAVIGATION_DRAWER -> {
-            val isBookScreen by remember { mutableStateOf(currentScreen == Screen.Book) }
-            if(isBookScreen) currentScreen = Screen.valueOf(navController.previousBackStackEntry?.destination?.route!!)
             DrawerScreen(
                 modifier = modifier,
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
-                networkBookUiState = networkBookUiState,
-                onIconClick = { navController.navigate(it.name) },
+                onIconClick = {
+                    viewModel.onBackFromBookDetail()
+                    navController.navigate(it.name)
+                              },
                 onBack = {navController.navigateUp()},
-                onButtonClick = {}
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                                  },
-                    onCollectionClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )
@@ -81,22 +75,26 @@ fun GBookApp(
         NavigationType.NAVIGATION_RAIL -> {
             RailScreen(
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
-                onBack = {navController.navigateUp()},
-                onIconClick = { navController.navigate(it.name) }
+                onBack = {
+                    if(uiState.currentBook == null) {
+                        navController.navigateUp()
+                    } else {
+                        viewModel.onBackFromBookDetail()
+                    }
+                         },
+                onIconClick = {
+                    viewModel.onBackFromBookDetail()
+                    navController.navigate(it.name)
+                }
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.NAVIGATION_RAIL,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                    },
-                    onCollectionClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )
@@ -106,22 +104,26 @@ fun GBookApp(
         else -> {
             BottomBarScreen(
                 currentScreen = currentScreen,
+                viewModel = viewModel,
                 uiState = uiState,
-                onIconClick = { navController.navigate(it.name) },
-                onBack = {navController.navigateUp()}
+                onIconClick = {
+                    viewModel.onBackFromBookDetail()
+                    navController.navigate(it.name)
+                              },
+                onBack = {
+                    if(uiState.currentBook == null) {
+                        navController.navigateUp()
+                    } else {
+                        viewModel.onBackFromBookDetail()
+                    }
+                         },
             ) {
                 GBookNavHost(
                     navigationType = NavigationType.BOTTOM_NAVIGATION,
                     viewModel = viewModel,
                     uiState = uiState,
-                    networkBookUiState = networkBookUiState,
                     navController = navController,
-                    onButtonClick = {},
-                    onCardClick = {
-                        viewModel.handleOnCardClick(it)
-                        navController.navigate(Screen.Book.name)
-                    },
-                    onCollectionClick = {},
+                    onButtonClick = viewModel::handleOnButtonClick,
                     onSearch = {},
                     onInput = {},
                 )

@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -41,6 +43,7 @@ import coil.request.ImageRequest
 import com.example.gbook.R
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.Book
+import com.example.gbook.data.model.BookCollection
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
@@ -49,10 +52,11 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun BooksGridSection(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
@@ -65,10 +69,11 @@ fun BooksGridSection(
         )
         NetworkBooksGrid(
             navigationType = navigationType,
-            uiState = uiState,
+            networkBookUiState = networkBookUiState,
             isFavorite = isFavorite,
             onButtonClick = onButtonClick,
-            onCardClick = onCardClick
+            onCardClick = onCardClick,
+            retryAction = retryAction,
         )
     }
 }
@@ -116,29 +121,41 @@ fun CollectionTitle(
 @Composable
 fun NetworkBooksGrid(
     navigationType: NavigationType,
-    uiState: NetworkBookUiState,
+    networkBookUiState: NetworkBookUiState,
     onButtonClick: (Function) -> Unit,
     onCardClick: (Book) -> Unit,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
 ) {
-    when(uiState) {
-        is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
-        is NetworkBookUiState.Success -> {
-            BooksGrid(
-                navigationType = navigationType,
-                bookList = uiState.books,
-                isFavorite = isFavorite,
-                onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
-                modifier = modifier
-            )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+//        PageNavigation(
+//            PrevEnabled = false,
+//            NextEnabled = false,
+//            onButtonClick = onButtonClick
+//        )
+        when(networkBookUiState) {
+            is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+            is NetworkBookUiState.Success -> {
+                BooksGrid(
+                    navigationType = navigationType,
+                    bookList = networkBookUiState.books,
+                    isFavorite = isFavorite,
+                    onButtonClick = onButtonClick,
+                    onCardClick = onCardClick,
+                    modifier = modifier
+                )
+            }
+            is NetworkBookUiState.Error ->
+                ErrorContent(
+                    retryAction = retryAction,
+                    modifier = modifier
+                )
         }
-        is NetworkBookUiState.Error ->
-            ErrorContent(
-                onButtonClick = onButtonClick,
-                modifier = modifier
-            )
     }
 }
 @Composable
@@ -160,9 +177,9 @@ fun BooksGrid(
         padding = R.dimen.padding_small
     }
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(dimensionResource(id = column)),
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(dimensionResource(id = padding))
+        columns = GridCells.Adaptive(dimensionResource(id = column)),
+        contentPadding = PaddingValues(dimensionResource(id = padding)),
     ) {
         items(bookList) {
             BooksCard(
@@ -230,15 +247,15 @@ fun BooksCard(
                         modifier = Modifier
                             .wrapContentHeight()
                             .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.onPrimaryContainer.copy(0.75f),
-                                    Color.Transparent
-                                ),
-                                startY = 100f,
-                                endY = 0f // Adjust the endX value based on your preference
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.onPrimaryContainer.copy(0.75f),
+                                        Color.Transparent
+                                    ),
+                                    startY = 100f,
+                                    endY = 0f // Adjust the endX value based on your preference
+                                )
                             )
-                        )
                     ) {
                         val price = book.retailPrice.toString()
                         Row(
@@ -265,9 +282,11 @@ fun BooksCard(
                             thickness = dimensionResource(id = R.dimen.divider_thickness),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
+                        val context = LocalContext.current
                         CardButtonRow(
                             isFavorite = isFavorite,
-                            onButtonClick = onButtonClick,
+                            onButtonClick = {if(it == Function.Share) shareBook(context, book)
+                            else onButtonClick(it)},
                             modifier = Modifier.height(
                                 if(navigationType != NavigationType.BOTTOM_NAVIGATION)
                                     dimensionResource(id = R.dimen.button_medium)
@@ -337,7 +356,8 @@ fun BookGridSectionPreview() {
             bookListTitle = "Music",
             onButtonClick = {},
             onCardClick = {},
-            uiState = MockData.networkBookUiState
+            retryAction = {},
+            networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }
 }
@@ -351,7 +371,8 @@ fun MediumBookGridSectionPreview() {
             bookListTitle = "Music",
             onButtonClick = {},
             onCardClick = {},
-            uiState = MockData.networkBookUiState
+            retryAction = {},
+            networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }
 }

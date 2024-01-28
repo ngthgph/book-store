@@ -5,7 +5,15 @@ import com.example.gbook.network.BookItem
 import com.example.gbook.network.BookSearchResponse
 
 class FakeBookApiService: BookApiService {
-    override suspend fun searchBooks(query: String): BookSearchResponse {
+    override suspend fun searchBooks(
+        query: String,
+        filter: String?,
+        startIndex: Int?,
+        maxResults: Int?,
+        printType: String?,
+        projection: String?,
+        orderBy: String?,
+    ): BookSearchResponse {
         return FakeDataSource.fakeBookResponse
     }
     override suspend fun getBook(bookId: String): BookItem {

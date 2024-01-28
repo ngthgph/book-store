@@ -19,73 +19,89 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.gbook.R
+import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
+import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
 import com.example.gbook.ui.utils.Function
 
 @Composable
 fun AppHeaderBar(
-    currentScreen: Screen,
+    viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onIconClick: (Screen) -> Unit,
     onBack: () -> Unit,
+    currentScreen: Screen,
+    onIconClick: ((Screen) -> Unit),
     modifier: Modifier = Modifier,
+    isConfiguration: Boolean = true,
 ) {
-    when (currentScreen) {
-        Screen.Home -> {
-            HomeHeader(
-                account = uiState.account?.name?: stringResource(id = R.string.account),
-                onAccountClick = { onIconClick(Screen.Account) },
-                modifier = modifier
-            )
+    if(uiState.currentBook == null) {
+        when (currentScreen) {
+            Screen.Home -> {
+                HomeHeader(
+                    account = uiState.account?.name?: stringResource(id = R.string.account),
+                    onAccountClick = { onIconClick(Screen.Account) },
+                    modifier = modifier
+                )
+            }
+            Screen.Category -> {
+                BookHeader(
+                    currentScreen = currentScreen,
+                    viewModel = viewModel,
+                    title = uiState.currentBookCollection?.name
+                        ?: stringResource(id = R.string.category),
+                    onBack = onBack,
+                    modifier = modifier
+                )
+            }
+            else -> {
+                BookHeader(
+                    currentScreen = currentScreen,
+                    viewModel = viewModel,
+                    title = stringResource(id = currentScreen.title),
+                    onBack = onBack,
+                    modifier = modifier
+                )
+            }
         }
-        Screen.Category -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = uiState.currentBookCollection?.name
-                    ?: stringResource(id = R.string.category),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
-        Screen.Book -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = uiState.currentBook?.title?: stringResource(id = R.string.book),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
-        else -> {
-            BookHeader(
-                currentScreen = currentScreen,
-                title = stringResource(id = currentScreen.title),
-                onBack = onBack,
-                modifier = modifier
-            )
-        }
+    } else {
+        BookHeader(
+            currentScreen = currentScreen,
+            viewModel = viewModel,
+            title = uiState.currentBook?.title?: stringResource(id = R.string.book),
+            onBack = onBack,
+            isConfiguration = isConfiguration,
+            modifier = modifier
+        )
     }
 }
 @Composable
 fun BookHeader(
     title: String,
     currentScreen: Screen,
+    viewModel: GBookViewModel,
     onBack: () -> Unit,
-    onButtonClick: (Function) -> Unit = {},
     modifier: Modifier = Modifier,
+    isConfiguration: Boolean = true,
 ) {
+    val layoutPreferencesUiState = viewModel.layoutPreferencesUiState.collectAsState().value
     Row (
         modifier = modifier.background(MaterialTheme.colorScheme.onPrimary),
         verticalAlignment = Alignment.CenterVertically
@@ -113,15 +129,13 @@ fun BookHeader(
             )
         }
         if(
-//            currentScreen == Screen.MyLibrary ||
-            currentScreen == Screen.Category
+            currentScreen == Screen.Category && isConfiguration
             ) {
-            Image(
-                painter = painterResource(id = R.drawable.display_configuration),
-                contentDescription = stringResource(R.string.display_configuration),
+            HeaderButton(
+                description = stringResource(layoutPreferencesUiState.toggleContentDescription),
+                onClick = { viewModel.selectLayout(!layoutPreferencesUiState.isGridLayout) },
+                painter = painterResource(layoutPreferencesUiState.toggleIcon),
                 modifier = Modifier
-                    .clickable(onClick = { onButtonClick(Function.Configuration) })
-                    .padding(horizontal = dimensionResource(R.dimen.padding_medium)),
             )
         }
     }
@@ -156,13 +170,11 @@ fun OnlyAccountHomeHeader(
             .fillMaxWidth()
             .background(Color.Transparent),
     ) {
-        Image(
+        HeaderButton(
+            description = account,
+            onClick = onAccountClick,
             imageVector = Icons.Default.AccountCircle,
-            contentDescription = account,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .clickable(onClick = onAccountClick)
-                .align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
 }
@@ -191,11 +203,10 @@ fun HomeHeader(
                     style = MaterialTheme.typography.headlineSmall,
                 )
             }
-            Image(
+            HeaderButton(
+                description = account,
+                onClick = onAccountClick,
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = account,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.clickable (onClick = onAccountClick)
             )
         }
     }
@@ -222,11 +233,10 @@ fun DrawerHeader(
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineSmall
             )
-            Image(
+            HeaderButton(
+                description = account,
+                onClick = onAccountClick,
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = account,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.clickable (onClick = onAccountClick)
             )
         }
     }
@@ -239,11 +249,17 @@ fun DrawerBookHeaderPreview() {
 @Preview
 @Composable
 fun BookHeaderPreview() {
-    BookHeader(
-        currentScreen = Screen.Category,
-        title = MockData.categoryUiState.currentBookCollection?.name!!,
-        onBack = { }
-    )
+    GBookTheme {
+        BookHeader(
+            currentScreen = Screen.Category,
+            viewModel = GBookViewModel(
+                FakeNetworkBooksRepository(),
+                LayoutPreferencesRepository(LocalContext.current.dataStore)
+            ),
+            title = MockData.categoryUiState.currentBookCollection?.name!!,
+            onBack = { }
+        )
+    }
 }
 @Preview
 @Composable

@@ -93,7 +93,7 @@ fun CartContent(
                     DescriptionButton(
                         function = Function.Checkout,
                         enable = shoppingList.isNotEmpty(),
-                        onButtonClick = onButtonClick,
+                        onButtonClick = {onButtonClick(it)},
                         modifier = Modifier.wrapContentWidth()
                     )
                     Spacer(modifier = Modifier.weight(1f))

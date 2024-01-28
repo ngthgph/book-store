@@ -58,4 +58,8 @@
     <string name="forget_password">Forget Password</string>
     <string name="sign_up">Sign up</string>
     <string name="no_book_collection_name">No book collection name</string>
+    <string name="next_page">Next >></string>
+    <string name="previous_page"><![CDATA[<< Previous]]></string>
+    <string name="grid_layout">Grid layout</string>
+    <string name="linear_layout">Linear layout</string>
 </resources>

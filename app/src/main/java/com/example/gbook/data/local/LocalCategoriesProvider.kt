@@ -10,6 +10,7 @@ object LocalCategoriesProvider {
         BookCollection("Fiction", R.drawable.fiction),
         BookCollection("Health", R.drawable.health),
         BookCollection("History", R.drawable.history),
+        BookCollection("Literature", R.drawable.literature),
         BookCollection("Music", R.drawable.music),
         BookCollection("Science", R.drawable.science),
         BookCollection("Self-help", R.drawable.self_help),
