@@ -62,4 +62,11 @@
     <string name="previous_page"><![CDATA[<< Previous]]></string>
     <string name="grid_layout">Grid layout</string>
     <string name="linear_layout">Linear layout</string>
+    <string name="add_collection">Add Collection</string>
+    <string name="collection">Collection</string>
+    <string name="input">Input</string>
+    <string name="open_collection">Open Collection</string>
+    <string name="remove_from_library">Remove from Library</string>
+    <string name="no_books_on_the_shelf">No Books on the Shelf</string>
+    <string name="your_cart_is_empty">Your Cart is Empty</string>
 </resources>

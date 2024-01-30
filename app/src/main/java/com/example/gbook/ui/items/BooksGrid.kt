@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +20,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -41,24 +40,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gbook.R
+import com.example.gbook.data.database.account.Account
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.model.Book
-import com.example.gbook.data.model.BookCollection
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun BooksGridSection(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
-    retryAction: () -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    searchQuery: SearchQuery? = null,
+    offlineBookList: List<Book>? = null,
+    isLibrary: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -70,10 +74,11 @@ fun BooksGridSection(
         NetworkBooksGrid(
             navigationType = navigationType,
             networkBookUiState = networkBookUiState,
-            isFavorite = isFavorite,
-            onButtonClick = onButtonClick,
-            onCardClick = onCardClick,
-            retryAction = retryAction,
+            searchQuery = searchQuery,
+            offlineBookList = offlineBookList,
+            isLibrary = isLibrary,
+            onFunction = onFunction,
+            onNetworkFunction = onNetworkFunction,
         )
     }
 }
@@ -122,11 +127,12 @@ fun CollectionTitle(
 fun NetworkBooksGrid(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
-    retryAction: () -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    searchQuery: SearchQuery? = null,
+    offlineBookList: List<Book>? = null,
+    isLibrary: Boolean = false,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -138,23 +144,37 @@ fun NetworkBooksGrid(
 //            NextEnabled = false,
 //            onButtonClick = onButtonClick
 //        )
-        when(networkBookUiState) {
-            is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
-            is NetworkBookUiState.Success -> {
+        if(!isLibrary) {
+            when(networkBookUiState) {
+                is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+                is NetworkBookUiState.Success -> {
+                    BooksGrid(
+                        navigationType = navigationType,
+                        bookList = networkBookUiState.books,
+                        isLibrary = false,
+                        onFunction = onFunction,
+                        modifier = modifier
+                    )
+                }
+                is NetworkBookUiState.Error ->
+                    searchQuery?.let {
+                        ErrorContent(
+                            searchQuery = it,
+                            onNetworkFunction = onNetworkFunction,
+                            modifier = modifier
+                        )
+                    }
+            }
+        } else{
+            offlineBookList?.let {
                 BooksGrid(
                     navigationType = navigationType,
-                    bookList = networkBookUiState.books,
-                    isFavorite = isFavorite,
-                    onButtonClick = onButtonClick,
-                    onCardClick = onCardClick,
+                    bookList = it,
+                    isLibrary = true,
+                    onFunction = onFunction,
                     modifier = modifier
                 )
             }
-            is NetworkBookUiState.Error ->
-                ErrorContent(
-                    retryAction = retryAction,
-                    modifier = modifier
-                )
         }
     }
 }
@@ -162,10 +182,9 @@ fun NetworkBooksGrid(
 fun BooksGrid(
     navigationType: NavigationType,
     bookList: List<Book>,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    isLibrary: Boolean = false,
 ) {
     val column: Int
     val padding: Int
@@ -184,11 +203,10 @@ fun BooksGrid(
         items(bookList) {
             BooksCard(
                 navigationType = navigationType,
-                isFavorite = isFavorite,
+                isLibrary = isLibrary,
                 book = it,
-                onButtonClick = onButtonClick,
+                onFunction = onFunction,
                 selected = false,
-                onCardClick = onCardClick,
                 modifier = Modifier
                     .padding(dimensionResource(id = padding))
                     .fillMaxWidth()
@@ -202,10 +220,9 @@ fun BooksGrid(
 fun BooksCard(
     selected: Boolean,
     book: Book,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    isLibrary: Boolean = false,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     Card(
@@ -217,7 +234,7 @@ fun BooksCard(
                 MaterialTheme.colorScheme.onPrimary
         ),
         modifier = modifier
-            .clickable { onCardClick(book) }
+            .clickable { onFunction(Function.BookCard, book, null, null, null, null) }
     ) {
         Column(
             modifier = Modifier,
@@ -284,9 +301,10 @@ fun BooksCard(
                         )
                         val context = LocalContext.current
                         CardButtonRow(
-                            isFavorite = isFavorite,
-                            onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                            else onButtonClick(it)},
+                            context = context,
+                            book = book,
+                            isLibrary = isLibrary,
+                            onFunction = onFunction,
                             modifier = Modifier.height(
                                 if(navigationType != NavigationType.BOTTOM_NAVIGATION)
                                     dimensionResource(id = R.dimen.button_medium)
@@ -302,27 +320,34 @@ fun BooksCard(
 }
 @Composable
 fun CardButtonRow(
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    isLibrary: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for(function in if(isFavorite)
-            arrayOf(Function.Cart, Function.Share)
+        for(function in if(isLibrary)
+            arrayOf(Function.RemoveFromLibrary, Function.Cart, Function.Share)
             else
-            arrayOf(Function.Library, Function.Cart, Function.Share)
+            arrayOf(Function.AddToLibrary, Function.Cart, Function.Share)
         ) {
             CardIconButton(
                 function = function,
+                book = book,
+                context = context,
                 modifier = Modifier
                     .weight(1f)
                     .padding(dimensionResource(id = R.dimen.padding_extra_small)),
-                onButtonClick = onButtonClick,
+                onFunction = onFunction,
                 color = color
             )
         }
@@ -354,9 +379,8 @@ fun BookGridSectionPreview() {
         BooksGridSection(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             bookListTitle = "Music",
-            onButtonClick = {},
-            onCardClick = {},
-            retryAction = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = MockData.fakeOnNetworkFunction,
             networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }
@@ -369,9 +393,8 @@ fun MediumBookGridSectionPreview() {
         BooksGridSection(
             navigationType = NavigationType.NAVIGATION_RAIL,
             bookListTitle = "Music",
-            onButtonClick = {},
-            onCardClick = {},
-            retryAction = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = MockData.fakeOnNetworkFunction,
             networkBookUiState = MockData.fakeNetworkBookUiState
         )
     }

@@ -1,7 +1,12 @@
-package com.example.gbook.data.model
+package com.example.gbook.data.database.books
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "books")
 data class Book(
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val networkId: String,
     val title: String,
     val author: String,
@@ -16,7 +21,8 @@ data class Book(
     val saleability: String,
     val retailPrice: Double,
     val currencyCode: String,
-    val rating: Int? = null,
-    val note: String = "",
-    val favorite: Boolean = false
+    var rating: Int? = null,
+    var note: String? = null,
+    var collectionName: String? = null,
+    var cartAmount: Int? = null
 )

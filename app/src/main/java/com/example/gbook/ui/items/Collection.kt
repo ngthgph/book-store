@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,16 +32,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.gbook.R
-import com.example.gbook.data.model.BookCollection
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.local.LocalCategoriesProvider
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun CollectionGrid(
     navigationType: NavigationType,
-    categories: List<BookCollection>,
-    onButtonClick: (Function) -> Unit,
-    onCollectionClick: (BookCollection) -> Unit,
+    collections: List<BookCollection>,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
+    navigateToCollection: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -58,13 +65,14 @@ fun CollectionGrid(
         modifier = modifier.fillMaxWidth(),
         contentPadding = PaddingValues(dimensionResource(id = padding))
     ) {
-        items(categories) {
+        items(collections) {
             CollectionCard(
                 navigationType = navigationType,
                 bookCollection = it,
-                onButtonClick = onButtonClick,
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
+                navigateToCollection = navigateToCollection,
                 selected = false,
-                onCollectionClick = onCollectionClick,
                 isLibrary = isLibrary,
                 modifier = Modifier
                     .padding(dimensionResource(id = padding))
@@ -80,8 +88,9 @@ fun CollectionCard(
     navigationType: NavigationType,
     selected: Boolean,
     bookCollection: BookCollection,
-    onButtonClick: (Function) -> Unit,
-    onCollectionClick: (BookCollection) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
+    navigateToCollection: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     isLibrary: Boolean = false,
 ) {
@@ -96,19 +105,25 @@ fun CollectionCard(
                 MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = modifier
-            .clickable { onCollectionClick(bookCollection) }
+            .clickable {
+                if (LocalCategoriesProvider.categories.contains(bookCollection)) {
+                    onNetworkFunction(NetworkFunction.Category, SearchQuery(bookCollection.name!!))
+                } 
+                navigateToCollection(bookCollection)
+            }
     ) {
         Box(modifier = Modifier) {
             Image(
                 painter = painterResource(
-                    id = bookCollection.image?:R.drawable.ic_broken_image),
-                contentDescription = bookCollection.name?: stringResource(id = R.string.fail_to_load),
+                    id = bookCollection.image
+                ),
+                contentDescription = bookCollection.name,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-            if(!isLibrary) {
+            if (!isLibrary) {
                 CardIconButton(
-                    function = Function.Library,
+                    function = Function.AddToLibrary,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small))
                         .align(Alignment.TopEnd)
@@ -117,10 +132,10 @@ fun CollectionCard(
                             maxWidth = dimensionResource(id = R.dimen.button_small),
                             maxHeight = dimensionResource(id = R.dimen.button_small)
                         ),
-                    onButtonClick = onButtonClick
+                    onFunction = onFunction,
                 )
             }
-            Row (
+            Row(
                 modifier = Modifier
                     .background(
                         brush = Brush.verticalGradient(
@@ -134,11 +149,11 @@ fun CollectionCard(
                     )
                     .align(Alignment.BottomStart)
                     .fillMaxWidth(),
-            ){
+            ) {
                 Text(
                     text = bookCollection.name
                         ?: stringResource(id = R.string.no_book_collection_name)
-                        .replaceFirstChar { it.uppercase() },
+                            .replaceFirstChar { it.uppercase() },
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     fontWeight = FontWeight.Bold,

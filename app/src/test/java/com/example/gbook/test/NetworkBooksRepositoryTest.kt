@@ -2,7 +2,7 @@ package com.example.gbook.test
 
 import com.example.gbook.data.fake.FakeBookApiService
 import com.example.gbook.data.fake.FakeDataSource
-import com.example.gbook.data.NetworkBooksRepository
+import com.example.gbook.data.network.NetworkBooksRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test

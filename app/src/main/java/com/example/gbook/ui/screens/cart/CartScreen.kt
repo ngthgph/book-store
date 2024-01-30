@@ -1,9 +1,11 @@
 package com.example.gbook.ui.screens.cart
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -11,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,38 +25,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.database.account.Account
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.MockData.fakeOnFunction
+import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.BookItemCard
 import com.example.gbook.ui.items.DescriptionButton
 import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun CartScreen(
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     CartContent(
         navigationType = navigationType,
-        shoppingList = uiState.cart,
-        onButtonClick = onButtonClick,
-        onCardClick = onCardClick,
+        bookList = MockData.bookList,
+        onFunction = onFunction,
+        onNetworkFunction = onNetworkFunction,
         modifier = modifier
     )
 }
 @Composable
 fun CartContent(
     navigationType: NavigationType,
-    shoppingList: List<Pair<Book, Int>>,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    bookList: List<Book>,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var padding = dimensionResource(id = R.dimen.padding_extra_large)
@@ -68,16 +77,35 @@ fun CartContent(
             modifier = Modifier,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            CartList(
-                navigationType = navigationType,
-                shoppingList = shoppingList,
-                onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
-                modifier = Modifier.weight(3f)
-            )
+            if(bookList.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(id = R.dimen.padding_medium)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.your_cart_is_empty),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                CartList(
+                    navigationType = navigationType,
+                    bookList = bookList,
+                    onFunction = onFunction,
+                    onNetworkFunction = onNetworkFunction,
+                    modifier = Modifier.weight(3f)
+                )
+            }
 
             Divider()
-            if(shoppingList.isNotEmpty()) {
+
+            if(bookList.isNotEmpty()) {
                 CartSummary()
             }
             Column(
@@ -92,8 +120,8 @@ fun CartContent(
                     Spacer(modifier = Modifier.weight(1f))
                     DescriptionButton(
                         function = Function.Checkout,
-                        enable = shoppingList.isNotEmpty(),
-                        onButtonClick = {onButtonClick(it)},
+                        enable = bookList.isNotEmpty(),
+                        onFunction = onFunction,
                         modifier = Modifier.wrapContentWidth()
                     )
                     Spacer(modifier = Modifier.weight(1f))
@@ -159,9 +187,9 @@ fun CartSummary(
 @Composable
 fun CartList(
     navigationType: NavigationType,
-    shoppingList: List<Pair<Book, Int>>,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    bookList: List<Book>,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var space = dimensionResource(id = R.dimen.padding_small)
@@ -174,14 +202,13 @@ fun CartList(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        items(shoppingList) {
+        items(bookList) {
             BookItemCard(
                 navigationType = navigationType,
                 isCart = true,
-                book = it.first,
-                amount = it.second,
-                onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
+                book = it,
+                amount = it.cartAmount!!,
+                onFunction = onFunction,
             )
         }
         item {
@@ -190,7 +217,7 @@ fun CartList(
                 FABItem(
                     function = Function.AddToCart,
                     padding = space,
-                    onButtonClick = onButtonClick
+                    onFunction = onFunction,
                 )
             }
         }
@@ -203,8 +230,8 @@ fun CompactCartScreenPreview() {
     GBookTheme {
         CartScreen(
             uiState = MockData.cartUiState,
-            onButtonClick = {},
-            onCardClick = {}
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
         )
     }
 }
@@ -214,8 +241,8 @@ fun MediumCartScreenPreview() {
     GBookTheme {
         CartScreen(
             uiState = MockData.cartUiState,
-            onButtonClick = {},
-            onCardClick = {}
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
         )
     }
 }

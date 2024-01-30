@@ -1,4 +1,4 @@
-package com.example.gbook.network
+package com.example.gbook.data.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

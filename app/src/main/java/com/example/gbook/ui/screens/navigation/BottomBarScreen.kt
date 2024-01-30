@@ -14,8 +14,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.database.layout.LayoutPreferencesRepository
 import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
 import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
@@ -93,10 +94,7 @@ fun BookBottomBarScreenPreview() {
     GBookTheme {
         BottomBarScreen(
             currentScreen = Screen.Book,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             MockData.bookUiState,
             onIconClick = {},
             onBack = {}
@@ -109,10 +107,7 @@ fun HomeBottomBarScreenPreview() {
     GBookTheme {
         BottomBarScreen(
             currentScreen = Screen.Home,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             MockData.homeUiState,
             onIconClick = {},
             onBack = {}
@@ -125,10 +120,7 @@ fun CategoryBottomBarScreenPreview() {
     GBookTheme {
         BottomBarScreen(
             currentScreen = Screen.Category,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             MockData.categoryUiState,
             onIconClick = {},
             onBack = {}

@@ -1,4 +1,4 @@
-package com.example.gbook.data.local
+package com.example.gbook.data.network
 
 //Search for volumes that contain this text string. There are special keywords you can specify
 //in the search terms to search in particular fields, such as:

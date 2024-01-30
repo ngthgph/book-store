@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -7,8 +8,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.local.LocalCategoriesProvider
-import com.example.gbook.data.model.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.screens.account.AccountScreen
@@ -16,9 +19,12 @@ import com.example.gbook.ui.screens.cart.CartScreen
 import com.example.gbook.ui.screens.categories.CategoriesScreen
 import com.example.gbook.ui.screens.categories.CategoryScreen
 import com.example.gbook.ui.screens.home.HomeScreen
+import com.example.gbook.ui.screens.library.CollectionScreen
 import com.example.gbook.ui.screens.library.MyLibraryScreen
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 import com.example.gbook.ui.utils.Screen
 
 @Composable
@@ -27,9 +33,8 @@ fun GBookNavHost(
     viewModel: GBookViewModel,
     uiState: GBookUiState,
     navController: NavHostController,
-    onButtonClick: (Function) -> Unit,
-    onSearch: (String) -> Unit,
-    onInput:(String) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -42,8 +47,8 @@ fun GBookNavHost(
                 navigationType = navigationType,
                 viewModel = viewModel,
                 uiState = uiState,
-                onButtonClick = onButtonClick,
-                onSearch = onSearch,
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
                 modifier = modifier,
             )
         }
@@ -51,9 +56,30 @@ fun GBookNavHost(
             MyLibraryScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onSearch = onSearch,
-                onButtonClick = onButtonClick,
-                onCollectionClick = { },
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
+                navigateToCollection = {
+                    navController.navigate("${Screen.Collection.name}/${it.name}")
+                },
+                modifier = modifier
+            )
+        }
+        val collectionArgument = "collectionName"
+        composable(
+            route = Screen.Collection.name + "/{$collectionArgument}",
+            arguments = listOf(navArgument(collectionArgument){type = NavType.StringType})
+        ) { backStackEntry ->
+            val collectionName = backStackEntry.arguments?.getString(collectionArgument)
+                ?: error("collectionArgument cannot be null")
+            val collection = uiState.collection.find { it.name == collectionName }!!
+
+            CollectionScreen(
+                navigationType = navigationType,
+                collection = collection,
+                viewModel = viewModel,
+                uiState = uiState,
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
                 modifier = modifier
             )
         }
@@ -61,8 +87,8 @@ fun GBookNavHost(
             CartScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onButtonClick = onButtonClick,
-                onCardClick = { viewModel.handleOnCardClick(it) },
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
                 modifier = modifier
             )
         }
@@ -70,10 +96,10 @@ fun GBookNavHost(
         composable(Screen.Categories.name) {
             CategoriesScreen(
                 navigationType = navigationType,
-                onButtonClick = onButtonClick,
-                onCollectionClick = {
-                    viewModel.getSubjectBookList(it.name!!)
-                    navController.navigate("${Screen.Category.name}/${it.name!!}")
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
+                navigateToCollection = {
+                    navController.navigate("${Screen.Category.name}/${it.name}")
                                     },
                 modifier = modifier
             )
@@ -92,9 +118,8 @@ fun GBookNavHost(
                 category = category,
                 viewModel = viewModel,
                 uiState = uiState,
-                onButtonClick = onButtonClick,
-                onCardClick = { viewModel.handleOnCardClick(it) },
-                onSearch = onSearch,
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
                 modifier = modifier
             )
         }
@@ -102,8 +127,7 @@ fun GBookNavHost(
             AccountScreen(
                 navigationType = navigationType,
                 uiState = uiState,
-                onButtonClick = onButtonClick,
-                onInput = onInput,
+                onFunction = onFunction,
                 modifier = modifier
             )
         }

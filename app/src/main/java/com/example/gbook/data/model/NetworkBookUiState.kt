@@ -1,5 +1,7 @@
 package com.example.gbook.data.model
 
+import com.example.gbook.data.database.books.Book
+
 sealed interface NetworkBookUiState {
     data class Success(
         var books: List<Book>,

@@ -1,23 +1,26 @@
 package com.example.gbook.ui
 
-import android.widget.GridLayout
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gbook.data.local.BookFilter
-import com.example.gbook.data.local.OrderBy
-import com.example.gbook.data.local.PrintType
-import com.example.gbook.data.local.Projection
-import com.example.gbook.data.model.Book
-import com.example.gbook.data.model.BookCollection
-import com.example.gbook.data.BooksRepository
-import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.books.OfflineRepository
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.database.layout.LayoutPreferencesRepository
+import com.example.gbook.data.local.LocalSearchQueryProvider.categoryQuery
+import com.example.gbook.data.local.LocalSearchQueryProvider.recommendedQuery
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.LayoutPreferencesUiState
 import com.example.gbook.data.model.NetworkBookUiState
+import com.example.gbook.data.model.OfflineBookUiState
+import com.example.gbook.data.network.NetworkRepository
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
+import com.example.gbook.ui.utils.NetworkFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,199 +29,187 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Locale
 
 class GBookViewModel(
-    private val booksRepository: BooksRepository,
+    private val networkRepository: NetworkRepository,
+    private val offlineRepository: OfflineRepository,
     private val layoutPreferencesRepository: LayoutPreferencesRepository
 ): ViewModel() {
+
+    companion object {
+        private const val TIME_MILLIS = 5000L
+    }
 
     private val _uiState = MutableStateFlow(GBookUiState())
     val uiState: StateFlow<GBookUiState> = _uiState
 
     var networkBookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
     var recommendedUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
-    var bookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
+
+    val offlineBookUiState: StateFlow<OfflineBookUiState> =
+        offlineRepository.getAllBooksStream()
+            .map { OfflineBookUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
+                initialValue = OfflineBookUiState()
+            )
 
     val layoutPreferencesUiState: StateFlow<LayoutPreferencesUiState> =
         layoutPreferencesRepository.isGridLayout
             .map { LayoutPreferencesUiState(it) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
                 initialValue = LayoutPreferencesUiState()
             )
 
     init {
-        innitializeUiState()
+        initializeUiState()
     }
 
-    fun innitializeUiState() {
+    private fun initializeUiState() {
         _uiState.value = GBookUiState()
         getRecommended()
     }
+    //************************************************************************
+    // NETWORK FUNCTIONS *****************************************************
+    //************************************************************************
+    fun handleOnNetworkFunction(networkFunction: NetworkFunction, searchQuery: SearchQuery?) {
+        when(networkFunction) {
+            NetworkFunction.Search -> TODO()
+            NetworkFunction.Retry -> TODO()
+            NetworkFunction.Recommended -> getRecommended()
+            NetworkFunction.Category -> searchQuery?.let { getSubjectBookList(searchQuery = it) }
+        }
+    }
+    //************************************************************************
+    private fun getRecommended() {
+        getRecommendedBookList(recommendedQuery)
+    }
+    // onCollectionClick - get collection data from internet
+    private fun getSubjectBookList(searchQuery: SearchQuery) {
+        val subject = searchQuery.query
+        networkBookUiState = NetworkBookUiState.Loading
+        onBackFromBookDetail()
+        getNetworkBookList(subject.categoryQuery)
+    }
+    fun handleOnSearch(query: String) {
 
-    fun getRecommended() {
-        getRecommendedBookList(
-            query = "search term",
-            maxResults = 40,
-            filter = BookFilter.PAID_EBOOKS,
-            orderBy = OrderBy.NEWEST
-        )
+    }
+    // Get data for Category Book List
+    private fun getNetworkBookList(searchQuery: SearchQuery) {
+        viewModelScope.launch {
+            networkBookUiState = try {
+                NetworkBookUiState
+                    .Success(networkRepository.searchBookTerm(searchQuery))
+            } catch (e: IOException) {
+                NetworkBookUiState.Error
+            } catch (e: retrofit2.HttpException) {
+                NetworkBookUiState.Error
+            }
+        }
     }
 
-    fun handleOnButtonClick(function: Function) {
+    private fun getRecommendedBookList(searchQuery: SearchQuery) {
+        viewModelScope.launch {
+            recommendedUiState = try {
+                NetworkBookUiState
+                    .Success(networkRepository.searchBookTerm(searchQuery))
+            } catch (e: IOException) {
+                NetworkBookUiState.Error
+            } catch (e: retrofit2.HttpException) {
+                NetworkBookUiState.Error
+            }
+        }
+    }
+    //************************************************************************
+    // END OF NETWORK FUNCTIONS **********************************************
+    //************************************************************************
+
+
+
+    //************************************************************************
+    // FUNCTIONS *************************************************************
+    //************************************************************************
+    fun handleOnFunction(
+        function: Function,
+        book: Book? = null,
+        collection: BookCollection? = null,
+        account: Account? = null,
+        string: String? = null,
+        context: Context? = null,
+    ) {
         when(function) {
-            Function.Library -> TODO()
+            Function.BookCard -> {
+                book?.let { onCardClick(it) }
+            }
+            Function.AddToLibrary -> {
+                book?.let { addBookToCollection(it, BookCollection("Favorite")) }
+            }
             Function.Cart -> TODO()
-            Function.Share -> TODO() // Done on each book card
+            Function.Share -> book?.let {
+                context?.shareBook(it)
+            }
             Function.Cancel -> TODO()
-            Function.Add -> TODO()
-            Function.Decline -> TODO()
+            Function.IncreaseAmount -> TODO()
+            Function.DecreaseAmount -> TODO()
             Function.Delete -> TODO()
             Function.Checkout -> TODO()
             Function.AddToCart -> TODO()
+            Function.PreviousPage -> TODO()
+            Function.NextPage -> TODO()
             Function.SignIn -> TODO()
             Function.ForgetPassword -> TODO()
             Function.SignUp -> TODO()
-            Function.PreviousPage -> TODO()
-            Function.NextPage -> TODO()
+            Function.AddCollection -> TODO()
+            Function.Search -> TODO()
+            Function.Input -> TODO()
+            Function.RemoveFromLibrary -> book?.let { removeBookFromCollection(it) }
+        }
+    }
+    //************************************************************************
+    fun selectLayout(isGridLayout: Boolean) {
+        viewModelScope.launch {
+            layoutPreferencesRepository.saveLayoutPreferences(isGridLayout = isGridLayout)
         }
     }
     // onCardClick
-    fun handleOnCardClick(book: Book) {
-        bookUiState = NetworkBookUiState.Loading
-        getNetworkBookItem(book.networkId)
+    private fun onCardClick(book: Book) {
         updateCurrentBook(book)
     }
     // get out of details book - reset currentBook to null
     fun onBackFromBookDetail() {
         updateCurrentBook(null)
     }
-    // onCollectionClick - get collection data from internet
-    fun getSubjectBookList(subject: String) {
-        networkBookUiState = NetworkBookUiState.Loading
-        onBackFromBookDetail()
-        getNetworkBookList(
-            query = "",
-            subject = subject.lowercase(Locale.getDefault()),
-            maxResults = 40,
-            filter = BookFilter.PAID_EBOOKS,
-            orderBy = OrderBy.NEWEST
-        )
-    }
-
-    // PART OF HANDLING ON BUTTON CLICK FOR EACH FUNCTIONS ***************
-    fun selectLayout(isGridLayout: Boolean) {
-        viewModelScope.launch {
-            layoutPreferencesRepository.saveLayoutPreferences(isGridLayout = isGridLayout)
-        }
-    }
-    // END OF HANDLE ON BUTTON CLICK FOR EACH FUNCTIONS PART *************
-
-    fun handleOnSearch(query: String) {
-
-    }
-
-    fun handleOnInput(input: String) {
-
-    }
-
-    private fun getNetworkBookList(
-        query: String,
-        intitle: String? = null,
-        inauthor: String? = null,
-        inpublisher: String? = null,
-        subject: String? = null,
-        isbn: String? = null,
-        lccn: String? = null,
-        oclc: String? = null,
-        filter: BookFilter? = null,
-        startIndex: Int? = null,
-        maxResults: Int? = null,
-        printType: PrintType? = null,
-        projection: Projection? = null,
-        orderBy: OrderBy? = null,
-    ) {
-        viewModelScope.launch {
-            networkBookUiState = try {
-                NetworkBookUiState
-                    .Success(booksRepository.searchBookTerm(
-                        query,
-                        intitle, inauthor, inpublisher, subject, isbn, lccn, oclc,
-                        filter,
-                        startIndex,
-                        maxResults,
-                        printType,
-                        projection,
-                        orderBy
-                    ))
-            } catch (e: IOException) {
-                NetworkBookUiState.Error
-            } catch (e: retrofit2.HttpException) {
-                NetworkBookUiState.Error
-            }
-        }
-    }
-
-    private fun getRecommendedBookList(
-        query: String,
-        intitle: String? = null,
-        inauthor: String? = null,
-        inpublisher: String? = null,
-        subject: String? = null,
-        isbn: String? = null,
-        lccn: String? = null,
-        oclc: String? = null,
-        filter: BookFilter? = null,
-        startIndex: Int? = null,
-        maxResults: Int? = null,
-        printType: PrintType? = null,
-        projection: Projection? = null,
-        orderBy: OrderBy? = null,
-    ) {
-        viewModelScope.launch {
-            recommendedUiState = try {
-                NetworkBookUiState
-                    .Success(booksRepository.searchBookTerm(
-                        query,
-                        intitle, inauthor, inpublisher, subject, isbn, lccn, oclc,
-                        filter,
-                        startIndex,
-                        maxResults,
-                        printType,
-                        projection,
-                        orderBy
-                    ))
-            } catch (e: IOException) {
-                NetworkBookUiState.Error
-            } catch (e: retrofit2.HttpException) {
-                NetworkBookUiState.Error
-            }
-        }
-    }
-
-    private fun getNetworkBookItem(networkId: String) {
-        viewModelScope.launch {
-            bookUiState = try {
-                NetworkBookUiState.Success(List(1){booksRepository.searchBookItem(networkId)})
-            } catch (e: IOException) {
-                NetworkBookUiState.Error
-            } catch (e: retrofit2.HttpException) {
-                NetworkBookUiState.Error
-            }
-        }
-    }
-
-    fun updateCurrentBook(book: Book?) {
+    private fun updateCurrentBook(book: Book?) {
         _uiState.update { currentState ->
             currentState.copy(currentBook = book)
         }
     }
-    fun updateCurrentBookCollection(query: String, bookList: List<Book>) {
-        _uiState.update { currentState ->
-            currentState.copy(currentBookCollection =
-            BookCollection(query,currentState.currentBookCollection?.image,bookList))
+    // Data for Library Collection Book List
+    private fun addBookToCollection(book: Book, collection: BookCollection) {
+        val updatedBook = book.apply { book.collectionName = collection.name }
+
+        viewModelScope.launch {
+            offlineRepository.insertBook(updatedBook)
         }
     }
+    private fun removeBookFromCollection(book: Book) {
+        viewModelScope.launch {
+            offlineRepository.deleteBook(book)
+        }
+        onBackFromBookDetail()
+    }
+    fun handleOnInput(input: String) {
+
+    }
+    fun getBookCollection(collection: String): List<Book> =
+        offlineBookUiState.value.bookList.filter {
+            book -> book.collectionName.equals(collection)
+        }
+
+    //************************************************************************
+    // END OF FUNCTIONS ******************************************************
+    //************************************************************************
 }

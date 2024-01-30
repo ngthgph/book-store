@@ -10,7 +10,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             GBookViewModel(
-                gBookApplication().container.booksRepository,
+                gBookApplication().container.networkRepository,
+                gBookApplication().container.offlineRepository,
                 gBookApplication().container.layoutPreferencesRepository
             )
         }

@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.library
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,32 +9,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.model.BookCollection
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.MockData.fakeOnFunction
+import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.CollectionGrid
 import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun MyLibraryScreen(
     uiState: GBookUiState,
-    onSearch: (String) -> Unit,
-    onButtonClick: (Function) -> Unit,
-    onCollectionClick: (BookCollection) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
+    navigateToCollection: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     MyLibraryContent(
         modifier = modifier,
-        onSearch = onSearch,
-        onButtonClick = onButtonClick,
-        onCollectionClick = onCollectionClick,
+        onFunction = onFunction,
+        onNetworkFunction = onNetworkFunction,
+        navigateToCollection = navigateToCollection,
         navigationType = navigationType,
-        library = MockData.libraryUiState.library
+        library = uiState.collection
     )
 }
 
@@ -41,17 +48,17 @@ fun MyLibraryScreen(
 fun MyLibraryContent(
     navigationType: NavigationType,
     library: List<BookCollection>,
-    onSearch: (String) -> Unit,
-    onButtonClick: (Function) -> Unit,
-    onCollectionClick: (BookCollection) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
+    navigateToCollection: (BookCollection) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
             FABItem(
-                function = Function.Add,
-                onButtonClick = onButtonClick
+                function = Function.AddCollection,
+                onFunction = onFunction,
             )
         }
     ) {
@@ -61,14 +68,15 @@ fun MyLibraryContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SearchBar(
-                onSearch = onSearch,
+                onNetworkFunction = onNetworkFunction,
             )
             CollectionGrid(
                 modifier = modifier,
                 navigationType = navigationType,
-                categories = library,
-                onButtonClick = onButtonClick,
-                onCollectionClick = onCollectionClick,
+                collections = library,
+                onFunction = onFunction,
+                onNetworkFunction = onNetworkFunction,
+                navigateToCollection = navigateToCollection,
                 isLibrary = true
             )
         }
@@ -81,9 +89,9 @@ fun CompactFavoriteScreenPreview() {
     GBookTheme {
         MyLibraryScreen(
             MockData.libraryUiState,
-            onButtonClick = {},
-            onCollectionClick = {},
-            onSearch = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
+            navigateToCollection = {}
         )
     }
 }
@@ -94,9 +102,9 @@ fun MediumFavoriteScreenPreview() {
         MyLibraryScreen(
             uiState = MockData.libraryUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
-            onButtonClick = {},
-            onCollectionClick = {},
-            onSearch = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
+            navigateToCollection = {}
         )
     }
 }

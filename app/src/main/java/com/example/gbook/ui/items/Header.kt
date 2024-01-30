@@ -1,8 +1,6 @@
 package com.example.gbook.ui.items
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,24 +21,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.gbook.R
-import com.example.gbook.data.LayoutPreferencesRepository
-import com.example.gbook.data.dataStore
-import com.example.gbook.data.fake.FakeNetworkBooksRepository
+import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
-import com.example.gbook.ui.utils.Function
 
 @Composable
 fun AppHeaderBar(
@@ -65,8 +58,7 @@ fun AppHeaderBar(
                 BookHeader(
                     currentScreen = currentScreen,
                     viewModel = viewModel,
-                    title = uiState.currentBookCollection?.name
-                        ?: stringResource(id = R.string.category),
+                    title = stringResource(id = R.string.category),
                     onBack = onBack,
                     modifier = modifier
                 )
@@ -129,7 +121,9 @@ fun BookHeader(
             )
         }
         if(
-            currentScreen == Screen.Category && isConfiguration
+            currentScreen == Screen.Category
+            || currentScreen == Screen.Collection
+            && isConfiguration
             ) {
             HeaderButton(
                 description = stringResource(layoutPreferencesUiState.toggleContentDescription),
@@ -252,11 +246,8 @@ fun BookHeaderPreview() {
     GBookTheme {
         BookHeader(
             currentScreen = Screen.Category,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
-            title = MockData.categoryUiState.currentBookCollection?.name!!,
+            viewModel = LocalContext.current.fakeViewModel,
+            title = stringResource(id = R.string.category),
             onBack = { }
         )
     }

@@ -19,7 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
+import com.example.gbook.data.local.LocalSearchQueryProvider
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun LoadingContent(
@@ -35,7 +39,8 @@ fun LoadingContent(
 }
 @Composable
 fun ErrorContent(
-    retryAction: () -> Unit,
+    searchQuery: SearchQuery,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -64,7 +69,7 @@ fun ErrorContent(
             ),
             elevation = ButtonDefaults
                 .buttonElevation(dimensionResource(id = R.dimen.elevation)),
-            onClick = retryAction,
+            onClick = {onNetworkFunction(NetworkFunction.Retry, searchQuery)},
         ) {
             Text(
                 text = stringResource(id = R.string.retry)
@@ -83,6 +88,9 @@ fun LoadingPreview() {
 @Composable
 fun ErrorPreview() {
     GBookTheme {
-        ErrorContent(retryAction = {})
+        ErrorContent(
+            searchQuery = LocalSearchQueryProvider.recommendedQuery,
+            onNetworkFunction = fakeOnNetworkFunction
+        )
     }
 }

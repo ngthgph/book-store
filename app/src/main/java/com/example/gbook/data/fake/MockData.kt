@@ -1,13 +1,20 @@
 package com.example.gbook.data.fake
 
+import android.content.Context
 import com.example.gbook.data.local.LocalCategoriesProvider
-import com.example.gbook.data.model.Account
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
-import com.example.gbook.data.local.Saleability
+import com.example.gbook.data.network.Saleability
+import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.ui.utils.Function
+import com.example.gbook.ui.utils.NetworkFunction
 
 object MockData {
+    val fakeOnFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit = { _,_,_,_,_,_-> }
+    val fakeOnNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit = { _, _ -> }
     val category = LocalCategoriesProvider.categories[0]
     private val book = Book(
         id = 0,
@@ -24,7 +31,8 @@ object MockData {
         imageLinks = "http://books.google.com/books/content?id=C1MI_4nZyD4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
         saleability = Saleability.FOR_SALE.name,
         retailPrice = 255647.0,
-        currencyCode = "VND"
+        currencyCode = "VND",
+        cartAmount = 1
     )
     private val account = Account(
         name = "Emery Cremin",
@@ -36,13 +44,13 @@ object MockData {
 
     val bookList = List(20) { book }
 
-    val homeUiState = GBookUiState(null, null, null)
-    val libraryUiState = GBookUiState(category, null, account, shoppingList, favorite = bookList)
-    val cartUiState = GBookUiState(category, book, account, shoppingList)
-    val categoriesUiState = GBookUiState(null, book, account)
-    val categoryUiState = GBookUiState(category, book, account)
-    val bookUiState = GBookUiState(category, book, account)
-    val accountUiState = GBookUiState(category, book, account)
+    val homeUiState = GBookUiState(null, null)
+    val libraryUiState = GBookUiState(null, account)
+    val cartUiState = GBookUiState(book, account)
+    val categoriesUiState = GBookUiState(book, account)
+    val categoryUiState = GBookUiState(null, account)
+    val bookUiState = GBookUiState(book, account)
+    val accountUiState = GBookUiState(book, account)
 
     val fakeNetworkBookUiState = NetworkBookUiState.Success(bookList)
 }

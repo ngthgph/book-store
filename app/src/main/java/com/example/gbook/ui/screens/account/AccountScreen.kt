@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.account
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.items.ClickableText
 import com.example.gbook.ui.items.DescriptionButton
@@ -33,14 +38,12 @@ import com.example.gbook.ui.utils.NavigationType
 @Composable
 fun AccountScreen(
     uiState: GBookUiState,
-    onInput:(String) -> Unit,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
     navigationType: NavigationType = NavigationType.BOTTOM_NAVIGATION,
 ) {
     AccountContent(
-        onButtonClick = onButtonClick,
-        onInput = onInput,
+        onFunction = onFunction,
         navigationType = navigationType,
         modifier = modifier,
     )
@@ -48,8 +51,7 @@ fun AccountScreen(
 
 @Composable
 fun AccountContent(
-    onInput:(String) -> Unit,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     navigationType: NavigationType,
     modifier: Modifier = Modifier
 ) {
@@ -66,18 +68,16 @@ fun AccountContent(
             .fillMaxSize()
     ) {
         SignInScreen(
-            onInput = onInput,
             navigationType = navigationType,
-            onButtonClick = onButtonClick,
+            onFunction = onFunction,
         )
     }
 }
 
 @Composable
 fun SignInScreen(
-    onInput:(String) -> Unit,
     navigationType: NavigationType,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var padding = dimensionResource(id = R.dimen.padding_small)
@@ -108,13 +108,13 @@ fun SignInScreen(
                 .sizeIn(maxWidth = dimensionResource(id = R.dimen.text_field)),
         ) {
             InputTextField(
-                onInput = onInput,
+                onInput = {onFunction(Function.Input,null,null,null,it,null)},
                 placeholder = stringResource(R.string.email_address),
                 modifier = Modifier
                     .sizeIn(maxWidth = dimensionResource(id = R.dimen.text_field) )
             )
             InputTextField(
-                onInput = onInput,
+                onInput = {onFunction(Function.Input,null,null,null,it,null)},
                 placeholder = "Password"
             )
             Text(
@@ -127,7 +127,7 @@ fun SignInScreen(
             )
             DescriptionButton(
                 function = Function.SignIn,
-                onButtonClick = onButtonClick,
+                onFunction = onFunction,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -136,12 +136,12 @@ fun SignInScreen(
         ) {
             ClickableText(
                 function = Function.ForgetPassword,
-                onButtonClick = onButtonClick
+                onFunction = onFunction,
             )
             Text(text = " / ")
             ClickableText(
                 function = Function.SignUp,
-                onButtonClick = onButtonClick
+                onFunction = onFunction,
             )
         }
     }
@@ -152,8 +152,7 @@ fun CompactAccountScreenPreview() {
     GBookTheme {
         AccountScreen(
             uiState = MockData.accountUiState,
-            onButtonClick = {},
-            onInput = {}
+            onFunction = fakeOnFunction
         )
     }
 }
@@ -164,8 +163,7 @@ fun MediumAccountScreenPreview() {
         AccountScreen(
             uiState = MockData.accountUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
-            onButtonClick = {},
-            onInput = {}
+            onFunction = fakeOnFunction
         )
     }
 }
