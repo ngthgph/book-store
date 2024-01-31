@@ -16,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -27,13 +26,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
+import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.ui.utils.NetworkFunction
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    onSearch: (String) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -60,7 +62,7 @@ fun SearchBar(
                 value = query,
                 onValueChange = {
                     query = it
-                    onSearch(it)
+                    onNetworkFunction(NetworkFunction.Search, SearchQuery(query))
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
@@ -92,6 +94,6 @@ fun SearchBar(
 @Composable
 fun SearchBarPreview() {
     GBookTheme {
-        SearchBar(onSearch = {})
+        SearchBar(onNetworkFunction = fakeOnNetworkFunction)
     }
 }

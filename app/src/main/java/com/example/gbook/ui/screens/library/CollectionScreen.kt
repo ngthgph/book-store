@@ -1,4 +1,4 @@
-package com.example.gbook.ui.screens.categories
+package com.example.gbook.ui.screens.library
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -7,12 +7,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,18 +33,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
 import com.example.gbook.data.database.account.Account
-import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.local.LocalCategoriesProvider
 import com.example.gbook.data.database.books.Book
 import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
+import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
+import com.example.gbook.data.local.LocalCategoriesProvider
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.GridOrLinearLayout
-import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.screens.book.ListDetailHandler
+import com.example.gbook.ui.screens.categories.CategoryTitle
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
@@ -47,11 +52,11 @@ import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
-fun CategoryScreen(
+fun CollectionScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    category: BookCollection,
+    collection: BookCollection,
     onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
@@ -66,13 +71,14 @@ fun CategoryScreen(
             viewModel = viewModel,
             uiState = uiState,
             onFunction = onFunction,
-            modifier = Modifier
+            modifier = Modifier,
+            isLibrary = true
         ) {
-            CategoryContent(
+            CollectionContent(
                 navigationType = navigationType,
                 viewModel = viewModel,
-                title = category.name,
-                image = painterResource(id = category.image?: R.drawable.ic_broken_image),
+                title = collection.name,
+                image = painterResource(id = collection.image),
                 onFunction = onFunction,
                 onNetworkFunction = onNetworkFunction,
             )
@@ -81,7 +87,7 @@ fun CategoryScreen(
 }
 
 @Composable
-fun CategoryContent(
+fun CollectionContent(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     title: String,
@@ -108,21 +114,41 @@ fun CategoryContent(
         Column(
             modifier = Modifier.weight(3f)
         ) {
-            SearchBar(onNetworkFunction = onNetworkFunction,)
-            GridOrLinearLayout(
-                navigationType = navigationType,
-                networkBookUiState = viewModel.networkBookUiState,
-                layoutPreferencesUiState = viewModel.layoutPreferencesUiState.collectAsState().value,
-                searchQuery = SearchQuery(title),
-                onFunction = onFunction,
-                onNetworkFunction = onNetworkFunction,
-            )
+            if(viewModel.offlineCollectionUiState.bookList.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(id = R.dimen.padding_medium)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.no_books_on_the_shelf),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            else {
+                GridOrLinearLayout(
+                    navigationType = navigationType,
+                    networkBookUiState = viewModel.networkBookUiState,
+                    offlineBookUiState = viewModel.offlineCollectionUiState,
+                    layoutPreferencesUiState = viewModel.layoutPreferencesUiState.collectAsState().value,
+                    searchQuery = SearchQuery(title),
+                    onFunction = onFunction,
+                    onNetworkFunction = onNetworkFunction,
+                    isLibrary = true
+                )
+            }
         }
     }
 }
 
 @Composable
-fun CategoryTitle(
+fun CollectionTitle(
     navigationType: NavigationType,
     title: String,
     image: Painter,
@@ -168,13 +194,13 @@ fun CategoryTitle(
 
 @Preview(showBackground = true)
 @Composable
-fun CompactCategoryScreenPreview() {
+fun CompactCollectionScreenPreview() {
     GBookTheme {
-        CategoryScreen(
+        CollectionScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.categoryUiState,
-            category = LocalCategoriesProvider.categories[1],
+            collection = LocalCategoriesProvider.categories[1],
             onFunction = fakeOnFunction,
             onNetworkFunction = fakeOnNetworkFunction,
         )
@@ -182,28 +208,13 @@ fun CompactCategoryScreenPreview() {
 }
 @Preview(showBackground = true, widthDp = 700)
 @Composable
-fun MediumCategoryScreenPreview() {
+fun MediumCollectionScreenPreview() {
     GBookTheme {
-        CategoryScreen(
+        CollectionScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
             viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.categoryUiState,
-            category = LocalCategoriesProvider.categories[1],
-            onFunction = fakeOnFunction,
-            onNetworkFunction = fakeOnNetworkFunction,
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 1000)
-@Composable
-fun ExpandedCategoryScreenPreview() {
-    GBookTheme {
-        CategoryScreen(
-            navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            viewModel = LocalContext.current.fakeViewModel,
-            uiState = MockData.categoryUiState,
-            category = LocalCategoriesProvider.categories[1],
+            collection = LocalCategoriesProvider.categories[1],
             onFunction = fakeOnFunction,
             onNetworkFunction = fakeOnNetworkFunction,
         )

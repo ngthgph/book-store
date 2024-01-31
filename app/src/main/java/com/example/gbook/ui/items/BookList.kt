@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,28 +8,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -37,23 +31,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
 import com.example.gbook.data.fake.MockData
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.books.Book
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.TextStyle
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.model.OfflineBookUiState
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun BooksListSection(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
-    retryAction: () -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    searchQuery: SearchQuery? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
+    isLibrary: Boolean = false,
 ) {
     Column(modifier = modifier) {
         CollectionTitle(
@@ -63,10 +64,10 @@ fun BooksListSection(
         NetworkBooksList(
             navigationType = navigationType,
             networkBookUiState = networkBookUiState,
-            isFavorite = isFavorite,
-            onButtonClick = onButtonClick,
-            retryAction = retryAction,
-            onCardClick = onCardClick
+            searchQuery = searchQuery,
+            isLibrary = isLibrary,
+            onFunction = onFunction,
+            onNetworkFunction = onNetworkFunction,
         )
     }
 }
@@ -74,11 +75,12 @@ fun BooksListSection(
 fun NetworkBooksList(
     navigationType: NavigationType,
     networkBookUiState: NetworkBookUiState,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
-    retryAction: () -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    searchQuery: SearchQuery? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
+    isLibrary: Boolean = false,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -90,22 +92,34 @@ fun NetworkBooksList(
 //            NextEnabled = false,
 //            onButtonClick = onButtonClick
 //        )
-        when(networkBookUiState) {
-            is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
-            is NetworkBookUiState.Success ->
-                BooksList(
-                    navigationType = navigationType,
-                    bookList = networkBookUiState.books,
-                    isFavorite = isFavorite,
-                    onButtonClick = onButtonClick,
-                    onCardClick = onCardClick,
-                    modifier = modifier
-                )
-            is NetworkBookUiState.Error ->
-                ErrorContent(
-                    retryAction = retryAction,
-                    modifier = modifier
-                )
+        if(!isLibrary) {
+            when(networkBookUiState) {
+                is NetworkBookUiState.Loading -> LoadingContent(modifier = modifier)
+                is NetworkBookUiState.Success ->
+                    BooksList(
+                        navigationType = navigationType,
+                        bookList = networkBookUiState.books,
+                        isLibrary = isLibrary,
+                        onFunction = onFunction,
+                        modifier = modifier
+                    )
+                is NetworkBookUiState.Error ->
+                    searchQuery?.let {
+                        ErrorContent(
+                            searchQuery = it,
+                            onNetworkFunction = onNetworkFunction,
+                            modifier = modifier
+                        )
+                    }
+            }
+        } else {
+            BooksList(
+                navigationType = navigationType,
+                bookList = offlineBookUiState?.bookList!!,
+                isLibrary = isLibrary,
+                onFunction = onFunction,
+                modifier = modifier
+            )
         }
     }
 }
@@ -113,10 +127,9 @@ fun NetworkBooksList(
 fun BooksList(
     navigationType: NavigationType,
     bookList: List<Book>,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    isLibrary: Boolean = false,
 ) {
     var padding = dimensionResource(id = R.dimen.padding_small)
     var padding_start = dimensionResource(id = R.dimen.padding_medium)
@@ -132,10 +145,9 @@ fun BooksList(
         items(bookList) {
             BookItemCard(
                 navigationType = navigationType,
-                isFavorite = isFavorite,
+                isLibrary = isLibrary,
                 book = it,
-                onButtonClick = onButtonClick,
-                onCardClick = onCardClick,
+                onFunction = onFunction,
                 modifier = Modifier
                     .padding(
                         top = padding,
@@ -150,21 +162,23 @@ fun BooksList(
 @Composable
 fun BookItemCard(
     book: Book,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
     isCart: Boolean = false,
     amount: Int = 0,
-    isFavorite: Boolean = false,
+    isLibrary: Boolean = false,
     navigationType: NavigationType,
 ) {
     var maxHeight = dimensionResource(id = R.dimen.book_item_row)
     var padding = dimensionResource(id = R.dimen.padding_small)
     var buttonSize = dimensionResource(id = R.dimen.button_medium)
     val functions = if(isCart)
-        arrayOf(Function.Add, Function.Decline)
+        arrayOf(Function.IncreaseAmount, Function.DecreaseAmount)
         else arrayOf(Function.Cart, Function.Share)
-    val besideFunction = if(!isCart) Function.Library else Function.Delete
+    val besideFunction =
+        if(isLibrary) Function.RemoveFromLibrary
+        else if(isCart)Function.Delete
+        else Function.AddToLibrary
     if(navigationType != NavigationType.BOTTOM_NAVIGATION) {
         maxHeight = dimensionResource(id = R.dimen.book_item_row_medium)
         padding = dimensionResource(id = R.dimen.padding_medium)
@@ -179,7 +193,7 @@ fun BookItemCard(
         Card(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onCardClick(book) },
+                .clickable { onFunction(Function.BookCard,book,null,null,null,context) },
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.padding_small)),
             colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onPrimary),
             elevation = CardDefaults
@@ -204,8 +218,9 @@ fun BookItemCard(
                     for(function in functions) {
                         CardIconButton(
                             function = function,
-                            onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                            else onButtonClick(it)},
+                            book = book,
+                            context = context,
+                            onFunction = onFunction,
                             modifier = Modifier
                                 .weight(1f)
                         )
@@ -213,19 +228,18 @@ fun BookItemCard(
                 }
             }
         }
-        if (!isFavorite) {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                CardIconButton(
-                    function = besideFunction,
-                    onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                    else onButtonClick(it)},
-                    modifier = Modifier
-                )
-            }
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CardIconButton(
+                function = besideFunction,
+                book = book,
+                context = context,
+                onFunction = onFunction,
+                modifier = Modifier
+            )
         }
     }
 }
@@ -381,8 +395,7 @@ fun BookListPreview() {
         BooksList(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
             bookList = MockData.bookList,
-            onButtonClick = {},
-            onCardClick = {}
+            onFunction = fakeOnFunction
         )
     }
 }
@@ -394,8 +407,7 @@ fun RailBookListPreview() {
         BooksList(
             navigationType = NavigationType.NAVIGATION_RAIL,
             bookList = MockData.bookList,
-            onButtonClick = {},
-            onCardClick = {}
+            onFunction = fakeOnFunction
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.book
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.utils.Function
@@ -20,8 +23,9 @@ fun ListDetailHandler(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier,
+    isLibrary: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -47,7 +51,8 @@ fun ListDetailHandler(
                         navigationType = navigationType,
                         viewModel = viewModel,
                         uiState = uiState,
-                        onButtonClick = onButtonClick,
+                        isLibrary = isLibrary,
+                        onFunction = onFunction,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -56,7 +61,8 @@ fun ListDetailHandler(
                     navigationType = navigationType,
                     viewModel = viewModel,
                     uiState = uiState,
-                    onButtonClick = onButtonClick,
+                    isLibrary = isLibrary,
+                    onFunction = onFunction,
                     modifier = Modifier.weight(1f)
                 )
             }

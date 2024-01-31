@@ -3,11 +3,13 @@ package com.example.gbook.ui.utils
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
@@ -19,7 +21,14 @@ enum class Function(
     val doneIcon: ImageVector = Icons.Default.Done,
     @StringRes val description: Int
 ) {
-    Library(
+    BookCard(
+        description = R.string.book
+    ),
+    RemoveFromLibrary(
+        icon = Icons.Default.Clear,
+        description = R.string.remove_from_library
+    ),
+    AddToLibrary(
         icon = Icons.Default.Add,
         description = R.string.add_to_library
     ),
@@ -34,11 +43,11 @@ enum class Function(
     Cancel(
         description = R.string.cancel
     ),
-    Add (
+    IncreaseAmount (
         icon = Icons.Default.KeyboardArrowUp,
         description = R.string.add
     ),
-    Decline (
+    DecreaseAmount (
         icon = Icons.Default.KeyboardArrowDown,
         description = R.string.decline
     ),
@@ -53,6 +62,12 @@ enum class Function(
         icon = Icons.Default.Add,
         description = R.string.add_to_cart
     ),
+    PreviousPage(
+        description = R.string.previous_page
+    ),
+    NextPage(
+        description = R.string.next_page
+    ),
     SignIn(
         description = R.string.sign_in
     ),
@@ -62,10 +77,16 @@ enum class Function(
     SignUp(
         description = R.string.sign_up
     ),
-    PreviousPage(
-        description = R.string.previous_page
+    AddCollection(
+        icon = Icons.Default.Add,
+        description = R.string.add_collection
     ),
-    NextPage(
-        description = R.string.next_page
+    Search(
+        icon = Icons.Default.Search,
+        description = R.string.search
+    ),
+    Input(
+        icon = Icons.Default.Edit,
+        description = R.string.input
     )
 }

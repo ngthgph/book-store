@@ -1,4 +1,4 @@
-package com.example.gbook.network
+package com.example.gbook.data.network
 
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -1,4 +1,4 @@
-package com.example.gbook.data.model
+package com.example.gbook.data.database.account
 
 data class Account(
     val name: String,

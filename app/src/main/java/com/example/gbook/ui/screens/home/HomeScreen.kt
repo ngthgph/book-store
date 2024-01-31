@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.home
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,10 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.LayoutPreferencesRepository
-import com.example.gbook.data.dataStore
-import com.example.gbook.data.fake.FakeNetworkBooksRepository
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
+import com.example.gbook.data.fake.MockData.fakeOnFunction
+import com.example.gbook.data.fake.MockData.fakeOnNetworkFunction
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.GBookViewModel
@@ -27,16 +30,18 @@ import com.example.gbook.ui.items.BooksGridSection
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.screens.book.ListDetailHandler
 import com.example.gbook.ui.theme.GBookTheme
+import com.example.gbook.data.database.books.SearchQuery
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
+import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
 fun HomeScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
-    onSearch: (String) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -44,7 +49,7 @@ fun HomeScreen(
         navigationType = navigationType,
         viewModel = viewModel,
         uiState = uiState,
-        onButtonClick = onButtonClick,
+        onFunction = onFunction,
         modifier = modifier
     ) {
         HomeContent(
@@ -52,10 +57,8 @@ fun HomeScreen(
             uiState = uiState,
             recommendedUiState = viewModel.recommendedUiState,
             bookListTitle = stringResource(R.string.recommended),
-            onButtonClick = onButtonClick,
-            onCardClick = { viewModel.handleOnCardClick(it) },
-            retryAction = viewModel::getRecommended,
-            onSearch = onSearch,
+            onFunction = onFunction,
+            onNetworkFunction = onNetworkFunction,
         )
     }
 }
@@ -66,10 +69,8 @@ fun HomeContent(
     uiState: GBookUiState,
     recommendedUiState: NetworkBookUiState,
     bookListTitle: String,
-    onButtonClick: (Function) -> Unit,
-    onCardClick: (Book) -> Unit,
-    onSearch: (String) -> Unit,
-    retryAction: () -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val space = if (navigationType == NavigationType.BOTTOM_NAVIGATION)
@@ -80,14 +81,13 @@ fun HomeContent(
         modifier = modifier.fillMaxWidth()
     ) {
         HomeBrand()
-        SearchBar(onSearch = onSearch)
+        SearchBar(onNetworkFunction = onNetworkFunction)
         BooksGridSection(
             navigationType = navigationType,
             networkBookUiState = recommendedUiState,
             bookListTitle = bookListTitle,
-            onButtonClick = onButtonClick,
-            retryAction = retryAction,
-            onCardClick = onCardClick
+            onFunction = onFunction,
+            onNetworkFunction = onNetworkFunction,
         )
     }
 }
@@ -134,13 +134,10 @@ fun CompactHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = GBookUiState(),
-            onButtonClick = {},
-            onSearch = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
         )
     }
 }
@@ -150,13 +147,10 @@ fun MediumHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.NAVIGATION_RAIL,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = GBookUiState(),
-            onButtonClick = {},
-            onSearch = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
         )
     }
 }
@@ -167,13 +161,10 @@ fun ExpandedHomeScreenPreview() {
     GBookTheme {
         HomeScreen(
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = GBookUiState(),
-            onButtonClick = {},
-            onSearch = {},
+            onFunction = fakeOnFunction,
+            onNetworkFunction = fakeOnNetworkFunction,
         )
     }
 }

@@ -1,10 +1,9 @@
 package com.example.gbook.data.local
 
 import com.example.gbook.R
-import com.example.gbook.data.model.BookCollection
+import com.example.gbook.data.database.collection.BookCollection
 
 object LocalCategoriesProvider {
-    val favorite = BookCollection("Favorite", R.drawable.favorite)
     val categories = listOf(
         BookCollection("Economics", R.drawable.economics),
         BookCollection("Fiction", R.drawable.fiction),

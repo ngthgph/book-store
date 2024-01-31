@@ -15,8 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.LayoutPreferencesRepository
+import com.example.gbook.data.database.layout.LayoutPreferencesRepository
 import com.example.gbook.data.dataStore
+import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
 import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
@@ -94,10 +95,7 @@ fun RailScreenPreview() {
     GBookTheme {
         RailScreen(
             currentScreen = Screen.Categories,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.categoriesUiState,
             onIconClick = {},
             onBack = { /*TODO*/ }
@@ -111,10 +109,7 @@ fun HomeRailScreenPreview() {
     GBookTheme {
         RailScreen(
             currentScreen = Screen.Home,
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.homeUiState,
             onIconClick = {},
             onBack = { /*TODO*/ }

@@ -1,15 +1,28 @@
 package com.example.gbook.data.fake
 
-import com.example.gbook.data.model.Book
-import com.example.gbook.network.BookItem
-import com.example.gbook.network.BookSearchResponse
-import com.example.gbook.network.ImageLinks
-import com.example.gbook.network.Isbn
-import com.example.gbook.network.RetailPrice
-import com.example.gbook.network.SaleInfo
-import com.example.gbook.network.VolumeInfo
+import android.content.Context
+import androidx.lifecycle.SavedStateHandle
+import com.example.gbook.data.dataStore
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.layout.LayoutPreferencesRepository
+import com.example.gbook.data.network.BookItem
+import com.example.gbook.data.network.BookSearchResponse
+import com.example.gbook.data.network.ImageLinks
+import com.example.gbook.data.network.Isbn
+import com.example.gbook.data.network.RetailPrice
+import com.example.gbook.data.network.SaleInfo
+import com.example.gbook.data.network.VolumeInfo
+import com.example.gbook.ui.GBookViewModel
 
 object FakeDataSource {
+
+    val Context.fakeViewModel: GBookViewModel
+        get() = GBookViewModel(
+            FakeNetworkBooksRepository(),
+            FakeOfflineBooksRepository(),
+            LayoutPreferencesRepository(this.dataStore)
+        )
+
     val fakeBookItem1 = BookItem(
         networkId  = "123456789",
         volumeInfo = VolumeInfo(
@@ -68,7 +81,6 @@ object FakeDataSource {
         currencyCode = "USD",
         rating = null,
         note = "",
-        favorite = false
     )
     private val fakeBook2 = Book(
         id = 1,
@@ -88,7 +100,6 @@ object FakeDataSource {
         currencyCode = "USD",
         rating = null,
         note = "",
-        favorite = false
     )
     val fakeBookList = listOf(fakeBook1, fakeBook2)
 

@@ -5,10 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.gbook.R
 import com.example.gbook.ui.utils.Screen
 import com.example.gbook.ui.screens.navigation.BottomBarScreen
 import com.example.gbook.ui.screens.navigation.DrawerScreen
@@ -28,10 +30,12 @@ fun GBookApp(
     val backStackEntry by navController.currentBackStackEntryAsState()
 
     val screen = backStackEntry?.destination?.route
-    val currentScreen = if
-            (screen == null) Screen.Home else if
-                    (Screen.values().any { it.name == screen }) Screen.valueOf(screen) else
-                        Screen.Category
+    val currentScreen =
+        if (screen == null) Screen.Home
+        else if (Screen.values().any { it.name == screen }) Screen.valueOf(screen)
+        else if (screen.startsWith(Screen.Category.name)) Screen.Category
+        else if (screen.startsWith(Screen.Collection.name)) Screen.Collection
+        else Screen.Home
 
     val navigationType: NavigationType = when (windowSize) {
         WindowWidthSizeClass.Compact -> {
@@ -65,9 +69,8 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = viewModel::handleOnButtonClick,
-                    onSearch = {},
-                    onInput = {},
+                    onFunction = viewModel::handleOnFunction,
+                    onNetworkFunction = viewModel::handleOnNetworkFunction
                 )
             }
         }
@@ -94,9 +97,8 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = viewModel::handleOnButtonClick,
-                    onSearch = {},
-                    onInput = {},
+                    onFunction = viewModel::handleOnFunction,
+                    onNetworkFunction = viewModel::handleOnNetworkFunction
                 )
             }
         }
@@ -123,9 +125,8 @@ fun GBookApp(
                     viewModel = viewModel,
                     uiState = uiState,
                     navController = navController,
-                    onButtonClick = viewModel::handleOnButtonClick,
-                    onSearch = {},
-                    onInput = {},
+                    onFunction = viewModel::handleOnFunction,
+                    onNetworkFunction = viewModel::handleOnNetworkFunction
                 )
             }
         }

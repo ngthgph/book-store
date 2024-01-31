@@ -1,4 +1,4 @@
-package com.example.gbook.ui.items
+package com.example.gbook.ui
 
 import android.content.ContentResolver
 import android.content.Context
@@ -6,9 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import com.example.gbook.R
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.books.Book
 
-fun shareBook(context: Context, book: Book) {
+fun Context.shareBook(book: Book) {
 
 //    val imageUri = toImageUri(context, book.imageLinks)
     val text = toPlainText(book)
@@ -20,7 +20,7 @@ fun shareBook(context: Context, book: Book) {
         putExtra(Intent.EXTRA_TEXT, text)
 //        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(Intent.createChooser(intent,book.title))
+    this.startActivity(Intent.createChooser(intent,book.title))
 }
 
 private fun toPlainText(book: Book): String {

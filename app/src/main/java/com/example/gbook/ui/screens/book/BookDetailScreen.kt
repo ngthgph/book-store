@@ -1,5 +1,6 @@
 package com.example.gbook.ui.screens.book
 
+import android.content.Context
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -11,17 +12,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,29 +28,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gbook.R
-import com.example.gbook.data.model.Book
+import com.example.gbook.data.database.books.Book
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.example.gbook.data.LayoutPreferencesRepository
-import com.example.gbook.data.dataStore
-import com.example.gbook.data.fake.FakeNetworkBooksRepository
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.FakeDataSource.fakeViewModel
 import com.example.gbook.data.fake.MockData
+import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.ui.GBookViewModel
 import com.example.gbook.ui.items.BookPhoto
 import com.example.gbook.ui.items.ButtonCard
 import com.example.gbook.ui.items.DrawerBookHeader
-import com.example.gbook.ui.items.shareBook
 import com.example.gbook.ui.theme.GBookTheme
 
 @Composable
@@ -61,8 +57,9 @@ fun BookDetailScreen(
     navigationType: NavigationType,
     viewModel: GBookViewModel,
     uiState: GBookUiState,
-    onButtonClick: (Function) -> Unit,
-    modifier: Modifier = Modifier
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    modifier: Modifier = Modifier,
+    isLibrary: Boolean = false,
 ) {
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.inverseOnSurface)
@@ -73,7 +70,8 @@ fun BookDetailScreen(
         BookDetailContent(
             navigationType = navigationType,
             book = uiState.currentBook!!,
-            onButtonClick = onButtonClick,
+            onFunction = onFunction,
+            isLibrary = isLibrary,
         )
     }
 }
@@ -82,8 +80,9 @@ fun BookDetailScreen(
 fun BookDetailContent(
     navigationType: NavigationType,
     book: Book,
-    onButtonClick: (Function) -> Unit,
-    modifier: Modifier = Modifier
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    modifier: Modifier = Modifier,
+    isLibrary: Boolean = false,
 ) {
     Box(modifier = modifier) {
         LazyColumn(
@@ -111,8 +110,10 @@ fun BookDetailContent(
                 )
                 val context = LocalContext.current
                 DetailsButtonRow(
-                    onButtonClick = {if(it == Function.Share) shareBook(context, book)
-                    else onButtonClick(it)},
+                    onFunction = onFunction,
+                    book = book,
+                    context = context,
+                    isLibrary = isLibrary,
                     modifier = Modifier
                         .padding(
                             end = dimensionResource(id = R.dimen.padding_large),
@@ -288,7 +289,13 @@ fun BookInfoRow(
 @Composable
 fun DetailsButtonRow(
     modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    isLibrary: Boolean = false,
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     Row(
         modifier = modifier
@@ -303,13 +310,18 @@ fun DetailsButtonRow(
                 .weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            val functions = arrayOf(Function.Library, Function.Cart, Function.Share)
+            LocalContext.current
+            val functions =
+                if(isLibrary) arrayOf(Function.RemoveFromLibrary, Function.Cart, Function.Share)
+                else arrayOf(Function.AddToLibrary, Function.Cart, Function.Share)
             for (function in functions) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 ButtonCard(
                     function = function,
+                    book = book,
+                    context = context,
                     modifier = Modifier.weight(1f),
-                    onButtonClick = onButtonClick
+                    onFunction = onFunction,
                 )
             }
         }
@@ -356,7 +368,7 @@ fun BookInfoRowPreview() {
 @Composable
 fun ButtonRowPreview() {
     GBookTheme {
-        DetailsButtonRow(onButtonClick = {})
+        DetailsButtonRow(onFunction = fakeOnFunction)
     }
 }
 
@@ -365,13 +377,10 @@ fun ButtonRowPreview() {
 fun CompactBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.bookUiState,
             navigationType = NavigationType.BOTTOM_NAVIGATION,
-            onButtonClick = {}
+            onFunction = fakeOnFunction,
         )
     }
 }
@@ -380,13 +389,10 @@ fun CompactBookScreenPreview() {
 fun MediumBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.bookUiState,
             navigationType = NavigationType.NAVIGATION_RAIL,
-            onButtonClick = {}
+            onFunction = fakeOnFunction,
         )
     }
 }
@@ -396,13 +402,10 @@ fun MediumBookScreenPreview() {
 fun ExpandedBookScreenPreview() {
     GBookTheme {
         BookDetailScreen(
-            viewModel = GBookViewModel(
-                FakeNetworkBooksRepository(),
-                LayoutPreferencesRepository(LocalContext.current.dataStore)
-            ),
+            viewModel = LocalContext.current.fakeViewModel,
             uiState = MockData.bookUiState,
             navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
-            onButtonClick = {}
+            onFunction = fakeOnFunction,
         )
     }
 }

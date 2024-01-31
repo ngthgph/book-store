@@ -1,5 +1,6 @@
 package com.example.gbook.ui.items
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,14 +40,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.example.gbook.R
+import com.example.gbook.data.database.account.Account
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.collection.BookCollection
+import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Function
 
 @Composable
 fun PageNavigation(
-    onButtonClick: (Function) -> Unit,
-    PrevEnabled: Boolean,
-    NextEnabled: Boolean,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    prevEnabled: Boolean,
+    nextEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -58,14 +63,14 @@ fun PageNavigation(
     ) {
         ClickableText(
             function = Function.PreviousPage,
-            onButtonClick = onButtonClick,
-            enabled = PrevEnabled,
+            onFunction = onFunction,
+            enabled = prevEnabled,
         )
         Text(text = " | ")
         ClickableText(
             function = Function.NextPage,
-            onButtonClick = onButtonClick,
-            enabled = NextEnabled,
+            onFunction = onFunction,
+            enabled = nextEnabled,
         )
     }
 }
@@ -102,14 +107,19 @@ fun HeaderButton(
 fun ButtonCard(
     function: Function,
     modifier: Modifier = Modifier,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     Card (
         shape = CircleShape,
         modifier = modifier
             .clip(CircleShape)
             .aspectRatio(1f)
-            .clickable { onButtonClick(function) },
+            .clickable { onFunction(function,book,collection,account,string,context) },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
     )  {
         Column(
@@ -131,9 +141,14 @@ fun ButtonCard(
 @Composable
 fun ClickableText(
     function: Function,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     var isClicking by remember { mutableStateOf(false) }
     Text(
@@ -145,7 +160,7 @@ fun ClickableText(
             enabled = enabled,
             onClick = {
                 isClicking = !isClicking
-                onButtonClick(function)
+                onFunction(function,book,collection,account,string,context)
             }
         )
     )
@@ -154,14 +169,19 @@ fun ClickableText(
 @Composable
 fun CardIconButton(
     function: Function,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.tertiary
+    color: Color = MaterialTheme.colorScheme.tertiary,
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     IconButton(
         modifier = modifier
             .wrapContentWidth(),
-        onClick = { onButtonClick(function) },
+        onClick = { onFunction(function,book,collection,account,string,context) },
     ) {
         Icon(
             imageVector = function.icon,
@@ -174,14 +194,19 @@ fun CardIconButton(
 @Composable
 fun FABItem(
     function: Function,
-    onButtonClick: (Function) -> Unit,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     modifier: Modifier = Modifier,
     padding: Dp = dimensionResource(id = R.dimen.padding_medium),
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     FloatingActionButton(
         containerColor = MaterialTheme.colorScheme.onPrimary,
         shape = CircleShape,
-        onClick = {onButtonClick(function)},
+        onClick = { onFunction(function,book,collection,account,string,context) },
         modifier = modifier
             .wrapContentWidth()
             .padding(padding)
@@ -196,9 +221,14 @@ fun FABItem(
 @Composable
 fun DescriptionButton(
     function: Function,
+    onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
+    modifier: Modifier = Modifier,
     enable: Boolean = true,
-    onButtonClick: (Function) -> Unit,
-    modifier: Modifier = Modifier
+    book: Book? = null,
+    collection: BookCollection? = null,
+    account: Account? = null,
+    string: String? = null,
+    context: Context? = null,
 ) {
     Button(
         modifier = modifier,
@@ -211,7 +241,7 @@ fun DescriptionButton(
         ),
         elevation = ButtonDefaults
             .buttonElevation(dimensionResource(id = R.dimen.elevation)),
-        onClick = { onButtonClick(function) }
+        onClick = { onFunction(function,book,collection,account,string,context) }
     ) {
         Text(
             text = stringResource(id = function.description)
@@ -235,9 +265,9 @@ fun PreviewHeaderButton() {
 fun PreviewPageNavigation() {
     GBookTheme {
         PageNavigation(
-            PrevEnabled = false,
-            NextEnabled = true,
-            onButtonClick = {}
+            prevEnabled = false,
+            nextEnabled = true,
+            onFunction = fakeOnFunction,
         )
     }
 }
@@ -245,34 +275,34 @@ fun PreviewPageNavigation() {
 @Composable
 fun PreviewButtonCard() {
     GBookTheme {
-        ButtonCard(function = Function.Share, onButtonClick = {})
+        ButtonCard(function = Function.Share, onFunction = fakeOnFunction)
     }
 }
 @Preview
 @Composable
 fun PreviewClickableText() {
     GBookTheme {
-        ClickableText(function = Function.NextPage, onButtonClick = {})
+        ClickableText(function = Function.NextPage, onFunction = fakeOnFunction)
     }
 }
 @Preview
 @Composable
 fun PreviewCardIconButton() {
     GBookTheme {
-        CardIconButton(function = Function.Add, onButtonClick = {})
+        CardIconButton(function = Function.IncreaseAmount, onFunction = fakeOnFunction)
     }
 }
 @Preview
 @Composable
 fun PreviewFABItem() {
     GBookTheme {
-        FABItem(function = Function.Add, onButtonClick = {})
+        FABItem(function = Function.IncreaseAmount, onFunction = fakeOnFunction)
     }
 }
 @Preview
 @Composable
 fun PreviewDescriptionButton() {
     GBookTheme {
-        DescriptionButton(function = Function.SignIn, onButtonClick = {})
+        DescriptionButton(function = Function.Checkout, onFunction = fakeOnFunction)
     }
 }

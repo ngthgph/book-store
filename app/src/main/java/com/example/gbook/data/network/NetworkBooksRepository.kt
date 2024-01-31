@@ -1,68 +1,40 @@
-package com.example.gbook.data
+package com.example.gbook.data.network
 
-import com.example.gbook.data.local.BookFilter
-import com.example.gbook.data.local.OrderBy
-import com.example.gbook.data.local.PrintType
-import com.example.gbook.data.local.Projection
-import com.example.gbook.data.local.QueryType
-import com.example.gbook.data.model.Book
-import com.example.gbook.network.BookApiService
-import com.example.gbook.network.BookItem
+import com.example.gbook.data.database.books.Book
+import com.example.gbook.data.database.books.SearchQuery
 
-interface BooksRepository {
+interface NetworkRepository {
     //You can paginate the volumes list by specifying two values in the parameters for the request:
     //- startIndex - The position in the collection at which to start. The index of the first item is 0.
     //- maxResults - The maximum number of results to return. The default is 10, and the maximum allowable value is 40.
-    suspend fun searchBookTerm(
-        query: String,
-        intitle: String? = null,
-        inauthor: String? = null,
-        inpublisher: String? = null,
-        subject: String? = null,
-        isbn: String? = null,
-        lccn: String? = null,
-        oclc: String? = null,
-        filter: BookFilter? = null,
-        startIndex: Int? = null,
-        maxResults: Int? = null,
-        printType: PrintType? = null,
-        projection: Projection? = null,
-        orderBy: OrderBy? = null,
-        ): List<Book>
+    suspend fun searchBookTerm(searchQuery: SearchQuery): List<Book>
     suspend fun searchBookItem(networkId: String): Book
 }
 
 class NetworkBooksRepository(
     private val bookApiService: BookApiService
-): BooksRepository {
-    override suspend fun searchBookTerm(
-        query: String,
-        intitle: String?,
-        inauthor: String?,
-        inpublisher: String?,
-        subject: String?,
-        isbn: String?,
-        lccn: String?,
-        oclc: String?,
-        filter: BookFilter?,
-        startIndex: Int?,
-        maxResults: Int?,
-        printType: PrintType?,
-        projection: Projection?,
-        orderBy: OrderBy?,
-        ): List<Book> {
+): NetworkRepository {
+    override suspend fun searchBookTerm(searchQuery: SearchQuery): List<Book> {
 
         // maxResults - The maximum number of results to return. The default is 10, and the maximum allowable value is 40.
         var max: Int? = null
-        if(maxResults != null) {
-            max = if (maxResults > 40) 40 else maxResults
+        if(searchQuery.maxResults != null) {
+            max = if (searchQuery.maxResults!! > 40) 40 else searchQuery.maxResults
         }
 
         // q - Search for volumes that contain this text string. There are special keywords you can
         // specify in the search terms to search in particular fields
         val queryPrefix = QueryType.values()
-        val queryType = listOf(intitle, inauthor, inpublisher, subject, isbn, lccn, oclc)
-        var request = query
+        val queryType = listOf(
+            searchQuery.intitle,
+            searchQuery.inauthor,
+            searchQuery.inpublisher,
+            searchQuery.subject,
+            searchQuery.isbn,
+            searchQuery.lccn,
+            searchQuery.oclc
+        )
+        var request = searchQuery.query
         for (q in queryType) {
             if(q != null) {
                 request += queryPrefix[queryType.indexOf(q)].prefix + q
@@ -71,12 +43,12 @@ class NetworkBooksRepository(
         val searchResult = bookApiService
             .searchBooks(
                 request.convertSpacesToPlus(),
-                filter?.value,
-                startIndex,
+                searchQuery.filter?.value,
+                searchQuery.startIndex,
                 max,
-                printType?.value,
-                projection?.value,
-                orderBy?.value
+                searchQuery.printType?.value,
+                searchQuery.projection?.value,
+                searchQuery.orderBy?.value
             )
         val bookList = searchResult.items?.map { resultItem ->
             bookApiService.getBook(resultItem.networkId)

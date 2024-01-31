@@ -1,4 +1,4 @@
-package com.example.gbook.data
+package com.example.gbook.data.database.layout
 
 import android.util.Log
 import androidx.datastore.core.DataStore

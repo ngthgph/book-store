@@ -1,8 +1,8 @@
 package com.example.gbook.data.fake
 
-import com.example.gbook.network.BookApiService
-import com.example.gbook.network.BookItem
-import com.example.gbook.network.BookSearchResponse
+import com.example.gbook.data.network.BookApiService
+import com.example.gbook.data.network.BookItem
+import com.example.gbook.data.network.BookSearchResponse
 
 class FakeBookApiService: BookApiService {
     override suspend fun searchBooks(
