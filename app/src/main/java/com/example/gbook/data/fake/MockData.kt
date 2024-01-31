@@ -40,17 +40,16 @@ object MockData {
         description = "Want to learn more from books universe",
         password = ""
     )
-    private val shoppingList = List(3) {Pair(book,1)}
-
     val bookList = List(20) { book }
+    private const val fakeCollection = "fake"
 
     val homeUiState = GBookUiState(null, null)
-    val libraryUiState = GBookUiState(null, account)
-    val cartUiState = GBookUiState(book, account)
-    val categoriesUiState = GBookUiState(book, account)
-    val categoryUiState = GBookUiState(null, account)
-    val bookUiState = GBookUiState(book, account)
-    val accountUiState = GBookUiState(book, account)
+    val libraryUiState = GBookUiState(null, fakeCollection, account)
+    val cartUiState = GBookUiState(book, fakeCollection, account)
+    val categoriesUiState = GBookUiState(book, fakeCollection, account)
+    val categoryUiState = GBookUiState(null, fakeCollection, account)
+    val bookUiState = GBookUiState(book, fakeCollection, account)
+    val accountUiState = GBookUiState(book, null,account)
 
     val fakeNetworkBookUiState = NetworkBookUiState.Success(bookList)
 }

@@ -21,6 +21,7 @@ import com.example.gbook.ui.items.FABItem
 import com.example.gbook.ui.items.SearchBar
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.database.collection.LocalLibraryProvider
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.NetworkFunction
@@ -40,7 +41,7 @@ fun MyLibraryScreen(
         onNetworkFunction = onNetworkFunction,
         navigateToCollection = navigateToCollection,
         navigationType = navigationType,
-        library = uiState.collection
+        library = listOf(LocalLibraryProvider.favorite)
     )
 }
 

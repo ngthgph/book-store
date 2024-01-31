@@ -22,6 +22,7 @@ import com.example.gbook.ui.screens.home.HomeScreen
 import com.example.gbook.ui.screens.library.CollectionScreen
 import com.example.gbook.ui.screens.library.MyLibraryScreen
 import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.database.collection.LocalLibraryProvider
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.NetworkFunction
@@ -60,6 +61,8 @@ fun GBookNavHost(
                 onNetworkFunction = onNetworkFunction,
                 navigateToCollection = {
                     navController.navigate("${Screen.Collection.name}/${it.name}")
+                    viewModel.getOfflineCollection(it.name)
+                    viewModel.updateCurrentCollection(it.name)
                 },
                 modifier = modifier
             )
@@ -71,7 +74,7 @@ fun GBookNavHost(
         ) { backStackEntry ->
             val collectionName = backStackEntry.arguments?.getString(collectionArgument)
                 ?: error("collectionArgument cannot be null")
-            val collection = uiState.collection.find { it.name == collectionName }!!
+            val collection = LocalLibraryProvider.library.find { it.name == collectionName }!!
 
             CollectionScreen(
                 navigationType = navigationType,
@@ -99,6 +102,7 @@ fun GBookNavHost(
                 onFunction = onFunction,
                 onNetworkFunction = onNetworkFunction,
                 navigateToCollection = {
+                    onNetworkFunction(NetworkFunction.Category, SearchQuery(it.name))
                     navController.navigate("${Screen.Category.name}/${it.name}")
                                     },
                 modifier = modifier
@@ -111,7 +115,7 @@ fun GBookNavHost(
         ) { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString(categoryArgument)
                 ?: error("categoryArgument cannot be null")
-            val category = categories.find { it.name.equals(categoryName,ignoreCase = true) }!!
+            val category = categories.find { it.name == categoryName }!!
 
             CategoryScreen(
                 navigationType = navigationType,

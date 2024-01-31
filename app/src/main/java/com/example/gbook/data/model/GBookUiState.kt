@@ -8,6 +8,6 @@ import com.example.gbook.data.local.LocalCategoriesProvider
 
 data class GBookUiState(
     var currentBook: Book? = null,
+    var currentCollectionName: String? = null,
     val account: Account? = null,
-    val collection: List<BookCollection> = listOf(LocalLibraryProvider.favorite),
 )

@@ -9,6 +9,7 @@ import com.example.gbook.data.database.collection.BookCollection
 import com.example.gbook.data.model.LayoutPreferencesUiState
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.model.OfflineBookUiState
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.NetworkFunction
@@ -22,14 +23,14 @@ fun GridOrLinearLayout(
     onFunction: (Function, Book?, BookCollection?, Account?, String?, Context?) -> Unit,
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
-    offlineBookList: List<Book>? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
     isLibrary: Boolean = false,
 ) {
     if(layoutPreferencesUiState.isGridLayout) {
         NetworkBooksGrid(
             navigationType = navigationType,
             networkBookUiState = networkBookUiState,
-            offlineBookList = offlineBookList,
+            offlineBookUiState = offlineBookUiState,
             searchQuery = searchQuery,
             onFunction = onFunction,
             onNetworkFunction = onNetworkFunction,
@@ -40,7 +41,7 @@ fun GridOrLinearLayout(
         NetworkBooksList(
             navigationType = navigationType,
             networkBookUiState = networkBookUiState,
-            offlineBookList = offlineBookList,
+            offlineBookUiState = offlineBookUiState,
             searchQuery = searchQuery,
             onFunction = onFunction,
             onNetworkFunction = onNetworkFunction,

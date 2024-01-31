@@ -48,6 +48,7 @@ import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.model.OfflineBookUiState
 import com.example.gbook.ui.utils.Function
 import com.example.gbook.ui.utils.NavigationType
 import com.example.gbook.ui.utils.NetworkFunction
@@ -61,7 +62,7 @@ fun BooksGridSection(
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
     searchQuery: SearchQuery? = null,
-    offlineBookList: List<Book>? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
     isLibrary: Boolean = false,
 ) {
     Column(
@@ -75,7 +76,7 @@ fun BooksGridSection(
             navigationType = navigationType,
             networkBookUiState = networkBookUiState,
             searchQuery = searchQuery,
-            offlineBookList = offlineBookList,
+            offlineBookUiState = offlineBookUiState,
             isLibrary = isLibrary,
             onFunction = onFunction,
             onNetworkFunction = onNetworkFunction,
@@ -131,7 +132,7 @@ fun NetworkBooksGrid(
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
     searchQuery: SearchQuery? = null,
-    offlineBookList: List<Book>? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
     isLibrary: Boolean = false,
 ) {
     Column(
@@ -166,15 +167,13 @@ fun NetworkBooksGrid(
                     }
             }
         } else{
-            offlineBookList?.let {
-                BooksGrid(
-                    navigationType = navigationType,
-                    bookList = it,
-                    isLibrary = true,
-                    onFunction = onFunction,
-                    modifier = modifier
-                )
-            }
+            BooksGrid(
+                navigationType = navigationType,
+                bookList = offlineBookUiState?.bookList!!,
+                isLibrary = true,
+                onFunction = onFunction,
+                modifier = modifier
+            )
         }
     }
 }

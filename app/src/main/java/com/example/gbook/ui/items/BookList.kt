@@ -41,6 +41,7 @@ import com.example.gbook.data.fake.MockData.fakeOnFunction
 import com.example.gbook.data.model.NetworkBookUiState
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.data.database.books.SearchQuery
+import com.example.gbook.data.model.OfflineBookUiState
 import com.example.gbook.ui.utils.NetworkFunction
 
 @Composable
@@ -52,7 +53,7 @@ fun BooksListSection(
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
     searchQuery: SearchQuery? = null,
-    offlineBookList: List<Book>? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
     isLibrary: Boolean = false,
 ) {
     Column(modifier = modifier) {
@@ -78,7 +79,7 @@ fun NetworkBooksList(
     onNetworkFunction: (NetworkFunction, SearchQuery?) -> Unit,
     modifier: Modifier = Modifier,
     searchQuery: SearchQuery? = null,
-    offlineBookList: List<Book>? = null,
+    offlineBookUiState: OfflineBookUiState? = null,
     isLibrary: Boolean = false,
 ) {
     Column(
@@ -112,15 +113,13 @@ fun NetworkBooksList(
                     }
             }
         } else {
-            offlineBookList?.let {
-                BooksList(
-                    navigationType = navigationType,
-                    bookList = it,
-                    isLibrary = isLibrary,
-                    onFunction = onFunction,
-                    modifier = modifier
-                )
-            }
+            BooksList(
+                navigationType = navigationType,
+                bookList = offlineBookUiState?.bookList!!,
+                isLibrary = isLibrary,
+                onFunction = onFunction,
+                modifier = modifier
+            )
         }
     }
 }

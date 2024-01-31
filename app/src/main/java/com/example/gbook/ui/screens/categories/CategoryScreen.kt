@@ -71,7 +71,7 @@ fun CategoryScreen(
             CategoryContent(
                 navigationType = navigationType,
                 viewModel = viewModel,
-                title = category.name?: stringResource(id = R.string.category),
+                title = category.name,
                 image = painterResource(id = category.image?: R.drawable.ic_broken_image),
                 onFunction = onFunction,
                 onNetworkFunction = onNetworkFunction,

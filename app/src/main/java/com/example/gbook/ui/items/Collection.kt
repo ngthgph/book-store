@@ -106,9 +106,6 @@ fun CollectionCard(
         ),
         modifier = modifier
             .clickable {
-                if (LocalCategoriesProvider.categories.contains(bookCollection)) {
-                    onNetworkFunction(NetworkFunction.Category, SearchQuery(bookCollection.name!!))
-                } 
                 navigateToCollection(bookCollection)
             }
     ) {
@@ -151,9 +148,7 @@ fun CollectionCard(
                     .fillMaxWidth(),
             ) {
                 Text(
-                    text = bookCollection.name
-                        ?: stringResource(id = R.string.no_book_collection_name)
-                            .replaceFirstChar { it.uppercase() },
+                    text = bookCollection.name,
                     textAlign = TextAlign.Start,
                     maxLines = 2,
                     fontWeight = FontWeight.Bold,

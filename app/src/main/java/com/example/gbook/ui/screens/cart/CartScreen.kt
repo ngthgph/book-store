@@ -51,7 +51,7 @@ fun CartScreen(
 ) {
     CartContent(
         navigationType = navigationType,
-        bookList = MockData.bookList,
+        bookList = emptyList(),
         onFunction = onFunction,
         onNetworkFunction = onNetworkFunction,
         modifier = modifier

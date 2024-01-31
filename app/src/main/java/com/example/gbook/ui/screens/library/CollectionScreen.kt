@@ -14,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -94,8 +98,6 @@ fun CollectionContent(
 ) {
     val space = if (navigationType == NavigationType.BOTTOM_NAVIGATION)
         R.dimen.padding_medium else R.dimen.padding_medium
-
-    val offlineBookList = viewModel.offlineBookUiState.collectAsState().value.bookList
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(space)),
@@ -112,7 +114,7 @@ fun CollectionContent(
         Column(
             modifier = Modifier.weight(3f)
         ) {
-            if(offlineBookList.isEmpty()) {
+            if(viewModel.offlineCollectionUiState.bookList.isEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -133,7 +135,7 @@ fun CollectionContent(
                 GridOrLinearLayout(
                     navigationType = navigationType,
                     networkBookUiState = viewModel.networkBookUiState,
-                    offlineBookList = offlineBookList,
+                    offlineBookUiState = viewModel.offlineCollectionUiState,
                     layoutPreferencesUiState = viewModel.layoutPreferencesUiState.collectAsState().value,
                     searchQuery = SearchQuery(title),
                     onFunction = onFunction,

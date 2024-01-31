@@ -24,6 +24,8 @@ import com.example.gbook.ui.utils.NetworkFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,46 +37,35 @@ class GBookViewModel(
     private val offlineRepository: OfflineRepository,
     private val layoutPreferencesRepository: LayoutPreferencesRepository
 ): ViewModel() {
-
     companion object {
         private const val TIME_MILLIS = 5000L
     }
 
+    // GBookUiState
     private val _uiState = MutableStateFlow(GBookUiState())
     val uiState: StateFlow<GBookUiState> = _uiState
-
-    var networkBookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
-    var recommendedUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
-
-    val offlineBookUiState: StateFlow<OfflineBookUiState> =
-        offlineRepository.getAllBooksStream()
-            .map { OfflineBookUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
-                initialValue = OfflineBookUiState()
-            )
-
-    val layoutPreferencesUiState: StateFlow<LayoutPreferencesUiState> =
-        layoutPreferencesRepository.isGridLayout
-            .map { LayoutPreferencesUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
-                initialValue = LayoutPreferencesUiState()
-            )
-
     init {
         initializeUiState()
     }
-
     private fun initializeUiState() {
         _uiState.value = GBookUiState()
         getRecommended()
     }
+    private fun updateCurrentBook(book: Book?) {
+        _uiState.update { currentState ->
+            currentState.copy(currentBook = book)
+        }
+    }
+    fun updateCurrentCollection(name: String?) {
+        _uiState.update { currentState ->
+            currentState.copy(currentCollectionName = name)
+        }
+    }
     //************************************************************************
     // NETWORK FUNCTIONS *****************************************************
     //************************************************************************
+    var networkBookUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
+    var recommendedUiState: NetworkBookUiState by mutableStateOf(NetworkBookUiState.Loading)
     fun handleOnNetworkFunction(networkFunction: NetworkFunction, searchQuery: SearchQuery?) {
         when(networkFunction) {
             NetworkFunction.Search -> TODO()
@@ -126,12 +117,44 @@ class GBookViewModel(
     //************************************************************************
     // END OF NETWORK FUNCTIONS **********************************************
     //************************************************************************
-
-
-
+    val layoutPreferencesUiState: StateFlow<LayoutPreferencesUiState> =
+        layoutPreferencesRepository.isGridLayout
+            .map { LayoutPreferencesUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
+                initialValue = LayoutPreferencesUiState()
+            )
+    fun selectLayout(isGridLayout: Boolean) {
+        viewModelScope.launch {
+            layoutPreferencesRepository.saveLayoutPreferences(isGridLayout = isGridLayout)
+        }
+    }
     //************************************************************************
     // FUNCTIONS *************************************************************
     //************************************************************************
+
+    // Get full book-database
+    val offlineBooksUiState: StateFlow<OfflineBookUiState> =
+        offlineRepository.getAllBooksStream()
+            .map { OfflineBookUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIME_MILLIS),
+                initialValue = OfflineBookUiState()
+            )
+
+    // Get books with specific collectionName
+    var offlineCollectionUiState: OfflineBookUiState by mutableStateOf(OfflineBookUiState())
+    fun getOfflineCollection(collectionName: String) {
+        viewModelScope.launch {
+            offlineCollectionUiState = offlineRepository.getCollectionStream(collectionName)
+                .filterNotNull()
+                .first()
+                .toOfflineBookUiState()
+        }
+    }
+    private fun List<Book>.toOfflineBookUiState(): OfflineBookUiState = OfflineBookUiState(bookList = this)
     fun handleOnFunction(
         function: Function,
         book: Book? = null,
@@ -145,7 +168,7 @@ class GBookViewModel(
                 book?.let { onCardClick(it) }
             }
             Function.AddToLibrary -> {
-                book?.let { addBookToCollection(it, BookCollection("Favorite")) }
+                book?.let { addBookToCollection(it, "Favorite") }
             }
             Function.Cart -> TODO()
             Function.Share -> book?.let {
@@ -165,15 +188,10 @@ class GBookViewModel(
             Function.AddCollection -> TODO()
             Function.Search -> TODO()
             Function.Input -> TODO()
-            Function.RemoveFromLibrary -> book?.let { removeBookFromCollection(it) }
+            Function.RemoveFromLibrary -> removeBookFromCollection(book!!,uiState.value.currentCollectionName!!)
         }
     }
     //************************************************************************
-    fun selectLayout(isGridLayout: Boolean) {
-        viewModelScope.launch {
-            layoutPreferencesRepository.saveLayoutPreferences(isGridLayout = isGridLayout)
-        }
-    }
     // onCardClick
     private fun onCardClick(book: Book) {
         updateCurrentBook(book)
@@ -182,34 +200,26 @@ class GBookViewModel(
     fun onBackFromBookDetail() {
         updateCurrentBook(null)
     }
-    private fun updateCurrentBook(book: Book?) {
-        _uiState.update { currentState ->
-            currentState.copy(currentBook = book)
-        }
-    }
     // Data for Library Collection Book List
-    private fun addBookToCollection(book: Book, collection: BookCollection) {
-        val updatedBook = book.apply { book.collectionName = collection.name }
-
+    private fun addBookToCollection(book: Book, collectionName: String) {
+        val updatedBook = book.apply { book.collectionName = collectionName }
         viewModelScope.launch {
             offlineRepository.insertBook(updatedBook)
         }
     }
-    private fun removeBookFromCollection(book: Book) {
+    private fun removeBookFromCollection(book: Book,collectionName: String) {
         viewModelScope.launch {
             offlineRepository.deleteBook(book)
         }
+        getOfflineCollection(collectionName)
         onBackFromBookDetail()
     }
     fun handleOnInput(input: String) {
 
     }
-    fun getBookCollection(collection: String): List<Book> =
-        offlineBookUiState.value.bookList.filter {
-            book -> book.collectionName.equals(collection)
-        }
 
     //************************************************************************
     // END OF FUNCTIONS ******************************************************
     //************************************************************************
+
 }
