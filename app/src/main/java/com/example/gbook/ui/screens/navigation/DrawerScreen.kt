@@ -20,6 +20,7 @@ import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
+import com.example.gbook.ui.items.AdsBanner
 import com.example.gbook.ui.items.AppHeaderBar
 import com.example.gbook.ui.theme.GBookTheme
 import com.example.gbook.ui.utils.Screen
@@ -62,7 +63,7 @@ fun DrawerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(2f)
                     ) {
-                        //                AdsBanner()
+//                        AdsBanner()
                         content()
                     }
                     Spacer(modifier = Modifier.weight(0.5f))

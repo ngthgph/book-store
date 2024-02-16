@@ -21,6 +21,7 @@ import com.example.gbook.data.fake.FakeNetworkBooksRepository
 import com.example.gbook.data.fake.MockData
 import com.example.gbook.data.model.GBookUiState
 import com.example.gbook.ui.GBookViewModel
+import com.example.gbook.ui.items.AdsBanner
 import com.example.gbook.ui.items.AppHeaderBar
 import com.example.gbook.ui.items.OnlyAccountHomeHeader
 import com.example.gbook.ui.theme.GBookTheme
@@ -68,7 +69,7 @@ fun BottomBarScreen(
                 )
                 Column(modifier = Modifier) {
                     content()
-//                AdsBanner()
+//                    AdsBanner()
                 }
             }
         }
@@ -81,7 +82,7 @@ fun BottomBarScreen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     content()
-//                AdsBanner()
+//                    AdsBanner()
                 }
             }
         }
