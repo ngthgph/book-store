@@ -44,7 +44,7 @@
   <tr>
     <td>Adaptive Layout</td>
     <td>Compose Navigation, WindowSize</td>
-    <td>Bottom bar navigation, Navigation rail, <br> Permanent Navigation Drawer, <br> List-Detail Layout </td>
+    <td>Bottom Bar Navigation, Navigation Rail, <br> Permanent Navigation Drawer, <br> List-Detail Layout </td>
   </tr>
   <tr>
     <td>Theming</td>
@@ -53,7 +53,7 @@
   </tr>
   <tr>
     <td rowspan="1">Testing</td>
-    <td>Automated test</td>
+    <td>Automated Test <br> (Unit Test)</td>
     <td>JUnit, Espresso</td>
     <td>Test Network API service, ViewModel, <br> NetworkRepository</td>
   </tr>
