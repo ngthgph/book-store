@@ -58,3 +58,5 @@
     <td>Test Network API service, ViewModel, <br> NetworkRepository</td>
   </tr>
 </table>
+<h2>UI Demo</h2>
+<a href="https://sites.google.com/view/gbook-ui-demo">https://sites.google.com/view/gbook-ui-demo</a>
