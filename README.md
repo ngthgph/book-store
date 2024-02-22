@@ -39,12 +39,12 @@
   <tr>
     <td>Screens</td>
     <td>Compose, View </td>
-    <td></td>
+    <td>Include Home, Library, Cart, Categories, Account, <br> Book Details Screens, and other subscreens</td>
   </tr>
   <tr>
-    <td>Navigation</td>
     <td>Adaptive Layout</td>
-    <td></td>
+    <td>Compose Navigation, WindowSize</td>
+    <td>Bottom bar navigation, Navigation rail, <br> Permanent Navigation Drawer, <br> List-Detail Layout </td>
   </tr>
   <tr>
     <td>Theming</td>
