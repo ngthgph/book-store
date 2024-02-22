@@ -27,7 +27,7 @@
   </tr>
   <tr>
     <td>User layout <br> preference</td>
-    <td>Coroutines, Flow, <br> DataStore Preference</td>
+    <td>Coroutines, Flow, <br> Preferences DataStore</td>
     <td>Save the latest configuration layout <br>of the book list chosen by users</td>
   </tr>
   <tr>
@@ -38,7 +38,7 @@
   </tr>
   <tr>
     <td>Screens</td>
-    <td>Compose, View </td>
+    <td>Compose, View, XML </td>
     <td>Include Home, Library, Cart, Categories, <br> Account, Book Details Screens, <br> and other subscreens</td>
   </tr>
   <tr>
@@ -48,7 +48,7 @@
   </tr>
   <tr>
     <td>Theming</td>
-    <td>Material Design </td>
+    <td>Material Design, XML </td>
     <td></td>
   </tr>
   <tr>
