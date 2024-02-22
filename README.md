@@ -39,7 +39,7 @@
   <tr>
     <td>Screens</td>
     <td>Compose, View </td>
-    <td>Include Home, Library, Cart, Categories, Account, <br> Book Details Screens, and other subscreens</td>
+    <td>Include Home, Library, Cart, Categories, <br> Account, Book Details Screens, <br> and other subscreens</td>
   </tr>
   <tr>
     <td>Adaptive Layout</td>
