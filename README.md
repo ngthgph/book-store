@@ -4,31 +4,31 @@
 <h2>Content</h2>
 <table>
   <tr>
-    <th>Module</th>
-    <th>Feature</th>
-    <th>Tech Stacks</th>
-    <th>Note</th>
+    <th width="15%">Module</th>
+    <th width="15%">Feature</th>
+    <th width="25%">Tech Stacks</th>
+    <th width="35%">Note</th>
   </tr>
   <tr>
     <td rowspan="4">Data layer <br> (DI)</td>
-    <td>Online books <br> datasource</td>
+    <td>Online books datasource</td>
     <td>Retrofit, Kotlin Serialization, Coil</td>
     <td>Datasource: Google Book API</td>
   </tr>
   <tr>
-    <td>Books <br> database</td>
-    <td>Room, Coroutines, Flow <br> RESTful, SQL</td>
+    <td>Books database</td>
+    <td>Room, Coroutines, Flow RESTful, SQL</td>
     <td></td>
   </tr>
   <tr>
-    <td>Account <br> database</td>
-    <td>Room, Coroutines, Flow, <br> Firebase (ongoing)</td>
+    <td>Account database</td>
+    <td>Room, Coroutines, Flow, Firebase (ongoing)</td>
     <td></td>
   </tr>
   <tr>
-    <td>User layout <br> preference</td>
-    <td>Coroutines, Flow, <br> Preferences DataStore</td>
-    <td>Save the latest configuration layout <br>of the book list chosen by users</td>
+    <td>User layout preference</td>
+    <td>Coroutines, Flow, Preferences DataStore</td>
+    <td>Save the latest configuration layout of the book list chosen by users</td>
   </tr>
   <tr>
     <td rowspan="4">UI layer <br> (MVVM)</td>
@@ -39,12 +39,12 @@
   <tr>
     <td>Screens</td>
     <td>Compose, View, XML </td>
-    <td>Include Home, Library, Cart, Categories, <br> Account, Book Details Screens, <br> and other subscreens</td>
+    <td>Include Home, Library, Cart, Categories, Account, Book Details Screens, and other subscreens</td>
   </tr>
   <tr>
     <td>Adaptive Layout</td>
     <td>Compose Navigation, WindowSize</td>
-    <td>Bottom Bar Navigation, Navigation Rail, <br> Permanent Navigation Drawer, <br> List-Detail Layout </td>
+    <td>Bottom Bar Navigation, Navigation Rail, Permanent Navigation Drawer, List-Detail Layout </td>
   </tr>
   <tr>
     <td>Theming</td>
@@ -53,9 +53,9 @@
   </tr>
   <tr>
     <td rowspan="1">Testing</td>
-    <td>Automated Test <br> (Unit Test)</td>
+    <td>Automated Test (Unit Test)</td>
     <td>JUnit, Espresso</td>
-    <td>Test Network API service, ViewModel, <br> NetworkRepository</td>
+    <td>Test Network API service, ViewModel, NetworkRepository</td>
   </tr>
 </table>
 <h2>UI Demo</h2>
